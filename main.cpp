@@ -14,7 +14,7 @@ int main()
   //read and store data in memory
   //close file
 
-  for (pc = 0; pc < memlenght; pc = pc+4)
+  for (pc = 0; pc < memlength; pc = pc+4)
   {
     //case statements for instructions go here
     //there are a lot of functions
