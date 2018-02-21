@@ -114,3 +114,33 @@ int SEV(); // Set overflow
 int SEZ(); // Set zero
 int SEN(); // Set negative
 int SCC(); // ???
+
+
+// Parsing functions
+
+struct instruction {
+  u16_t opCode;
+  enum byteMode;
+  enum instructionType; //Double operand, single operand, conditional jump, shit like that.
+  enum instructionFamily; // J, I, R?
+  enum addressingModeSrc;
+  enum addressingModeDest;
+  int reg;
+  int src;
+  int dest;
+  int offset;
+  enum set;
+  int N;
+  int Z;
+  int V;
+  int C;
+};
+
+// BETTER NAMES MAX
+const unsigned char maskRelevantBits = 0x78A0;
+const unsigned char maskSingleCondBranchCondCheck = 0x7000;
+const unsigned char maskSingle = 0x0800;
+const unsigned char maskCondCheck = 0x00E0; // Else conditional branch
+const unsigned char maskRegSource = 0x7000; // Else double operand
+
+instruction parseType(u16_t opCode);
