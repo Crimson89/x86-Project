@@ -7,6 +7,11 @@ int main()
   int pc; // Program counter
   int memlength; // Total length of memory array
 
+  // Just some test code playing with octal and #defines
+  unsigned long x;
+  printf("%s\n", CLR);
+  x = strtoul(CLR, NULL, 8);
+  printf("%lu\n", x);
 
   //open file
   //allocate memory for size of file
