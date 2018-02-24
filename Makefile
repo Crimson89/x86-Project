@@ -1,10 +1,16 @@
 all: main
 
 main: main.o
-	g++ -g main.o -o exe
+	g++ -g -std=c++11 main.o -o RunMe.exe
 
 main.o: main.cpp
-	g++ -g -c main.cpp
+	g++ -g -std=c++11 -c main.cpp
+
+filenames := main.o RunMe.exe
+
+files := $(strip $(foreach f,$(filenames),$(wildcard $(f))))
 
 clean:
-		rm -f exe main.o
+ifneq ($(files),)
+	rm -f $(files)
+endif
