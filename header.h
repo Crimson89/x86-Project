@@ -8,13 +8,20 @@
 #include <unistd.h> //Getopt
 #include <vector>   //vectors
 #include <stdint.h> //64 bit ints
-#include <iomanip>  // HEX formatting
+#include <iomanip>  // Octal formatting
+#include <limits>  //
 
 using namespace std;
 
 // MAIN functions
-int loadData(int argc, char ** argv, uint16_t memory[], uint16_t REGS[]);
-int readData(string fileName, uint16_t memory[], uint16_t REGS[]);
+int loadData(int argc, char ** argv);
+int readData(string fileName);
+int menu_function(void);
+uint16_t string_to_operation(string input_string);
+uint16_t string_to_address(string input_string);
+void print_operation(uint16_t operation);
+void print_address(uint16_t address);
+void print_address_at_index(int index);
 
 
 // SINGLE OPERAND

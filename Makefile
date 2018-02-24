@@ -1,5 +1,7 @@
 all: main
 
+remake: clean main
+
 main: main.o
 	g++ -g -std=c++11 main.o -o RunMe.exe
 
