@@ -34,114 +34,114 @@ void initializeMemory(void);
 // SINGLE OPERAND
 
 // General
-int CLR(); // Clear (B)
-int COM(); // 1's Compliment (B)
-int INC(); // Increment (B)
-int DEC(); // Decrement (B)
-int NEG(); // 2's Compliment negate (B)
-int NOP(); // No operation
-int TST(); // Test (B)
-int TSTSET(); // Test, set low bit
-int WRTLCK(); // Read/Lock destination, write/unlock R0 into destination
+int CLR(instruction *inst); // Clear (B)
+int COM(instruction *inst); // 1's Compliment (B)
+int INC(instruction *inst); // Increment (B)
+int DEC(instruction *inst); // Decrement (B)
+int NEG(instruction *inst); // 2's Compliment negate (B)
+int NOP(instruction *inst); // No operation
+int TST(instruction *inst); // Test (B)
+int TSTSET(instruction *inst); // Test, set low bit
+int WRTLCK(instruction *inst); // Read/Lock destination, write/unlock R0 into destination
 
 // Shift & Rotate
-int ASR(); // Arithmetic shift right (B)
-int ASL(); // Arithmetic shift left (B)
-int ROR(); // Rotate right (B)
-int ROL(); // Rotate left (B)
-int SWAB(); // Swap bytes
+int ASR(instruction *inst); // Arithmetic shift right (B)
+int ASL(instruction *inst); // Arithmetic shift left (B)
+int ROR(instruction *inst); // Rotate right (B)
+int ROL(instruction *inst); // Rotate left (B)
+int SWAB(instruction *inst); // Swap bytes
 
 // Multiple Precision
-int ADC(); // Add carry (B)
-int SBC(); // Subtract carry (B)
-int SXT(); // Sign extend
+int ADC(instruction *inst); // Add carry (B)
+int SBC(instruction *inst); // Subtract carry (B)
+int SXT(instruction *inst); // Sign extend
 
 // DOUBLE OPERAND
 
 // General
-int MOV(); // Move source to destination (B)
-int ADD(); // Add source to destination
-int SUB(); // Subtract source from destination
-int CMP(); // Compare source to destination (B)
-int ASH(); // Shift arithmetically
-int ASHC(); // Arithmetic shift combined
-int MUL(); // Multiply
-int DIV(); // Divide
+int MOV(instruction *inst); // Move source to destination (B)
+int ADD(instruction *inst); // Add source to destination
+int SUB(instruction *inst); // Subtract source from destination
+int CMP(instruction *inst); // Compare source to destination (B)
+int ASH(instruction *inst); // Shift arithmetically
+int ASHC(instruction *inst); // Arithmetic shift combined
+int MUL(instruction *inst); // Multiply
+int DIV(instruction *inst); // Divide
 
 // Logical
-int BIT(); // Bit test (B)
-int BIC(); // Bit clear (B)
-int BIS(); // Bit set (B)
-int XOR(); // Exclusive OR
+int BIT(instruction *inst); // Bit test (B)
+int BIC(instruction *inst); // Bit clear (B)
+int BIS(instruction *inst); // Bit set (B)
+int XOR(instruction *inst); // Exclusive OR
 
 // BRANCH
 
 // Branch
-int BR(); // Branch unconditional
-int BNE(); // Branch if not equal (to zero)
-int BEQ(); // Branch if equal (to zero)
-int BPL(); // Branch if plus
-int BMI(); // Branch if minus
-int BVC(); // Branch if overflow is clear
-int BVS(); // Branch if overflow is set
-int BCC(); // Branch if carry is clear
-int BCS(); // Branch if carry is set
+int BR(instruction *inst); // Branch unconditional
+int BNE(instruction *inst); // Branch if not equal (to zero)
+int BEQ(instruction *inst); // Branch if equal (to zero)
+int BPL(instruction *inst); // Branch if plus
+int BMI(instruction *inst); // Branch if minus
+int BVC(instruction *inst); // Branch if overflow is clear
+int BVS(instruction *inst); // Branch if overflow is set
+int BCC(instruction *inst); // Branch if carry is clear
+int BCS(instruction *inst); // Branch if carry is set
 
 // Signed Conditional Branch
-int BGE(); // Branch if greater than or equal (to zero)
-int BLT(); // Branch if less than (zero)
-int BGT(); // Branch if greater than (zero)
-int BLE(); // Branch if less than or equal (to zero)
-int SOB(); // Subtract one and branch (if not = 0)
+int BGE(instruction *inst); // Branch if greater than or equal (to zero)
+int BLT(instruction *inst); // Branch if less than (zero)
+int BGT(instruction *inst); // Branch if greater than (zero)
+int BLE(instruction *inst); // Branch if less than or equal (to zero)
+int SOB(instruction *inst); // Subtract one and branch (if not = 0)
 
 // Unsigned Conditional Branch
-int BHI(); // Branch if higher
-int BLOS(); // Branch if lower or same
-int BHIS(); // Branch if higher or same
-int BLO(); // Branch if lower
+int BHI(instruction *inst); // Branch if higher
+int BLOS(instruction *inst); // Branch if lower or same
+int BHIS(instruction *inst); // Branch if higher or same
+int BLO(instruction *inst); // Branch if lower
 
 // JUMP & SUBROUTINE
 
-int JMP(); // Jump
-int JSR(); // Jump to subroutine
-int RTS(); // Return from subroutine
-int MARK(); // Facilitates stack clean-up procedures
+int JMP(instruction *inst); // Jump
+int JSR(instruction *inst); // Jump to subroutine
+int RTS(instruction *inst); // Return from subroutine
+int MARK(instruction *inst); // Facilitates stack clean-up procedures
 
 // TRAPS & INTERRUPTS
 
-int EMT(); // Emulator trap
-int TRAP(); // Trap
-int BPT(); // Breakpoint trap
-int IOT(); // Input/Output trap
-int CSM(); // Call to supervisor mode
-int RTI(); // Return from interrupt
-int RTT(); // Return from trap???
+int EMT(instruction *inst); // Emulator trap
+int TRAP(instruction *inst); // Trap
+int BPT(instruction *inst); // Breakpoint trap
+int IOT(instruction *inst); // Input/Output trap
+int CSM(instruction *inst); // Call to supervisor mode
+int RTI(instruction *inst); // Return from interrupt
+int RTT(instruction *inst); // Return from trap???
 
 // MISC
 
-//int HALT(); // Halt -- Nothing to do, handled in program loop - Exists loop
-int WAIT(); // Wait for interrupt
-int RESET(); // Reset UNIBUS
-int MTPD(); // Move to previous data space
-int MTPI(); // Move to previous instruction space
-int MFPD(); // Move from previous data space
-int MFPI(); // Move from previous instruction space
-int MTPS(); // Move byte to processor status word
-int MFPS(); // Move byte from processor status word
-int MFPT(); // Move from processor type
+//int HALT(instruction *inst); // Halt -- Nothing to do, handled in program loop - Exists loop
+int WAIT(instruction *inst); // Wait for interrupt
+int RESET(instruction *inst); // Reset UNIBUS
+int MTPD(instruction *inst); // Move to previous data space
+int MTPI(instruction *inst); // Move to previous instruction space
+int MFPD(instruction *inst); // Move from previous data space
+int MFPI(instruction *inst); // Move from previous instruction space
+int MTPS(instruction *inst); // Move byte to processor status word
+int MFPS(instruction *inst); // Move byte from processor status word
+int MFPT(instruction *inst); // Move from processor type
 
 // CONDITION CODES
 
-int CLC(); // Clear carry
-int CLV(); // Clear overflow
-int CLZ(); // Clear zero
-int CLN(); // Clear negative
-int CCC(); // Clear Condition Codes
-int SEC(); // Set carry
-int SEV(); // Set overflow
-int SEZ(); // Set zero
-int SEN(); // Set negative
-int SCC(); // Set Condition Codes
+int CLC(instruction *inst); // Clear carry
+int CLV(instruction *inst); // Clear overflow
+int CLZ(instruction *inst); // Clear zero
+int CLN(instruction *inst); // Clear negative
+int CCC(instruction *inst); // Clear Condition Codes
+int SEC(instruction *inst); // Set carry
+int SEV(instruction *inst); // Set overflow
+int SEZ(instruction *inst); // Set zero
+int SEN(instruction *inst); // Set negative
+int SCC(instruction *inst); // Set Condition Codes
 
 
 // Parsing functions
