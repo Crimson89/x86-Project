@@ -142,3 +142,68 @@ int SEV(); // Set overflow
 int SEZ(); // Set zero
 int SEN(); // Set negative
 int SCC(); // Set Condition Codes
+
+
+// Parsing functions
+
+struct instruction {
+  u16_t opCode;
+  enum byteMode;
+  enum instructionType; //Double operand, single operand, conditional jump, shit like that.
+  enum instructionFamily; // J, I, R?
+  enum addressingModeSrc;
+  enum addressingModeDest;
+  int reg;
+  int src;
+  int dest;
+  int offset;
+  enum set;
+  int N;
+  int Z;
+  int V;
+  int C;
+};
+
+// BETTER NAMES MAX
+const unsigned char maskRelevantBits = 0x78A0;
+const unsigned char maskSingleCondBranchCondCheck = 0x7000;
+const unsigned char maskSingle = 0x0800;
+const unsigned char maskCondCheck = 0x00E0; // Else conditional branch
+const unsigned char maskRegSource = 0x7000; // Else double operand
+
+// Assignment masks
+// Double-operand
+const unsigned char maskDoubleOpcode = 0x7000;
+const unsigned char maskDoubleSourceMode = 0x0E00;
+const unsigned char maskDoubleSource = 0x01C0;
+const unsigned char maskDoubleDestMode = 0x0038;
+const unsigned char maskDoubleDest = 0x0007;
+
+// Double-operand register
+const unsigned char maskDoubleRegisterOpcode = 0x0700;
+const unsigned char maskDoubleRegister = 0x00C0;
+const unsigned char maskDoubleRegisterSourceDestMode = 0x0038;
+const unsigned char maskDoubleRegisterSourceDest = 0x0007;
+
+// Single-operand
+const unsigned char maskSingleOpcode = 0x0730;
+const unsigned char maskSingleMode = 0x0038;
+const unsigned char maskSingleRegister = 0x0007;
+
+// Conditional branch
+const unsigned char maskCondBranchOpcode = 0x0700;
+const unsigned char maskCondBranchOffset = 0x00FF;
+
+// Conditional check
+const unsigned char maskCondCodeOpcode = 0xFFE0;
+const unsigned char maskCondsc = 0x0010;
+const unsigned char maskCondN = 0x0008;
+const unsigned char maskCondZ = 0x0004;
+const unsigned char maskCondV = 0x0002;
+const unsigned char maskCondC = 0x0001;
+
+// Byte mask
+const unsigned char maskByteInstruction = 0x8000;
+
+
+instruction parseType(u16_t opCode);
