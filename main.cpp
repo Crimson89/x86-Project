@@ -13,7 +13,7 @@ uint16_t& R7 = REGS[7];
 uint16_t& SP = REGS[6];
 uint16_t& PC = REGS[7];
 uint16_t MEM[MEMORY_SPACE];
-uint16_t starting_pc = 0xFFFF;
+uint16_t starting_pc;
 
 int main(int argc, char ** argv)
 {
@@ -21,6 +21,7 @@ int main(int argc, char ** argv)
 	int program_execution_control = 0;
 	SP = 0xFFFF; // Assign at start to invalid value, detection of unassigned SP
 	PC = 0xFFFF; // Assign at start to invalid value, detection of unassigned PC
+	starting_pc = PC;
 	initializeMemory();
 	for(;;){
 		program_execution_control = menu_function();
@@ -37,13 +38,13 @@ int main(int argc, char ** argv)
 				cout << "                            Executing program" <<endl;
 				cout << "-------------------------------------------------------------------------" <<endl;
 				cout << "-------------------------------------------------------------------------" <<endl;
-				cout << "Assigning registers R0 to R5 with data from memory locations MEM[0] to MEM[5]" <<endl;
-				REGS[0] = MEM[0];
-				REGS[1] = MEM[1];
-				REGS[2] = MEM[2];
-				REGS[3] = MEM[3];
-				REGS[4] = MEM[4];
-				REGS[5] = MEM[5];
+				cout << "Assigning registers R0 to R5 with data from memory locations MEM[2] to MEM[7]" <<endl;
+				R0 = MEM[2];
+				R1 = MEM[3];
+				R2 = MEM[4];
+				R3 = MEM[5];
+				R4 = MEM[6];
+				R5 = MEM[7];
 				cout << "Set SP to memory index 18 (Octal address 000044)" <<endl;
 				SP = index_to_address(18);
 				cout << "All registers' content:" <<endl;
@@ -131,7 +132,7 @@ void initializeMemory(){
 void print_all_registers(void) {
 	for(int i = 0; i < 5; i++) {
 		cout <<"R"<<i<<":";
-		print_operation(MEM[i]);
+		print_operation(REGS[i]);
 		cout<< endl;
 	}
 	cout <<"SP"<<":";
@@ -267,12 +268,8 @@ int loadData(int argc, char ** argv){
 	int return_val = 1;
 	string fileName;	//File name of data file
 	int opt;
-	optind = 0; //force getOpt to restart for repeated loading from file
-	cerr << "argc" << argc << endl;
-	for(int i = 0; i < argc;i++)
-		cerr << "argv"<< i<<" : "<< argv[i] << endl;
+	optind = 0;			//force getOpt to restart for repeated loading from file
 	while ((opt = getopt(argc, argv, "f:m:")) != -1) {
-		cerr << "opt=" << opt << endl;
 		switch (opt) {
 		case 'f':
 			fileName = string(optarg);
@@ -351,7 +348,7 @@ int readData(string fileName){
 				}
 				else if (code == '@') {
 					address_index = address_to_index(temporary_addr);
-					cout << "Moved memory start to address: "; print_address(temporary_addr); cout << endl;
+					cout << "Set current memory location to address: "; print_address(temporary_addr); cout << endl;
 					cout << "Stored at address (Derived from index):" << index_to_address(address_index) <<endl;
 					cout << "Stored at index (Derived from address):" <<dec<< address_to_index(temporary_addr)<<endl;
 				}
