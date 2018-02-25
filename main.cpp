@@ -1,16 +1,4 @@
 #include "header.h"
-#define SILENT_MODE 1
-#define VERBOSE_MODE 2
-#define MEMORY_SPACE ( (1<<(15)) - (1<<(12) ))
-#define HALT 0x000000
-#define R0_REG_INDEX 0
-#define R1_REG_INDEX 1
-#define R2_REG_INDEX 2
-#define R3_REG_INDEX 3
-#define R4_REG_INDEX 4
-#define R5_REG_INDEX 5
-#define SP_REG_INDEX 6
-#define PC_REG_INDEX 7
 
 //Make REGS and MEM global
 uint16_t REGS[7];
@@ -27,83 +15,79 @@ uint16_t& PC = REGS[7];
 uint16_t MEM[MEMORY_SPACE];
 uint16_t starting_pc = 0xFFFF;
 
-/*...*/
 int main(int argc, char ** argv)
 {
 	uint16_t operation;
-	PC = 0xFFFF; // Assign at start to invalid value
-	SP = 0xFFFF; // Assign at start to invalid value
-	ProgramStart:
-	if(menu_function() == 1) // The only non-zero return from this function invokes loadData, doesn't return to exit program	
-		loadData(argc, argv);
-	if(PC != 0xFFFF) {
-		while(1) {
-			/*...*/
-			//do some stuff
-			/*...*/
-			cout << "-------------------------------------------------------------------------" <<endl;
-			cout << "-------------------------------------------------------------------------" <<endl;
-			cout << "                            Executing program" <<endl;
-			cout << "-------------------------------------------------------------------------" <<endl;
-			cout << "-------------------------------------------------------------------------" <<endl;
-			cout << "Assigning registers R0 to R6 with data from memory locations MEM[0] to MEM[6]" <<endl;
-			REGS[0] = MEM[0];
-			REGS[1] = MEM[1];
-			REGS[2] = MEM[2];
-			REGS[3] = MEM[3];
-			REGS[4] = MEM[4];
-			REGS[5] = MEM[5];
-			REGS[6] = MEM[6];
-			cout << "All registers' content:" <<endl;
-			cout << "R0=";
-			cout<<setfill('0')<<setw(6)<<oct<< R0<<endl;
-			cout << "R1=";
-			cout<<setfill('0')<<setw(6)<<oct<< R1<<endl;
-			cout << "R2=";
-			cout<<setfill('0')<<setw(6)<<oct<< R2<<endl;
-			cout << "R3=";
-			cout<<setfill('0')<<setw(6)<<oct<< R3<<endl;
-			cout << "R4=";
-			cout<<setfill('0')<<setw(6)<<oct<< R4<<endl;
-			cout << "R5=";
-			cout<<setfill('0')<<setw(6)<<oct<< R5<<endl;
-			cout << "SP=";
-			cout<<setfill('0')<<setw(6)<<oct<< SP<<endl;
-			cout << "PC=";
-			cout<<setfill('0')<<setw(6)<<oct<< PC<<endl;
-			cout << "All valid memory contents:" <<endl;
-			for(int i = 0; i < MEMORY_SPACE; i++) {
-				if(MEM[i]!=0xFFFF) {
-					cout <<"@ADDR ";
-					print_address_at_index(i);
-					cout<<":";
-					print_operation(MEM[i]);
-					cout<<endl;
-				}
+	int program_execution_control = 0;
+	SP = 0xFFFF; // Assign at start to invalid value, detection of unassigned SP
+	PC = 0xFFFF; // Assign at start to invalid value, detection of unassigned PC
+	initializeMemory();
+	for(;;){
+		program_execution_control = menu_function();
+		if(program_execution_control == LOAD_DATA) {
+			loadData(argc, argv);
+			program_execution_control = PRINT_MENU;
+		}
+		else if((program_execution_control == RUN_PROGRAM) && (PC != 0xFFFF)) {
+			while(program_execution_control == RUN_PROGRAM) {
+				cin.ignore(numeric_limits<streamsize>::max(), '\n');
+				cout << "                     Press ENTER to begin program" << endl;
+				cout << "-------------------------------------------------------------------------" <<endl;
+				cin.get();
+				cout << "                            Executing program" <<endl;
+				cout << "-------------------------------------------------------------------------" <<endl;
+				cout << "-------------------------------------------------------------------------" <<endl;
+				cout << "Assigning registers R0 to R5 with data from memory locations MEM[0] to MEM[5]" <<endl;
+				REGS[0] = MEM[0];
+				REGS[1] = MEM[1];
+				REGS[2] = MEM[2];
+				REGS[3] = MEM[3];
+				REGS[4] = MEM[4];
+				REGS[5] = MEM[5];
+				cout << "Set SP to memory index 18 (Octal address 000044)" <<endl;
+				SP = index_to_address(18);
+				cout << "All registers' content:" <<endl;
+				print_all_registers();
+				cout << "All valid memory contents:" <<endl;
+				print_all_memory();
+				operation = HALT;
+				if(operation == HALT)
+					program_execution_control = PRINT_MENU;
 			}
-			operation = HALT;
-			if(operation == HALT)
-				break;
+			cout << "-------------------------------------------------------------------------" <<endl;
+			cout << "                            Program Completed!" <<endl;
+			cout << "                     Press ENTER to return to menu" << endl;
+			cout << "-------------------------------------------------------------------------" <<endl;
+			cin.get();
+		}
+		else {
+			cout << "-------------------------------------------------------------------------" <<endl;
+			cout << "                  Unhandled condition, is PC set to valid address?!" <<endl;
+			cout << "                     Press ENTER to return to menu" << endl;
+			cout << "-------------------------------------------------------------------------" <<endl;
+			cin.get();
+			program_execution_control = PRINT_MENU;
 		}
 	}
-	cout << "-------------------------------------------------------------------------" <<endl;
-	cout << "-------------------------------------------------------------------------" <<endl;
-	cout << "                            Program Completed!" <<endl;
-	cout << "-------------------------------------------------------------------------" <<endl;
-	cout << "-------------------------------------------------------------------------" <<endl;
-	goto ProgramStart;
-	return 0;
+	return 0; // never hit, program exits from menu function
 }
 
 
 uint16_t string_to_operation(string this_operation){
-	return (uint16_t(stoul(this_operation, NULL, 8)));
+	return stoul(this_operation, NULL, 8);
 }
 	
 uint16_t string_to_address(string this_address){
-	return (uint16_t(stoul(this_address, NULL, 8))/2); //divided by 2 because memory is x16 and this is a byte addressed ISA
+	return stoul(this_address, NULL, 8);
 }
 
+uint16_t address_to_index(uint16_t this_address){
+	return (this_address/2); //divided by 2 because memory array is x16 and this is a byte addressed ISA
+}
+
+uint16_t index_to_address(uint16_t this_index){
+	return (this_index*2); //Multiplied by 2 because memory array is x16 and this is a byte addressed ISA
+}
 
 void print_operation(uint16_t operation){
 	cout <<setfill('0')<<setw(6)<<oct<<operation;
@@ -117,6 +101,51 @@ void print_address_at_index(int index){
 	cout <<setfill('0')<<setw(6)<<oct<<(index*2);
 }
 
+void print_all_memory(void) {
+	uint16_t hasContent = 0;
+	for(uint16_t i = 0; i < MEMORY_SPACE; i++) {
+		if(MEM[i]!=0xFFFF) {
+			hasContent+=1;
+			cout <<dec<<"@Index:\t"<<i;
+			cout <<"\tADDR="; print_address_at_index(i); cout <<", Contents="; print_operation(MEM[i]);
+			if(PC != 0xFFFF && (i == address_to_index(PC)))
+				cout << " <-- PC";
+			if(SP != 0xFFFF && (i == address_to_index(SP)))
+				cout << " <-- SP";
+			cout<< endl;
+		}
+	}
+	if(hasContent)
+		cout << "Memory contains " <<dec<<(hasContent*2) << " bytes of information" << endl;
+	else
+		cout << "Memory is empty" << endl;
+}
+
+
+void initializeMemory(){
+	for(int i = 0; i < MEMORY_SPACE; i++) { //Initialize memory space
+		MEM[i]=0xFFFF;
+	}
+}
+
+void print_all_registers(void) {
+	for(int i = 0; i < 5; i++) {
+		cout <<"R"<<i<<":";
+		print_operation(MEM[i]);
+		cout<< endl;
+	}
+	cout <<"SP"<<":";
+	print_operation(SP);
+	if(SP == 0xFFFF)
+		cout<< "  <-- This is an invalid SP, 0xFFFF";
+	cout<< endl;
+	cout <<"PC"<<":";
+	print_operation(PC);
+	if(PC == 0xFFFF)
+		cout<< "  <-- This is an invalid PC, 0xFFFF";
+	cout<< endl;
+}
+
 int menu_function() {
 	string input;
 	string temp_pc;
@@ -127,17 +156,20 @@ int menu_function() {
 		cout << "-------------------------------------------------------------------------" <<endl;
 		cout << "MENU: Make selection from choices below" << endl;
 		cout << "Q(q) to quit" << endl;
-		cout << "R(r) to restart current application" << endl;
-		cout << "S(s) to set PC in current application and run" << endl;
+		cout << "R(r) to Restart current application at initial PC" << endl;
+		cout << "S(s) to manually set PC, (Will not automatically start program)" << endl;
+		cout << "E(e) to start application at current PC" << endl;
+		cout << "P(p) to print all register contents" << endl;
+		cout << "M(m) to print all valid memory contents" << endl;
 		cout << "L(l) to load new application" << endl;
 		cout << "-------------------------------------------------------------------------" <<endl;
 		cout << "-------------------------------------------------------------------------" <<endl;
 		cout << "\n\nSelection: ";
 		cin >> input;
 		input_char = tolower(input[0]);
-		if ( (input_char != 'l') && (input_char != 'q') && (PC == 0xFFFF) ){
+		if ( ( (input_char == 'e') || (input_char == 'r') ) && (PC == 0xFFFF) ){
 				cin.ignore(numeric_limits<streamsize>::max(), '\n');
-				cout << "  \n\nMust load program into memory first before attempting this operation" << endl;
+				cout << "  \n\nMust load program into memory first before attempting to execute a program" << endl;
 				cout << "                     Press ENTER to continue" << endl;
 				cout << "-------------------------------------------------------------------------" <<endl;
 				cin.get();
@@ -153,14 +185,35 @@ int menu_function() {
 					cin.get();
 					exit(EXIT_SUCCESS);
 					break;
-				case 'r':
-					cout << "               Press ENTER to restart current application" << endl;
+				case 'p':
+					cout << "All registers' content:" <<endl;
+					print_all_registers();
+					cin.ignore(numeric_limits<streamsize>::max(), '\n');
+					cout << "-------------------------------------------------------------------------" <<endl;
+					cout << "                     Press ENTER to continue" << endl;
 					cout << "-------------------------------------------------------------------------" <<endl;
 					cin.get();
-					PC = starting_pc;
-					cout << "                        Restored PC to " << PC << endl;
+					break;
+				case 'm':
+					cout << "All valid memory contents:" <<endl;
+					print_all_memory();
+					cin.ignore(numeric_limits<streamsize>::max(), '\n');
 					cout << "-------------------------------------------------------------------------" <<endl;
-					menu_continue = 0;
+					cout << "                     Press ENTER to continue" << endl;
+					cout << "-------------------------------------------------------------------------" <<endl;
+					cin.get();
+					break;
+				case 'r':
+					cout << "                  Restarting current application" << endl;
+					PC = starting_pc;
+					cout << "                        Set PC to " << PC << endl;
+					cout << "-------------------------------------------------------------------------" <<endl;
+					return RUN_PROGRAM;
+					break;
+				case 'e':
+					cout << "                        Starting application" << endl;
+					cout << "-------------------------------------------------------------------------" <<endl;
+					return RUN_PROGRAM;
 					break;
 				case 's':
 					cout << "        Press ENTER to manually set PC in current application" << endl;
@@ -193,13 +246,12 @@ int menu_function() {
 							temp_pc = "FALSE";
 						}
 					}
-					menu_continue = 0;
 					break;
 				case 'l':
 					cout << "                Press ENTER to load new application" << endl;
 					cout << "-------------------------------------------------------------------------" <<endl;
 					cin.get();
-					return 1;
+					return LOAD_DATA;
 					break;
 				default:
 					cout << "                     ERROR: Invalid input\n\n" << endl;
@@ -215,7 +267,12 @@ int loadData(int argc, char ** argv){
 	int return_val = 1;
 	string fileName;	//File name of data file
 	int opt;
+	optind = 0; //force getOpt to restart for repeated loading from file
+	cerr << "argc" << argc << endl;
+	for(int i = 0; i < argc;i++)
+		cerr << "argv"<< i<<" : "<< argv[i] << endl;
 	while ((opt = getopt(argc, argv, "f:m:")) != -1) {
+		cerr << "opt=" << opt << endl;
 		switch (opt) {
 		case 'f':
 			fileName = string(optarg);
@@ -229,8 +286,7 @@ int loadData(int argc, char ** argv){
 				mode = -1;
 			break;
 		default:
-			cerr << "-------------------------------------------------------------------------" <<endl;
-			cerr << "-------------------------------------------------------------------------" <<endl;
+			cerr << "Hit default case" << endl;
 			cerr << "Usage: " << argv[0] << " [-f dataFileName] [-m simple|verbose]" << endl;
 			cerr << "           Press ENTER to exit and close application" << endl;
 			cerr << "-------------------------------------------------------------------------" <<endl;
@@ -240,8 +296,7 @@ int loadData(int argc, char ** argv){
 		}
 	}
 	if (mode == -1) { //Print error and return
-		cerr << "-------------------------------------------------------------------------" <<endl;
-		cerr << "-------------------------------------------------------------------------" <<endl;
+		cerr << "Invalid mode:" << endl;
 		cerr << "Usage: " << argv[0] << " [-f dataFileName] [-m simple|verbose]" << endl;
 		cerr << "             Press ENTER to exit and close application" << endl;
 		cerr << "-------------------------------------------------------------------------" <<endl;
@@ -259,16 +314,14 @@ int readData(string fileName){
 	string read_word;						//Store read_word octal characters
 	int stringLength = 0;					//Length of temp string
 	char code = 'z';						//The type of thing on this line, options are *, @, -
-	int address = 0;						//The address of this read_word in MEM
+	int address_index = 0;					//The address of this read_word in MEM
 	int file_address = 0;					//Line number in the file being read
 	uint16_t temporary_addr = 0;			//Used if this word turns out to be a memory address
 	temp.clear();							//initialize temp
 	read_word.clear();						//initialize read_word
 	ifstream fileInput(fileName);			//File ifstream handle, and open file
 
-	for(int i = 0; i < MEMORY_SPACE; i++) { //Initialize memory space
-		MEM[i]=0xFFFF;
-	}
+	initializeMemory();
 	if(!fileInput.is_open()) {
 		cerr << "failed to open file : " << fileName << endl;
 		return 1;
@@ -285,33 +338,29 @@ int readData(string fileName){
 					break;
 			}
 			if(read_word.length() == 6 && code == '-') {
-				MEM[address] = string_to_operation(read_word); //Read string and convert uint16
-				cout << "Loading instr: \"";
-				print_operation(MEM[address]);
-				cout <<"\" into memory"<<endl;
-				address+=1;
+				MEM[address_index] = string_to_operation(read_word); //Read string and convert uint16
+				cout << "Loading instr: \""; print_operation(MEM[address_index]); cout <<"\" into memory"<<endl;
+				address_index+=1;
 			}
 			else {
 				temporary_addr = string_to_address(read_word);
 				if (code == '*') {
 					starting_pc = temporary_addr;
 					PC = temporary_addr;
-					cout << "Set PC to start @ address: ";
-					print_address(PC);
-					cout <<endl;
+					cout << "Set PC to start @ address: "; print_address(PC); cout <<endl;
 				}
 				else if (code == '@') {
-					address = temporary_addr;
-					cout << "Moved memory start to address: ";
-					print_address(address);
-					cout << endl;
+					address_index = address_to_index(temporary_addr);
+					cout << "Moved memory start to address: "; print_address(temporary_addr); cout << endl;
+					cout << "Stored at address (Derived from index):" << index_to_address(address_index) <<endl;
+					cout << "Stored at index (Derived from address):" <<dec<< address_to_index(temporary_addr)<<endl;
 				}
 				else
-					cerr << "Skipping invalid input in file: " << read_word << " at line#" << file_address << endl;
+					cerr << "Skipping invalid input in file: " << read_word << " at line#" <<dec<< file_address << endl;
 			}
 		}
 		else
-			cerr << "Skipping empty line in file: " << temp << " at line#" << file_address << endl;
+			cerr << "Skipping empty line in file: " << temp << " at line#" <<dec<< file_address << endl;
 		//Clear vars for next pass
 		file_address++;
 		temp.clear();						
@@ -320,15 +369,12 @@ int readData(string fileName){
 	}
 	fileInput.close(); //done reading, close the file
 	cout << "Done reading file, printing valid memory contents:" <<endl;
-	for(int i = 0; i < MEMORY_SPACE; i++) {
-		if(MEM[i]!=0xFFFF) {
-			cout <<"@ADDR ";
-			print_address_at_index(i);
-			cout <<":";
-			print_operation(MEM[i]);
-			cout<< endl;
-		}
-	}
+	print_all_memory();
+	cout << "-------------------------------------------------------------------------" <<endl;
+	cout << "                     Loading memory completed" << endl;
+	cout << "                     Press ENTER to continue" << endl;
+	cout << "-------------------------------------------------------------------------" <<endl;
+	cin.get();
 	return 0;
 }
 

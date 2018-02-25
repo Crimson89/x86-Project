@@ -9,9 +9,11 @@
 #include <vector>   //vectors
 #include <stdint.h> //64 bit ints
 #include <iomanip>  // Octal formatting
-#include <limits>  //
+#include <limits>   // Numerical limits
+#include "defines.h"
 
 using namespace std;
+
 
 // MAIN functions
 int loadData(int argc, char ** argv);
@@ -19,9 +21,14 @@ int readData(string fileName);
 int menu_function(void);
 uint16_t string_to_operation(string input_string);
 uint16_t string_to_address(string input_string);
+uint16_t address_to_index(uint16_t this_address);
+uint16_t index_to_address(uint16_t this_index);
 void print_operation(uint16_t operation);
 void print_address(uint16_t address);
 void print_address_at_index(int index);
+void print_all_memory(void);
+void print_all_registers(void);
+void initializeMemory(void);
 
 
 // SINGLE OPERAND
@@ -112,7 +119,7 @@ int RTT(); // Return from trap???
 
 // MISC
 
-int HALT(); // Halt
+//int HALT(); // Halt -- Nothing to do, handled in program loop - Exists loop
 int WAIT(); // Wait for interrupt
 int RESET(); // Reset UNIBUS
 int MTPD(); // Move to previous data space
