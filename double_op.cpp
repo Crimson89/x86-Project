@@ -1,51 +1,51 @@
 #include "header.h"
 
 // General
-int MOV() // Move source to destination (B)
+int MOV(instruction *inst) // Move source to destination (B)
 {
 }
 
-int ADD() // Add source to destination
+int ADD(instruction *inst) // Add source to destination
 {
 }
 
-int SUB() // Subtract source from destination
+int SUB(instruction *inst) // Subtract source from destination
 {
 }
 
-int CMP() // Compare source to destination (B)
+int CMP(instruction *inst) // Compare source to destination (B)
 {
 }
 
-int ASH() // Shift arithmetically
+int ASH(instruction *inst) // Shift arithmetically
 {
 }
 
-int ASHC() // Arithmetic shift combined
+int ASHC(instruction *inst) // Arithmetic shift combined
 {
 }
 
-int MUL() // Multiply
+int MUL(instruction *inst) // Multiply
 {
 }
 
-int DIV() // Divide
+int DIV(instruction *inst) // Divide
 {
 }
 
 // Logical
-int BIT() // Bit test (B)
+int BIT(instruction *inst) // Bit test (B)
 {
 }
 
-int BIC() // Bit clear (B)
+int BIC(instruction *inst) // Bit clear (B)
 {
 }
 
-int BIS() // Bit set (B)
+int BIS(instruction *inst) // Bit set (B)
 {
 }
 
-int XOR() // Exclusive OR
+int XOR(instruction *inst) // Exclusive OR
 {
 }

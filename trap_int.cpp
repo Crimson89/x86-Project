@@ -1,29 +1,29 @@
 #include "header.h"
 
-int EMT() // Emulator trap
+int EMT(instruction *inst) // Emulator trap
 {
 }
 
-int TRAP() // Trap
+int TRAP(instruction *inst) // Trap
 {
 }
 
-int BPT() // Breakpoint trap
+int BPT(instruction *inst) // Breakpoint trap
 {
 }
 
-int IOT() // Input/Output trap
+int IOT(instruction *inst) // Input/Output trap
 {
 }
 
-int CSM() // Call to supervisor mode
+int CSM(instruction *inst) // Call to supervisor mode
 {
 }
 
-int RTI() // Return from interrupt
+int RTI(instruction *inst) // Return from interrupt
 {
 }
 
-int RTT() // Return from trap???
+int RTT(instruction *inst) // Return from trap???
 {
 }

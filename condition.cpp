@@ -1,41 +1,41 @@
 #include "header.h"
 
-int CLC() // Clear carry
+int CLC(instruction *inst) // Clear carry
 {
 }
 
-int CLV() // Clear overflow
+int CLV(instruction *inst) // Clear overflow
 {
 }
 
-int CLZ() // Clear zero
+int CLZ(instruction *inst) // Clear zero
 {
 }
 
-int CLN() // Clear negative
+int CLN(instruction *inst) // Clear negative
 {
 }
 
-int CCC() // ???
+int CCC(instruction *inst) // ???
 {
 }
 
-int SEC() // Set carry
+int SEC(instruction *inst) // Set carry
 {
 }
 
-int SEV() // Set overflow
+int SEV(instruction *inst) // Set overflow
 {
 }
 
-int SEZ() // Set zero
+int SEZ(instruction *inst) // Set zero
 {
 }
 
-int SEN() // Set negative
+int SEN(instruction *inst) // Set negative
 {
 }
 
-int SCC() // ???
+int SCC(instruction *inst) // ???
 {
 }

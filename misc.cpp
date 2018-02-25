@@ -1,41 +1,41 @@
 #include "header.h"
 
-int HALT() // Halt
+int HALT(instruction *inst) // Halt
 {
 }
 
-int WAIT() // Wait for interrupt
+int WAIT(instruction *inst) // Wait for interrupt
 {
 }
 
-int RESET() // Reset UNIBUS
+int RESET(instruction *inst) // Reset UNIBUS
 {
 }
 
-int MTPD() // Move to previous data space
+int MTPD(instruction *inst) // Move to previous data space
 {
 }
 
-int MTPI() // Move to previous instruction space
+int MTPI(instruction *inst) // Move to previous instruction space
 {
 }
 
-int MFPD() // Move from previous data space
+int MFPD(instruction *inst) // Move from previous data space
 {
 }
 
-int MFPI() // Move from previous instruction space
+int MFPI(instruction *inst) // Move from previous instruction space
 {
 }
 
-int MTPS() // Move byte to processor status word
+int MTPS(instruction *inst) // Move byte to processor status word
 {
 }
 
-int MFPS() // Move byte from processor status word
+int MFPS(instruction *inst) // Move byte from processor status word
 {
 }
 
-int MFPT() // Move from processor type
+int MFPT(instruction *inst) // Move from processor type
 {
 }

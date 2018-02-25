@@ -1,17 +1,17 @@
 #include "header.h"
 
-int JMP() // Jump
+int JMP(instruction *inst) // Jump
 {
 }
 
-int JSR() // Jump to subroutine
+int JSR(instruction *inst) // Jump to subroutine
 {
 }
 
-int RTS() // Return from subroutine
+int RTS(instruction *inst) // Return from subroutine
 {
 }
 
-int MARK() // Facilitates stack clean-up procedures
+int MARK(instruction *inst) // Facilitates stack clean-up procedures
 {
 }

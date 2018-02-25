@@ -146,7 +146,7 @@ int SCC(); // Set Condition Codes
 
 // Parsing functions
 
-struct instruction {
+typedef struct {
   u16_t opCode;
   enum byteMode;
   enum instructionType; //Double operand, single operand, conditional jump, shit like that.
@@ -162,7 +162,7 @@ struct instruction {
   int Z;
   int V;
   int C;
-};
+}instruction;
 
 // BETTER NAMES MAX
 const unsigned char maskRelevantBits = 0x78A0;

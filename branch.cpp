@@ -1,75 +1,75 @@
 #include "header.h"
 
 // Branch
-int BR() // Branch unconditional
+int BR(instruction *inst) // Branch unconditional
 {
 }
 
-int BNE() // Branch if not equal (to zero)
+int BNE(instruction *inst) // Branch if not equal (to zero)
 {
 }
 
-int BEQ() // Branch if equal (to zero)
+int BEQ(instruction *inst) // Branch if equal (to zero)
 {
 }
-int BPL() // Branch if plus
-{
-}
-
-int BMI() // Branch if minus
+int BPL(instruction *inst) // Branch if plus
 {
 }
 
-int BVC() // Branch if overflow is clear
+int BMI(instruction *inst) // Branch if minus
 {
 }
 
-int BVS() // Branch if overflow is set
+int BVC(instruction *inst) // Branch if overflow is clear
 {
 }
 
-int BCC() // Branch if carry is clear
+int BVS(instruction *inst) // Branch if overflow is set
 {
 }
 
-int BCS() // Branch if carry is set
+int BCC(instruction *inst) // Branch if carry is clear
+{
+}
+
+int BCS(instruction *inst) // Branch if carry is set
 {
 }
 
 // Signed Conditional Branch
-int BGE() // Branch if greater than or equal (to zero)
+int BGE(instruction *inst) // Branch if greater than or equal (to zero)
 {
 }
 
-int BLT() // Branch if less than (zero)
+int BLT(instruction *inst) // Branch if less than (zero)
 {
 }
 
-int BGT() // Branch if greater than (zero)
+int BGT(instruction *inst) // Branch if greater than (zero)
 {
 }
 
-int BLE() // Branch if less than or equal (to zero)
+int BLE(instruction *inst) // Branch if less than or equal (to zero)
 {
 }
 
-int SOB() // Subtract one and branch (if not = 0)
+int SOB(instruction *inst) // Subtract one and branch (if not = 0)
 {
 }
 
 // Unsigned Conditional Branch
-int BHI() // Branch if higher
+int BHI(instruction *inst) // Branch if higher
 {
 }
 
-int BLOS() // Branch if lower or same
+int BLOS(instruction *inst) // Branch if lower or same
 {
 }
 
-int BHIS() // Branch if higher or same
+int BHIS(instruction *inst) // Branch if higher or same
 {
 }
 
-int BLO() // Branch if lower
+int BLO(instruction *inst) // Branch if lower
 {
 }

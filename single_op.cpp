@@ -1,72 +1,72 @@
 #include "header.h"
 
 // General
-int CLR() // Clear (B)
+int CLR(instruction *inst) // Clear (B)
 {
 }
 
-int COM() // 1's Compliment (B)
+int COM(instruction *inst) // 1's Compliment (B)
 {
 }
 
-int INC() // Increment (B)
+int INC(instruction *inst) // Increment (B)
 {
 }
 
-int DEC() // Decrement (B)
+int DEC(instruction *inst) // Decrement (B)
 {
 }
 
-int NEG() // 2's Compliment negate (B)
+int NEG(instruction *inst) // 2's Compliment negate (B)
 {
 }
 
-int NOP() // No operation
+int NOP(instruction *inst) // No operation
 {
 }
 
-int TST() // Test (B)
+int TST(instruction *inst) // Test (B)
 {
 }
 
-int TSTSET() // Test, set low bit
+int TSTSET(instruction *inst) // Test, set low bit
 {
 }
 
-int WRTLCK() // Read/Lock destination, write/unlock R0 into destination
+int WRTLCK(instruction *inst) // Read/Lock destination, write/unlock R0 into destination
 {
 }
 
 // Shift & Rotate
-int ASR() // Arithmetic shift right (B)
+int ASR(instruction *inst) // Arithmetic shift right (B)
 {
 }
 
-int ASL() // Arithmetic shift left (B)
+int ASL(instruction *inst) // Arithmetic shift left (B)
 {
 }
 
-int ROR() // Rotate right (B)
+int ROR(instruction *inst) // Rotate right (B)
 {
 }
 
-int ROL() // Rotate left (B)
+int ROL(instruction *inst) // Rotate left (B)
 {
 }
 
-int SWAB() // Swap bytes
+int SWAB(instruction *inst) // Swap bytes
 {
 }
 
 // Multiple Precision
-int ADC() // Add carry (B)
+int ADC(instruction *inst) // Add carry (B)
 {
 }
 
-int SBC() // Subtract carry (B)
+int SBC(instruction *inst) // Subtract carry (B)
 {
 }
 
-int SXT() // Sign extend
+int SXT(instruction *inst) // Sign extend
 {
 }
