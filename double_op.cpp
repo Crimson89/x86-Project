@@ -73,14 +73,30 @@ int DIV(instruction *inst) // Divide
 // Logical
 int BIT(instruction *inst) // Bit test (B)
 {
+  int temp = inst->dest && inst->src;
+  inst->N = (temp < 0)? 1:0;
+  inst->Z = (temp == 0)? 1:0;
+  inst->V = 0;
+  return 0;
 }
 
 int BIC(instruction *inst) // Bit clear (B)
 {
+  inst->dest = ~(inst->src) && inst->dest;
+  inst->N = (inst->dest < 0)? 1:0;
+  inst->Z = (inst->dest == 0)? 1:0;
+  inst->V = 0;
+  return 0;
 }
 
 int BIS(instruction *inst) // Bit set (B)
 {
+{
+  inst->dest = inst->src || inst->dest;
+  inst->N = (inst->dest < 0)? 1:0;
+  inst->Z = (inst->dest == 0)? 1:0;
+  inst->V = 0;
+  return 0;
 }
 
 int XOR(instruction *inst) // Exclusive OR
