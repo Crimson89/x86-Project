@@ -29,7 +29,7 @@
 #define DECB   "105300" // Decrement (B)
 #define NEG    "005400" // 2's Compliment negate
 #define NEGB   "105400" // 2's Compliment negate (B)
-#define NOP    // No operation
+#define NOP    "000240" // No operation
 #define TST    "005700" // Test
 #define TSTB   "105700" // Test (B)
 #define TSTSET // Test, set low bit
@@ -113,11 +113,11 @@
 
 #define EMT    "104000" // Emulator trap
 #define TRAP   "104400" // Trap
-#define BPT    // Breakpoint trap
+#define BPT    "000003" // Breakpoint trap
 #define IOT    "000004" // Input/Output trap
 #define CSM    // Call to supervisor mode
 #define RTI    "000002" // Return from interrupt
-#define RTT    // Return from trap???
+#define RTT    "000002" // Return from trace trap (Same as RTI but supresses the immidialty-following trace trap)
 
 // MISC
 
@@ -138,9 +138,9 @@
 #define CLV   "000242" // Clear overflow
 #define CLZ   "000244" // Clear zero
 #define CLN   "000250" // Clear negative
-#define CCC   "000257" // Clear all
+#define CCC   "000257" // Clear all flags
 #define SEC   "000261" // Set carry
 #define SEV   "000262" // Set overflow
 #define SEZ   "000264" // Set zero
 #define SEN   "000270" // Set negative
-#define SCC   "000277" // Set all
+#define SCC   "000277" // Set all flags
