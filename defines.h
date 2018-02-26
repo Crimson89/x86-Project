@@ -1,7 +1,7 @@
 #define SILENT_MODE 1
 #define VERBOSE_MODE 2
 #define MEMORY_SPACE ( (1<<15) - (1<<12) )
-#define HALT 0x000000
+//#define HALT 0x000000 (why is this here?)
 #define R0_REG_INDEX 0
 #define R1_REG_INDEX 1
 #define R2_REG_INDEX 2
@@ -18,6 +18,7 @@
 
 // SINGLE OPERAND
 
+//TODO I think we need to add a leading 0 to some of these.
 // General
 #define CLR    "005000" // Clear
 #define CLRB   "105000" // Clear (B)

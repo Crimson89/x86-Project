@@ -146,31 +146,42 @@ int SCC(instruction *inst); // Set Condition Codes
 
 // Parsing functions
 
-typedef struct {
-  u16_t opCode;
-  enum byteMode;
-  enum instructionType; //Double operand, single operand, conditional jump, shit like that.
-  enum instructionFamily; // J, I, R?
-  enum addressingModeSrc;
-  enum addressingModeDest;
-  int reg;
-  int src;
-  int dest;
-  int offset;
-  enum set;
-  int N;
-  int Z;
-  int V;
-  int C;
-}instruction;
+//instructionType instructionFamily {singleOperand, doubleOperand}; // (? Probably not necessary) 
+ 
+enum addressingModeSrc {test1}; 
+ 
+enum addressingModeDest {test2}; 
+ 
+typedef struct {  
+  uint16_t opcode;  
+  uint16_t byteMode;  
+  //instructionFamily instructionType ; //Double operand, single operand, conditional jump, shit like that.  
+  //enum instructionFamily; // J, I, R? Not in PDP right?  
+  uint16_t addressingModeSrc;  
+  uint16_t addressingModeDest;  
+  uint16_t reg; // uint16_t? 
+  uint16_t src;  
+  uint16_t dest;  
+  uint16_t offset; 
+  uint16_t registerMode;  
+  bool SC;
+  bool N; // Something better than booleans?  
+  bool Z; 
+  bool V;  
+  bool C;  
+  uint16_t rtsR; // placeholder till I figure this out.
+}instruction;  
+  
+const unsigned char maskByteMode = 0x8000; 
+ 
+// BETTER NAMES MAX TODO double check these masks to see if they're doing what I want them to do.  
+const unsigned char maskRelevantBits = 0x78A0;  
+const unsigned char maskSingleCondBranchCondCheck = 0x7000; // (Maybe 0x7800)  
+const unsigned char maskSingle = 0x0800; // (Maybe 0x7800) 
+const unsigned char maskCondCheck = 0x00E0; // (Maybe 0xFF80) Else conditional branch  
+const unsigned char maskRegSource = 0x7000; // (Maybe 0x8000) Else double operand  
 
-// BETTER NAMES MAX
-const unsigned char maskRelevantBits = 0x78A0;
-const unsigned char maskSingleCondBranchCondCheck = 0x7000;
-const unsigned char maskSingle = 0x0800;
-const unsigned char maskCondCheck = 0x00E0; // Else conditional branch
-const unsigned char maskRegSource = 0x7000; // Else double operand
-
+//TODO change opcode stuff to match Julian's definitions (maybe in octal).
 // Assignment masks
 // Double-operand
 const unsigned char maskDoubleOpcode = 0x7000;
@@ -181,7 +192,7 @@ const unsigned char maskDoubleDest = 0x0007;
 
 // Double-operand register
 const unsigned char maskDoubleRegisterOpcode = 0x0700;
-const unsigned char maskDoubleRegister = 0x00C0;
+const unsigned char maskDoubleRegisterReg = 0x00C0;
 const unsigned char maskDoubleRegisterSourceDestMode = 0x0038;
 const unsigned char maskDoubleRegisterSourceDest = 0x0007;
 
@@ -196,7 +207,7 @@ const unsigned char maskCondBranchOffset = 0x00FF;
 
 // Conditional check
 const unsigned char maskCondCodeOpcode = 0xFFE0;
-const unsigned char maskCondsc = 0x0010;
+const unsigned char maskCondSC = 0x0010;
 const unsigned char maskCondN = 0x0008;
 const unsigned char maskCondZ = 0x0004;
 const unsigned char maskCondV = 0x0002;
@@ -205,5 +216,4 @@ const unsigned char maskCondC = 0x0001;
 // Byte mask
 const unsigned char maskByteInstruction = 0x8000;
 
-
-instruction parseType(u16_t opCode);
+int parseInstruction(uint16_t instructionCode, instruction* newInstruction);
