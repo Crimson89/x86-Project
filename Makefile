@@ -14,7 +14,7 @@ main: main.o
 main.o: main.cpp
 	g++ -g -std=c++11 -c main.cpp parse.cpp
 
-filenames := main.o parse.o unitTest.o RunMe.exe
+filenames := main.o parse.o unitTest.o RunMe.exe RunUnitTest.exe
 
 files := $(strip $(foreach f,$(filenames),$(wildcard $(f))))
 
