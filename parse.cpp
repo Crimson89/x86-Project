@@ -1,6 +1,6 @@
-#include <header.h>
+#include "header.h"
 
-instruction parseInstruction(uint16_t instructionCode, instruction* newInstruction)
+int parseInstruction(uint16_t instructionCode, instruction* newInstruction)
 {
   //instruction newInstruction;
     int placeholder; // will be error code. 
@@ -17,7 +17,7 @@ instruction parseInstruction(uint16_t instructionCode, instruction* newInstructi
        MARK, SOB, RTS, JSR, JMP
    */
 
-  uint16_t uniqueInstructions[10] = {0x0004, 0x8800, 0x8920, /*BPT,*/ 0x0000, 0x0001, 0x0002, 0x0005, /*RTT,*/ /*NOP*/}
+  /*uint16_t uniqueInstructions[10] = {0x0004, 0x8800, 0x8920, /*BPT, 0x0000, 0x0001, 0x0002, 0x0005, /*RTT, /*NOP}
 
   for (int i = 0; i < 10, i++)
   {
@@ -28,7 +28,7 @@ instruction parseInstruction(uint16_t instructionCode, instruction* newInstructi
       break;
     }
       
-  }
+  }*/
 
   // Check SOB (0 0 7) (TODO maybe double reg?)
   /*if ((instructionCode && 0xFE00) == 0x0E00)
@@ -43,14 +43,14 @@ instruction parseInstruction(uint16_t instructionCode, instruction* newInstructi
   }*/
   
   // Check RTS (0 0 0 2 0)
-  if ((instructionCode && 0xFFF8) == 0x0080)
+  /*if ((instructionCode && 0xFFF8) == 0x0080)
   {
     //TODO what is R?
-    newInstruction->opCode = instructionCode & 0xFF80;
+    newInstruction->opcode = instructionCode & 0xFF80;
     newInstruction->rtsR = instructionCode & 0x0007;
   }
   
-  /*// Check JSR (0 0 4) (maybe taken care of by single operand)
+  // Check JSR (0 0 4) (maybe taken care of by single operand)
   if ((instructionCode && 0xFE00) == 0x0800)
   {
 
@@ -72,9 +72,10 @@ instruction parseInstruction(uint16_t instructionCode, instruction* newInstructi
     {
       // Single operand
       newInstruction->opcode = instructionCode & maskSingleOpcode;
-      newInstruction->registerMode = instructionCode & maskSingleRegisterMode;
+      newInstruction->registerMode = instructionCode & maskSingleMode;
       newInstruction->reg = instructionCode & maskSingleRegister;
       newInstruction->byteMode = instructionCode & maskByteMode;
+      cout << "SINGLE " << "\n";
     }
     else
     {
@@ -88,12 +89,14 @@ instruction parseInstruction(uint16_t instructionCode, instruction* newInstructi
         newInstruction->Z = instructionCode & maskCondZ;
         newInstruction->V = instructionCode & maskCondV;
         newInstruction->C = instructionCode & maskCondC;
+        cout << "COND " << "\n";
       }
       else
       {
         //cond branch
         newInstruction->opcode = instructionCode & maskCondBranchOpcode;
         newInstruction->offset = instructionCode & maskCondBranchOffset;
+        cout << "COND BRANCH " << "\n";
       }
     } 
   }
@@ -109,7 +112,8 @@ instruction parseInstruction(uint16_t instructionCode, instruction* newInstructi
       newInstruction->src = instructionCode & maskDoubleRegisterSourceDest;
       newInstruction->dest = instructionCode & maskDoubleRegisterSourceDest;
       newInstruction->addressingModeSrc = instructionCode & maskDoubleRegisterSourceDestMode;
-      newInstruction->addressingModeDest = instructionCode & maskDoubleRegisterSrcDestMode;
+      newInstruction->addressingModeDest = instructionCode & maskDoubleRegisterSourceDestMode;
+      cout << "DOUBLE REG " << "\n";
     }
     else
     {
@@ -119,6 +123,7 @@ instruction parseInstruction(uint16_t instructionCode, instruction* newInstructi
       newInstruction->addressingModeSrc = instructionCode & maskDoubleSourceMode;
       newInstruction->dest = instructionCode & maskDoubleDest;
       newInstruction->addressingModeDest = instructionCode & maskDoubleDestMode;
+      cout << "DOUBLE" << "\n";
     }
   }
 

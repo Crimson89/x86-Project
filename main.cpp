@@ -17,6 +17,9 @@ uint16_t starting_pc;
 
 int main(int argc, char ** argv)
 {
+  //int test;
+  //test = parseTest();
+  
 	uint16_t operation;
 	int program_execution_control = 0;
 	SP = 0xFFFF; // Assign at start to invalid value, detection of unassigned SP
