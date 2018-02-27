@@ -20,128 +20,128 @@
 
 //TODO I think we need to add a leading 0 to some of these.
 // General
-#define CLR    "005000" // Clear
-#define CLRB   "105000" // Clear (B)
-#define COM    "005100" // 1's Compliment
-#define COMB   "105100" // 1's Compliment (B)
-#define INC    "005200" // Increment
-#define INCB   "105200" // Increment (B)
-#define DEC    "005300" // Decrement
-#define DECB   "105300" // Decrement (B)
-#define NEG    "005400" // 2's Compliment negate
-#define NEGB   "105400" // 2's Compliment negate (B)
-#define NOP    "000240" // No operation
-#define TST    "005700" // Test
-#define TSTB   "105700" // Test (B)
-#define TSTSET // Test, set low bit
-#define WRTLCK // Read/Lock destination, write/unlock R0 #defineo destination
+#define opCLR    005000 // Clear
+#define opCLRB   0105000 // Clear (B)
+#define opCOM    005100 // 1's Compliment
+#define opCOMB   0105100 // 1's Compliment (B)
+#define opINC    005200 // Increment
+#define opINCB   0105200 // Increment (B)
+#define opDEC    005300 // Decrement
+#define opDECB   0105300 // Decrement (B)
+#define opNEG    005400 // 2's Compliment negate
+#define opNEGB   0105400 // 2's Compliment negate (B)
+#define opNOP    000240 // No operation
+#define opTST    005700 // Test
+#define opTSTB   0105700 // Test (B)
+#define opTSTSET // Test, set low bit
+#define opWRTLCK // Read/Lock destination, write/unlock R0 #defineo destination
 
 // Shift & Rotate
-#define ASR    "006200" // Arithmetic shift right
-#define ASRB   "106200" // Arithmetic shift right (B)
-#define ASL    "006300" // Arithmetic shift left
-#define ASLB   "106300" // Arithmetic shift left (B)
-#define ROR    "006000" // Rotate right
-#define RORB   "106000" // Rotate right (B)
-#define ROL    "006100" // Rotate left
-#define ROLB   "106100" // Rotate left (B)
-#define SWAB   "000300" // Swap bytes
+#define opASR    006200 // Arithmetic shift right
+#define opASRB   0106200 // Arithmetic shift right (B)
+#define opASL    006300 // Arithmetic shift left
+#define opASLB   0106300 // Arithmetic shift left (B)
+#define opROR    006000 // Rotate right
+#define opRORB   0106000 // Rotate right (B)
+#define opROL    006100 // Rotate left
+#define opROLB   0106100 // Rotate left (B)
+#define opSWAB   000300 // Swap bytes
 
 // Multiple Precision
-#define ADC    "005500" // Add carry
-#define ADCB   "105500" // Add carry (B)
-#define SBC    "005600" // Subtract carry
-#define SBCB   "105600" // Subtract carry (B)
-#define SXT    "006700" // Sign extend
+#define opADC    005500 // Add carry
+#define opADCB   0105500 // Add carry (B)
+#define opSBC    005600 // Subtract carry
+#define opSBCB   0105600 // Subtract carry (B)
+#define opSXT    006700 // Sign extend
 
 // DOUBLE OPERAND
 
 // General
-#define MOV    "010000" // Move source to destination
-#define MOVB   "110000" // Move source to destination (B)
-#define ADD    "060000" // Add source to destination
-#define SUB    "160000" // Subtract source from destination
-#define CMP    "020000" // Compare source to destination
-#define CMPB   "120000" // Compare source to destination (B)
-#define ASH    "072000" // Shift arithmetically
-#define ASHC   "073000"// Arithmetic shift combined
-#define MUL    "070000" // Multiply
-#define DIV    "071000" // Divide
+#define opMOV    010000 // Move source to destination
+#define opMOVB   0110000 // Move source to destination (B)
+#define opADD    060000 // Add source to destination
+#define opSUB    0160000 // Subtract source from destination
+#define opCMP    020000 // Compare source to destination
+#define opCMPB   0120000 // Compare source to destination (B)
+#define opASH    072000 // Shift arithmetically
+#define opASHC   073000// Arithmetic shift combined
+#define opMUL    070000 // Multiply
+#define opDIV    071000 // Divide
 
 // Logical
-#define BIT    "030000" // Bit test
-#define BITB   "130000" // Bit test (B)
-#define BIC    "040000" // Bit clear
-#define BICB   "140000" // Bit clear (B)
-#define BIS    "050000" // Bit set
-#define BISB   "150000" // Bit set (B)
-#define XOR    "074000" // Exclusive OR
+#define opBIT    030000 // Bit test
+#define opBITB   0130000 // Bit test (B)
+#define opBIC    040000 // Bit clear
+#define opBICB   0140000 // Bit clear (B)
+#define opBIS    050000 // Bit set
+#define opBISB   0150000 // Bit set (B)
+#define opXOR    074000 // Exclusive OR
 
 // BRANCH
 
 // Branch
-#define BR     "000400" // Branch unconditional
-#define BNE    "001000" // Branch if not equal (to zero)
-#define BEQ    "001400" // Branch if equal (to zero)
-#define BPL    "100000" // Branch if plus
-#define BMI    "100400" // Branch if minus
-#define BVC    "102000" // Branch if overflow is clear
-#define BVS    "102400" // Branch if overflow is set
-#define BCC    "103000" // Branch if carry is clear
-#define BCS    "103400" // Branch if carry is set
+#define opBR     000400 // Branch unconditional
+#define opBNE    001000 // Branch if not equal (to zero)
+#define opBEQ    001400 // Branch if equal (to zero)
+#define opBPL    0100000 // Branch if plus
+#define opBMI    0100400 // Branch if minus
+#define opBVC    0102000 // Branch if overflow is clear
+#define opBVS    0102400 // Branch if overflow is set
+#define opBCC    0103000 // Branch if carry is clear
+#define opBCS    0103400 // Branch if carry is set
 
 // Signed Conditional Branch
-#define BGE    "002000" // Branch if greater than or equal (to zero)
-#define BLT    "002400" // Branch if less than (zero)
-#define BGT    "003000" // Branch if greater than (zero)
-#define BLE    "003400" // Branch if less than or equal (to zero)
-#define SOB    "077000" // Subtract one and branch (if not = 0)
+#define opBGE    002000 // Branch if greater than or equal (to zero)
+#define opBLT    002400 // Branch if less than (zero)
+#define opBGT    003000 // Branch if greater than (zero)
+#define opBLE    003400 // Branch if less than or equal (to zero)
+#define opSOB    077000 // Subtract one and branch (if not = 0)
 
 // Unsigned Conditional Branch
-#define BHI    "101000" // Branch if higher
-#define BLOS   "101400" // Branch if lower or same
-#define BHIS   "103000" // Branch if higher or same (same as BCC)
-#define BLO    "103400" // Branch if lower (same as BCS)
+#define opBHI    0101000 // Branch if higher
+#define opBLOS   0101400 // Branch if lower or same
+#define opBHIS   0103000 // Branch if higher or same (same as BCC)
+#define opBLO    0103400 // Branch if lower (same as BCS)
 
 // JUMP & SUBROUTINE
 
-#define JMP    "000100" // Jump
-#define JSR    "004000" // Jump to subroutine
-#define RTS    "000200" // Return from subroutine
-#define MARK   "006400" // Facilitates stack clean-up procedures
+#define opJMP    000100 // Jump
+#define opJSR    004000 // Jump to subroutine
+#define opRTS    000200 // Return from subroutine
+#define opMARK   006400 // Facilitates stack clean-up procedures
 
 // TRAPS & INTERRUPTS
 
-#define EMT    "104000" // Emulator trap
-#define TRAP   "104400" // Trap
-#define BPT    "000003" // Breakpoint trap
-#define IOT    "000004" // Input/Output trap
-#define CSM    // Call to supervisor mode
-#define RTI    "000002" // Return from interrupt
-#define RTT    "000002" // Return from trace trap (Same as RTI but supresses the immidialty-following trace trap)
+#define opEMT    0104000 // Emulator trap
+#define opTRAP   0104400 // Trap
+#define opBPT    000003 // Breakpoint trap
+#define opIOT    000004 // Input/Output trap
+#define opCSM    // Call to supervisor mode
+#define opRTI    000002 // Return from interrupt
+#define opRTT    000002 // Return from trace trap (Same as RTI but supresses the immidialty-following trace trap)
 
 // MISC
 
-#define HALT   "000000" // Halt
-#define WAIT   "000001" // Wait for interrupt
-#define RESET  "000005" // Reset UNIBUS
-#define MTPD   "106600" // Move to previous data space
-#define MTPI   "006600" // Move to previous instruction space
-#define MFPD   "106500" // Move from previous data space
-#define MFPI   "006500" // Move from previous instruction space
-#define MTPS   "106400" // Move byte to processor status word
-#define MFPS   "106700" // Move byte from processor status word
-#define MFPT   // Move from processor type
+#define opHALT   000000 // Halt
+#define opWAIT   000001 // Wait for interrupt
+#define opRESET  000005 // Reset UNIBUS
+#define opMTPD   0106600 // Move to previous data space
+#define opMTPI   006600 // Move to previous instruction space
+#define opMFPD   0106500 // Move from previous data space
+#define opMFPI   006500 // Move from previous instruction space
+#define opMTPS   0106400 // Move byte to processor status word
+#define opMFPS   0106700 // Move byte from processor status word
+#define opMFPT   // Move from processor type
 
 // CONDITION CODES
 
-#define CLC   "000241" // Clear carry
-#define CLV   "000242" // Clear overflow
-#define CLZ   "000244" // Clear zero
-#define CLN   "000250" // Clear negative
-#define CCC   "000257" // Clear all flags
-#define SEC   "000261" // Set carry
-#define SEV   "000262" // Set overflow
-#define SEZ   "000264" // Set zero
-#define SEN   "000270" // Set negative
-#define SCC   "000277" // Set all flags
+#define opCLC   000241 // Clear carry
+#define opCLV   000242 // Clear overflow
+#define opCLZ   000244 // Clear zero
+#define opCLN   000250 // Clear negative
+#define opCCC   000257 // Clear all flags
+#define opSEC   000261 // Set carry
+#define opSEV   000262 // Set overflow
+#define opSEZ   000264 // Set zero
+#define opSEN   000270 // Set negative
+#define opSCC   000277 // Set all flags

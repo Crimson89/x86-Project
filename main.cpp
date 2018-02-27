@@ -51,8 +51,8 @@ int main(int argc, char ** argv)
 				print_all_registers();
 				cout << "All valid memory contents:" <<endl;
 				print_all_memory();
-				operation = HALT;
-				if(operation == HALT)
+				operation = opHALT;
+				if(operation == opHALT)
 					program_execution_control = PRINT_MENU;
 			}
 			cout << "-------------------------------------------------------------------------" <<endl;
