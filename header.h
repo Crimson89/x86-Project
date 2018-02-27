@@ -14,6 +14,31 @@
 
 using namespace std;
 
+//instructionType instructionFamily {singleOperand, doubleOperand}; // (? Probably not necessary) 
+ 
+enum addressingModeSrc {test1}; 
+ 
+enum addressingModeDest {test2}; 
+ 
+typedef struct {  
+  uint16_t opcode;  
+  uint16_t byteMode;  
+  //instructionFamily instructionType ; //Double operand, single operand, conditional jump, shit like that.  
+  //enum instructionFamily; // J, I, R? Not in PDP right?  
+  uint16_t addressingModeSrc;  
+  uint16_t addressingModeDest;  
+  uint16_t reg; // uint16_t? 
+  uint16_t src;  
+  uint16_t dest;  
+  uint16_t offset; 
+  uint16_t registerMode;  
+  bool SC;
+  bool N; // Something better than booleans?  
+  bool Z; 
+  bool V;  
+  bool C;  
+  uint16_t rtsR; // placeholder till I figure this out.
+}instruction;  
 
 // MAIN functions
 int loadData(int argc, char ** argv);
@@ -146,74 +171,49 @@ int SCC(instruction *inst); // Set Condition Codes
 
 // Parsing functions
 
-//instructionType instructionFamily {singleOperand, doubleOperand}; // (? Probably not necessary) 
- 
-enum addressingModeSrc {test1}; 
- 
-enum addressingModeDest {test2}; 
- 
-typedef struct {  
-  uint16_t opcode;  
-  uint16_t byteMode;  
-  //instructionFamily instructionType ; //Double operand, single operand, conditional jump, shit like that.  
-  //enum instructionFamily; // J, I, R? Not in PDP right?  
-  uint16_t addressingModeSrc;  
-  uint16_t addressingModeDest;  
-  uint16_t reg; // uint16_t? 
-  uint16_t src;  
-  uint16_t dest;  
-  uint16_t offset; 
-  uint16_t registerMode;  
-  bool SC;
-  bool N; // Something better than booleans?  
-  bool Z; 
-  bool V;  
-  bool C;  
-  uint16_t rtsR; // placeholder till I figure this out.
-}instruction;  
   
-const unsigned char maskByteMode = 0x8000; 
+const uint16_t maskByteMode = 0x8000; 
  
 // BETTER NAMES MAX TODO double check these masks to see if they're doing what I want them to do.  
-const unsigned char maskRelevantBits = 0x78A0;  
-const unsigned char maskSingleCondBranchCondCheck = 0x7000; // (Maybe 0x7800)  
-const unsigned char maskSingle = 0x0800; // (Maybe 0x7800) 
-const unsigned char maskCondCheck = 0x00E0; // (Maybe 0xFF80) Else conditional branch  
-const unsigned char maskRegSource = 0x7000; // (Maybe 0x8000) Else double operand  
+const uint16_t maskRelevantBits = 0x78A0;  
+const uint16_t maskSingleCondBranchCondCheck = 0x7000; // (Maybe 0x7800)  
+const uint16_t maskSingle = 0x0800; // (Maybe 0x7800) 
+const uint16_t maskCondCheck = 0x00E0; // (Maybe 0xFF80) Else conditional branch  
+const uint16_t maskRegSource = 0x7000; // (Maybe 0x8000) Else double operand  
 
 //TODO change opcode stuff to match Julian's definitions (maybe in octal).
 // Assignment masks
 // Double-operand
-const unsigned char maskDoubleOpcode = 0x7000;
-const unsigned char maskDoubleSourceMode = 0x0E00;
-const unsigned char maskDoubleSource = 0x01C0;
-const unsigned char maskDoubleDestMode = 0x0038;
-const unsigned char maskDoubleDest = 0x0007;
+const uint16_t maskDoubleOpcode = 0x7000;
+const uint16_t maskDoubleSourceMode = 0x0E00;
+const uint16_t maskDoubleSource = 0x01C0;
+const uint16_t maskDoubleDestMode = 0x0038;
+const uint16_t maskDoubleDest = 0x0007;
 
 // Double-operand register
-const unsigned char maskDoubleRegisterOpcode = 0x0700;
-const unsigned char maskDoubleRegisterReg = 0x00C0;
-const unsigned char maskDoubleRegisterSourceDestMode = 0x0038;
-const unsigned char maskDoubleRegisterSourceDest = 0x0007;
+const uint16_t maskDoubleRegisterOpcode = 0x0700;
+const uint16_t maskDoubleRegisterReg = 0x00C0;
+const uint16_t maskDoubleRegisterSourceDestMode = 0x0038;
+const uint16_t maskDoubleRegisterSourceDest = 0x0007;
 
 // Single-operand
-const unsigned char maskSingleOpcode = 0x0730;
-const unsigned char maskSingleMode = 0x0038;
-const unsigned char maskSingleRegister = 0x0007;
+const uint16_t maskSingleOpcode = 0x0730;
+const uint16_t maskSingleMode = 0x0038;
+const uint16_t maskSingleRegister = 0x0007;
 
 // Conditional branch
-const unsigned char maskCondBranchOpcode = 0x0700;
-const unsigned char maskCondBranchOffset = 0x00FF;
+const uint16_t maskCondBranchOpcode = 0x0700;
+const uint16_t maskCondBranchOffset = 0x00FF;
 
 // Conditional check
-const unsigned char maskCondCodeOpcode = 0xFFE0;
-const unsigned char maskCondSC = 0x0010;
-const unsigned char maskCondN = 0x0008;
-const unsigned char maskCondZ = 0x0004;
-const unsigned char maskCondV = 0x0002;
-const unsigned char maskCondC = 0x0001;
+const uint16_t maskCondCodeOpcode = 0xFFE0;
+const uint16_t maskCondSC = 0x0010;
+const uint16_t maskCondN = 0x0008;
+const uint16_t maskCondZ = 0x0004;
+const uint16_t maskCondV = 0x0002;
+const uint16_t maskCondC = 0x0001;
 
 // Byte mask
-const unsigned char maskByteInstruction = 0x8000;
+const uint16_t maskByteInstruction = 0x8000;
 
 int parseInstruction(uint16_t instructionCode, instruction* newInstruction);
