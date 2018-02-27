@@ -51,8 +51,8 @@ int main(int argc, char ** argv)
 				print_all_registers();
 				cout << "All valid memory contents:" <<endl;
 				print_all_memory();
-				operation = opHALT;
-				if(operation == opHALT)
+				operation = m_HALT;
+				if(operation == m_HALT)
 					program_execution_control = PRINT_MENU;
 			}
 			cout << "-------------------------------------------------------------------------" <<endl;
@@ -301,6 +301,7 @@ int loadData(int argc, char ** argv){
 		cin.get();	//Wait for ENTER key press
 		exit(EXIT_FAILURE);
 	}
+	cout << "\n" << fileName << "\n";
 	return_val = readData(fileName);
 	return return_val;
 }
