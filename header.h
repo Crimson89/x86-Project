@@ -13,6 +13,12 @@
 #include "defines.h"
 
 using namespace std;
+
+//instructionType instructionFamily {singleOperand, doubleOperand}; // (? Probably not necessary) 
+ 
+enum addressingModeSrc {test1}; 
+ 
+enum addressingModeDest {test2}; 
  
 typedef struct {  
   uint16_t opcode;  
@@ -167,11 +173,11 @@ int SCC(instruction *inst); // Set Condition Codes
 
 //instructionType instructionFamily {singleOperand, doubleOperand}; // (? Probably not necessary) 
  
-enum addressingModeSrc {test1}; 
+//enum addressingModeSrc {test1}; 
  
-enum addressingModeDest {test2}; 
+//enum addressingModeDest {test2}; 
 
-  
+/*
 const unsigned char maskByteMode = 0100000;//0x8000; 
  
 // BETTER NAMES MAX TODO double check these masks to see if they're doing what I want them to do.  
@@ -180,6 +186,14 @@ const unsigned char maskSingleCondBranchCondCheck = 0074000;//0x7000; // (Maybe 
 const unsigned char maskSingle = 0074000;//0x0800; // (Maybe 0x7800) 
 const unsigned char maskCondCheck = 0177600;//0x00E0; // (Maybe 0xFF80) Else conditional branch  
 const unsigned char maskRegSource = 0100000;// 0x7000; // (Maybe 0x8000) Else double operand  
+const uint16_t maskByteMode = 0x8000; 
+ 
+// BETTER NAMES MAX TODO double check these masks to see if they're doing what I want them to do.  
+const uint16_t maskRelevantBits = 0x78A0;  
+const uint16_t maskSingleCondBranchCondCheck = 0x7000; // (Maybe 0x7800)  
+const uint16_t maskSingle = 0x0800; // (Maybe 0x7800) 
+const uint16_t maskCondCheck = 0x00E0; // (Maybe 0xFF80) Else conditional branch  
+const uint16_t maskRegSource = 0x7000; // (Maybe 0x8000) Else double operand  
 
 // Assignment masks
 // Double-operand
@@ -214,5 +228,38 @@ const unsigned char maskCondC = 0000001;//0x0001;
 
 // Byte mask
 const unsigned char maskByteInstruction = 0100000;//0x8000;
+*/
+
+const uint16_t maskDoubleOpcode = 0x7000;
+const uint16_t maskDoubleSourceMode = 0x0E00;
+const uint16_t maskDoubleSource = 0x01C0;
+const uint16_t maskDoubleDestMode = 0x0038;
+const uint16_t maskDoubleDest = 0x0007;
+
+// Double-operand register
+const uint16_t maskDoubleRegisterOpcode = 0x0700;
+const uint16_t maskDoubleRegisterReg = 0x00C0;
+const uint16_t maskDoubleRegisterSourceDestMode = 0x0038;
+const uint16_t maskDoubleRegisterSourceDest = 0x0007;
+
+// Single-operand
+const uint16_t maskSingleOpcode = 0x0730;
+const uint16_t maskSingleMode = 0x0038;
+const uint16_t maskSingleRegister = 0x0007;
+
+// Conditional branch
+const uint16_t maskCondBranchOpcode = 0x0700;
+const uint16_t maskCondBranchOffset = 0x00FF;
+
+// Conditional check
+const uint16_t maskCondCodeOpcode = 0xFFE0;
+const uint16_t maskCondSC = 0x0010;
+const uint16_t maskCondN = 0x0008;
+const uint16_t maskCondZ = 0x0004;
+const uint16_t maskCondV = 0x0002;
+const uint16_t maskCondC = 0x0001;
+
+// Byte mask
+const uint16_t maskByteInstruction = 0x8000;
 
 int parseInstruction(uint16_t instructionCode, instruction* newInstruction);
