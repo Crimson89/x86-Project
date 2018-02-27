@@ -65,10 +65,10 @@ int parseInstruction(uint16_t instructionCode, instruction* newInstruction)
   uint16_t relevantBits = instructionCode & maskRelevantBits;
   uint16_t bitPattern = relevantBits & maskSingleCondBranchCondCheck;
 
-  if (bitPattern == 0x0000) // Define constans for these maybe.
+  if (bitPattern == 0000000) // Define constans for these maybe.
   {
     bitPattern = relevantBits & maskSingle;
-    if (bitPattern == 0x0800)
+    if (bitPattern == 0004000)
     {
       // Single operand
       newInstruction->opcode = instructionCode & maskSingleOpcode;
@@ -80,7 +80,7 @@ int parseInstruction(uint16_t instructionCode, instruction* newInstruction)
     else
     {
       bitPattern = relevantBits & maskCondCheck;
-      if (bitPattern == 0x00A0)
+      if ((bitPattern == 0000240) || (bitPattern == 0000260))
       {
         // cond check
         newInstruction->opcode = instructionCode & maskCondCodeOpcode;
@@ -103,7 +103,7 @@ int parseInstruction(uint16_t instructionCode, instruction* newInstruction)
   else
   {
     bitPattern = relevantBits & maskRegSource;
-    if (bitPattern == 0x7000)
+    if (bitPattern == 0070000)
     {
       // register source double operand
       newInstruction->opcode = instructionCode & maskDoubleRegisterOpcode;

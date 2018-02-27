@@ -20,8 +20,8 @@ int parseTest()
   int error = 0;
   //uint16_t instructionArray[numInstructions] = {000573, 010573, 0005173, 0105173, 0005273}; // Oh boy, this is gonna be fun. Stopped at INCB
 
-  //                                           MOV       MUL      CLR      BEQ      NOP
-  uint16_t instructionArray[numInstructions] = {0014152, 0070341, 0005043, 0001466, 0000240};
+  //                                           MOV       DIV      CLR      BEQ      NOP
+  uint16_t instructionArray[numInstructions] = {0014152, 0071341, 0005043, 0001466, 0000240};
 
   instruction newInstruction;
 

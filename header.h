@@ -170,11 +170,12 @@ int SCC(instruction *inst); // Set Condition Codes
 const uint16_t maskByteMode = 0100000;//0x8000; 
  
 // BETTER NAMES MAX TODO double check these masks to see if they're doing what I want them to do.  
-const uint16_t maskRelevantBits = 0074240;//0x78A0;  
-const uint16_t maskSingleCondBranchCondCheck = 0074000;//0x7000; // (Maybe 0x7800)  
+const uint16_t maskRelevantBits = 0177777;//0x78A0;  
+//const uint16_t maskRelevantBits2 = 0070000;
+const uint16_t maskSingleCondBranchCondCheck = 0070000;//0x7000; // (Maybe 0x7800)  
 const uint16_t maskSingle = 0074000;//0x0800; // (Maybe 0x7800) 
-const uint16_t maskCondCheck = 0177600;//0x00E0; // (Maybe 0xFF80) Else conditional branch  
-const uint16_t maskRegSource = 0100000;// 0x7000; // (Maybe 0x8000) Else double operand  
+const uint16_t maskCondCheck = 0077760;//0x00E0; // (Maybe 0xFF80) Else conditional branch  
+const uint16_t maskRegSource = 0070000;// 0x7000; // (Maybe 0x8000) Else double operand  
 
 // Assignment masks
 // Double-operand
@@ -191,7 +192,7 @@ const uint16_t maskDoubleRegisterSourceDestMode = 0000070;//0x0038;
 const uint16_t maskDoubleRegisterSourceDest = 0000007;//0x0007;
 
 // Single-operand
-const uint16_t maskSingleOpcode = 0003460;//0x0730;
+const uint16_t maskSingleOpcode = 0003700;//0x0730;
 const uint16_t maskSingleMode = 0000070;//0x0038;
 const uint16_t maskSingleRegister = 0000007;//0x0007;
 
