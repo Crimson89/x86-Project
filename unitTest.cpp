@@ -1,5 +1,16 @@
 #include "header.h"
 
+int main()
+{
+  int result = 0;
+
+  result = parseTest();
+
+  return 1;
+}
+
+
+
 int parseTest()
 {
 
