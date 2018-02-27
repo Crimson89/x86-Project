@@ -19,60 +19,60 @@
 // SINGLE OPERAND
 
 // General
-#define m_CLR    005000 // Clear
+#define m_CLR    0005000 // Clear
 #define m_CLRB   0105000 // Clear (B)
-#define m_COM    005100 // 1's Compliment
+#define m_COM    0005100 // 1's Compliment
 #define m_COMB   0105100 // 1's Compliment (B)
-#define m_INC    005200 // Increment
+#define m_INC    0005200 // Increment
 #define m_INCB   0105200 // Increment (B)
-#define m_DEC    005300 // Decrement
+#define m_DEC    0005300 // Decrement
 #define m_DECB   0105300 // Decrement (B)
-#define m_NEG    005400 // 2's Compliment negate
+#define m_NEG    0005400 // 2's Compliment negate
 #define m_NEGB   0105400 // 2's Compliment negate (B)
-#define m_NOP    000240 // No operation
-#define m_TST    005700 // Test
+#define m_NOP    0000240 // No operation
+#define m_TST    0005700 // Test
 #define m_TSTB   0105700 // Test (B)
 #define m_TSTSET // Test, set low bit
 #define m_WRTLCK // Read/Lock destination, write/unlock R0 #defineo destination
 
 // Shift & Rotate
-#define m_ASR    006200 // Arithmetic shift right
+#define m_ASR    0006200 // Arithmetic shift right
 #define m_ASRB   0106200 // Arithmetic shift right (B)
-#define m_ASL    006300 // Arithmetic shift left
+#define m_ASL    0006300 // Arithmetic shift left
 #define m_ASLB   0106300 // Arithmetic shift left (B)
-#define m_ROR    006000 // Rotate right
+#define m_ROR    0006000 // Rotate right
 #define m_RORB   0106000 // Rotate right (B)
-#define m_ROL    006100 // Rotate left
+#define m_ROL    0006100 // Rotate left
 #define m_ROLB   0106100 // Rotate left (B)
-#define m_SWAB   000300 // Swap bytes
+#define m_SWAB   0000300 // Swap bytes
 
 // Multiple Precision
-#define m_ADC    005500 // Add carry
+#define m_ADC    0005500 // Add carry
 #define m_ADCB   0105500 // Add carry (B)
-#define m_SBC    005600 // Subtract carry
+#define m_SBC    0005600 // Subtract carry
 #define m_SBCB   0105600 // Subtract carry (B)
-#define m_SXT    006700 // Sign extend
+#define m_SXT    0006700 // Sign extend
 
 // DOUBLE OPERAND
 
 // Logical
-#define m_BIT    030000 // Bit test
+#define m_BIT    0030000 // Bit test
 #define m_BITB   0130000 // Bit test (B)
-#define m_BIC    040000 // Bit clear
+#define m_BIC    0040000 // Bit clear
 #define m_BICB   0140000 // Bit clear (B)
-#define m_BIS    050000 // Bit set
+#define m_BIS    0050000 // Bit set
 #define m_BISB   0150000 // Bit set (B)
-#define m_XOR    074000 // Exclusive OR
-#define m_MOV    010000 // Move source to destination
-#define m_MOVB   110000 // Move source to destination (B)
-#define m_ADD    060000 // Add source to destination
-#define m_SUB    160000 // Subtract source from destination
-#define m_CMP    020000 // Compare source to destination
-#define m_CMPB   120000 // Compare source to destination (B)
-#define m_ASH    072000 // Shift arithmetically
-#define m_ASHC   073000// Arithmetic shift combined
-#define m_MUL    070000 // Multiply
-#define m_DIV    071000 // Divide
+#define m_XOR    0074000 // Exclusive OR
+#define m_MOV    0010000 // Move source to destination
+#define m_MOVB   0110000 // Move source to destination (B)
+#define m_ADD    0060000 // Add source to destination
+#define m_SUB    0160000 // Subtract source from destination
+#define m_CMP    0020000 // Compare source to destination
+#define m_CMPB   0120000 // Compare source to destination (B)
+#define m_ASH    0072000 // Shift arithmetically
+#define m_ASHC   0073000// Arithmetic shift combined
+#define m_MUL    0070000 // Multiply
+#define m_DIV    0071000 // Divide
 
 // BRANCH
 

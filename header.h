@@ -16,10 +16,6 @@ using namespace std;
 
 //instructionType instructionFamily {singleOperand, doubleOperand}; // (? Probably not necessary) 
  
-enum addressingModeSrc {test1}; 
- 
-enum addressingModeDest {test2}; 
- 
 typedef struct {  
   uint16_t opcode;  
   uint16_t byteMode;  
@@ -171,13 +167,6 @@ int SCC(instruction *inst); // Set Condition Codes
 
 // Parsing functions
 
-//instructionType instructionFamily {singleOperand, doubleOperand}; // (? Probably not necessary) 
- 
-//enum addressingModeSrc {test1}; 
- 
-//enum addressingModeDest {test2}; 
-
-  
 const uint16_t maskByteMode = 0100000;//0x8000; 
  
 // BETTER NAMES MAX TODO double check these masks to see if they're doing what I want them to do.  
@@ -217,41 +206,6 @@ const uint16_t maskCondN = 0000010;//0x0008;
 const uint16_t maskCondZ = 0000004;//0x0004;
 const uint16_t maskCondV = 0000002;//0x0002;
 const uint16_t maskCondC = 0000001;//0x0001;
-
-// Byte mask
-const uint16_t maskByteInstruction = 0100000;//0x8000;
-
-const uint16_t maskDoubleOpcode = 0x7000;
-const uint16_t maskDoubleSourceMode = 0x0E00;
-const uint16_t maskDoubleSource = 0x01C0;
-const uint16_t maskDoubleDestMode = 0x0038;
-const uint16_t maskDoubleDest = 0x0007;
-
-// Double-operand register
-const uint16_t maskDoubleRegisterOpcode = 0x0700;
-const uint16_t maskDoubleRegisterReg = 0x00C0;
-const uint16_t maskDoubleRegisterSourceDestMode = 0x0038;
-const uint16_t maskDoubleRegisterSourceDest = 0x0007;
-
-// Single-operand
-const uint16_t maskSingleOpcode = 0x0730;
-const uint16_t maskSingleMode = 0x0038;
-const uint16_t maskSingleRegister = 0x0007;
-
-// Conditional branch
-const uint16_t maskCondBranchOpcode = 0x0700;
-const uint16_t maskCondBranchOffset = 0x00FF;
-
-// Conditional check
-const uint16_t maskCondCodeOpcode = 0xFFE0;
-const uint16_t maskCondSC = 0x0010;
-const uint16_t maskCondN = 0x0008;
-const uint16_t maskCondZ = 0x0004;
-const uint16_t maskCondV = 0x0002;
-const uint16_t maskCondC = 0x0001;
-
-// Byte mask
-const uint16_t maskByteInstruction = 0x8000;
 
 int parseInstruction(uint16_t instructionCode, instruction* newInstruction);
 
