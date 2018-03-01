@@ -27,12 +27,17 @@ typedef struct {
   uint16_t src;  
   uint16_t dest;  
   uint16_t offset; 
-  uint16_t registerMode;  
-  bool SC;
-  bool N; // Something better than booleans?  
-  bool Z; 
-  bool V;  
-  bool C;  
+	uint16_t registerMode;  
+	union {
+		struct {
+			int SC: 3;
+			int N: 1;
+			int Z: 1;
+			int V: 1;
+			int C: 1;
+		};
+		uint8_t PSW; // Processor Status Word
+	};
   uint16_t rtsR; // placeholder till I figure this out.
 }instruction;  
 
@@ -50,6 +55,10 @@ void print_address_at_index(int index);
 void print_all_memory(void);
 void print_all_registers(void);
 void initializeMemory(void);
+
+// Utility functions
+int loadOperands();
+int storeOperands();
 
 
 // SINGLE OPERAND

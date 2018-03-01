@@ -26,6 +26,10 @@ int main(int argc, char ** argv)
 	PC = 0xFFFF; // Assign at start to invalid value, detection of unassigned PC
 	starting_pc = PC;
 	initializeMemory();
+	int err;							// error checking
+	uint16_t instruction_code;			// 16-bit instruction
+	instruction current_instruction;	// decoded instruction information
+	
 	for(;;){
 		program_execution_control = menu_function();
 		if(program_execution_control == LOAD_DATA) {
@@ -33,28 +37,47 @@ int main(int argc, char ** argv)
 			program_execution_control = PRINT_MENU;
 		}
 		else if((program_execution_control == RUN_PROGRAM) && (PC != 0xFFFF)) {
+			cin.ignore(numeric_limits<streamsize>::max(), '\n');
+			cout << "                     Press ENTER to begin program" << endl;
+			cout << "-------------------------------------------------------------------------" <<endl;
+			cin.get();
+			cout << "                            Executing program" <<endl;
+			cout << "-------------------------------------------------------------------------" <<endl;
+			cout << "-------------------------------------------------------------------------" <<endl;
+			cout << "Assigning registers R0 to R5 with data from memory locations MEM[2] to MEM[7]" <<endl;
+			R0 = MEM[2];
+			R1 = MEM[3];
+			R2 = MEM[4];
+			R3 = MEM[5];
+			R4 = MEM[6];
+			R5 = MEM[7];
+			cout << "Set SP to memory index 18 (Octal address 000044)" <<endl;
+			SP = index_to_address(18);
+	
+			// Main program loop
 			while(program_execution_control == RUN_PROGRAM) {
-				cin.ignore(numeric_limits<streamsize>::max(), '\n');
-				cout << "                     Press ENTER to begin program" << endl;
-				cout << "-------------------------------------------------------------------------" <<endl;
-				cin.get();
-				cout << "                            Executing program" <<endl;
-				cout << "-------------------------------------------------------------------------" <<endl;
-				cout << "-------------------------------------------------------------------------" <<endl;
-				cout << "Assigning registers R0 to R5 with data from memory locations MEM[2] to MEM[7]" <<endl;
-				R0 = MEM[2];
-				R1 = MEM[3];
-				R2 = MEM[4];
-				R3 = MEM[5];
-				R4 = MEM[6];
-				R5 = MEM[7];
-				cout << "Set SP to memory index 18 (Octal address 000044)" <<endl;
-				SP = index_to_address(18);
 				cout << "All registers' content:" <<endl;
 				print_all_registers();
 				cout << "All valid memory contents:" <<endl;
 				print_all_memory();
 				operation = m_HALT;
+
+				// IF
+				instruction_code = MEM[PC];
+				PC += 2;	
+
+				// ID
+				err = parseInstruction(instruction_code, &current_instruction); 
+				// check error code
+				err = loadOperands();	
+
+				// EX
+				// call appropriate function				
+
+				// WB
+				err = storeOperands();
+				
+
 				if(operation == m_HALT)
 					program_execution_control = PRINT_MENU;
 			}
@@ -74,6 +97,14 @@ int main(int argc, char ** argv)
 		}
 	}
 	return 0; // never hit, program exits from menu function
+}
+
+int storeOperands() {
+
+}
+
+int loadOperands() {
+
 }
 
 
@@ -128,7 +159,7 @@ void print_all_memory(void) {
 
 void initializeMemory(){
 	for(int i = 0; i < MEMORY_SPACE; i++) { //Initialize memory space
-		MEM[i]=0xFFFF;
+		MEM[i]=0xFFFF; // Why?
 	}
 }
 

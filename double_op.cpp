@@ -21,7 +21,7 @@ int ADD(instruction *inst) // Add source to destination
   inst->V = ((temp > 0 && inst->src > 0 && inst->dest < 0) || (temp < 0 && inst->src < 0 && inst->dest > 0))? 1:0;
 
   // Set C flag if there was a carry from the MSB
-  // inst->C = ()? 1:0;
+  inst->C = (temp && 0x00010000) ? 1:0;
   return 0;
 }
 
@@ -90,7 +90,6 @@ int BIC(instruction *inst) // Bit clear (B)
 }
 
 int BIS(instruction *inst) // Bit set (B)
-{
 {
   inst->dest = inst->src || inst->dest;
   inst->N = (inst->dest < 0)? 1:0;
