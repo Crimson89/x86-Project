@@ -21,12 +21,15 @@ typedef struct {
   uint16_t byteMode;  
   //instructionFamily instructionType ; //Double operand, single operand, conditional jump, shit like that.  
   //enum instructionFamily; // J, I, R? Not in PDP right?  
-  uint16_t addressingModeSrc;  
-  uint16_t addressingModeDest;  
-  uint16_t reg; // uint16_t? 
-  uint16_t src;  
-  uint16_t dest;  
-  uint16_t offset; 
+	uint8_t addressingModeSrc;  
+	uint8_t addressingModeDest;  
+	uint8_t srcReg;	// src pre-dereferencing
+	uint8_t destReg;// dest pre-dereferencing
+	uint16_t *reg; 
+	uint16_t *src; // src post-dereferencing
+	uint16_t *dest;// dest post-dereferencing
+	uint16_t offset;
+	uint16_t immediate; 
 	uint16_t registerMode;  
 	union {
 		struct {
@@ -58,7 +61,7 @@ void initializeMemory(void);
 
 // Utility functions
 int loadOperands();
-int storeOperands();
+int updateTracefile(bool write, uint16_t address);
 
 
 // SINGLE OPERAND

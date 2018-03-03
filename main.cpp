@@ -14,6 +14,7 @@ uint16_t& SP = REGS[6];
 uint16_t& PC = REGS[7];
 uint16_t MEM[MEMORY_SPACE];
 uint16_t starting_pc;
+instruction current_instruction;	// decoded instruction information
 
 int main(int argc, char ** argv)
 {
@@ -28,7 +29,6 @@ int main(int argc, char ** argv)
 	initializeMemory();
 	int err;							// error checking
 	uint16_t instruction_code;			// 16-bit instruction
-	instruction current_instruction;	// decoded instruction information
 	
 	for(;;){
 		program_execution_control = menu_function();
@@ -56,26 +56,31 @@ int main(int argc, char ** argv)
 	
 			// Main program loop
 			while(program_execution_control == RUN_PROGRAM) {
+				/*
 				cout << "All registers' content:" <<endl;
 				print_all_registers();
 				cout << "All valid memory contents:" <<endl;
 				print_all_memory();
 				operation = m_HALT;
+				*/
 
 				// IF
-				instruction_code = MEM[PC];
+				instruction_code = *((uint16_t*)(&MEM[PC]));
 				PC += 2;	
 
 				// ID
 				err = parseInstruction(instruction_code, &current_instruction); 
 				// check error code
-				err = loadOperands();	
+				err = loadOperands();	// deal w/ addressing modes
+				// pre-increment
+				// updateTracefile();
 
 				// EX
 				// call appropriate function				
 
 				// WB
-				err = storeOperands();
+				// post-increment
+				// updateTracefile();
 				
 
 				if(operation == m_HALT)
