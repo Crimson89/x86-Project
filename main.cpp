@@ -150,11 +150,11 @@ void print_octal(uint16_t operation){
 	cout <<setfill('0')<<setw(6)<<oct<<operation;
 }
 
-
+//print_octal(read_word(address))
 void print_all_memory(void) {
 	uint16_t hasContent = 0;
-	uint8_t memory_word;
-	for(int i = 0; i < MEMORY_SPACE; i+=2) {
+	uint16_t memory_word;
+	for(uint16_t i = 0; i < MEMORY_SPACE; i+=2) {
 		memory_word = read_word(i);
 		if(memory_word!=0xFFFF) {
 			hasContent+=1;
