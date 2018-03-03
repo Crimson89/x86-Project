@@ -55,13 +55,13 @@ typedef struct {
 int loadData(int argc, char ** argv);
 int readData(string fileName);
 int menu_function(void);
-uint16_t string_to_operation(string input_string);
-uint16_t string_to_address(string input_string);
-uint16_t address_to_index(uint16_t this_address);
-uint16_t index_to_address(uint16_t this_index);
-void print_operation(uint16_t operation);
-void print_address(uint16_t address);
-void print_address_at_index(int index);
+int get_user_octal(string prompt, string error_text, uint16_t &word);
+uint16_t string_to_octal(string input_string);
+uint16_t read_byte(uint16_t address); //Read a byte and return it in the low 8 bits
+uint16_t read_word(uint16_t address); //Read two bytes in memory and return as little endian word
+void write_byte(uint16_t address, uint16_t byte); //Take byte in the low 8 bits and write to memory
+void write_word(uint16_t address, uint16_t word); //Write little endian word to two bytes in memory
+void print_octal(uint16_t value);
 void print_all_memory(void);
 void print_all_registers(void);
 void initializeMemory(void);
