@@ -51,11 +51,18 @@ typedef struct {
   uint16_t rtsR; // placeholder till I figure this out.
 }instruction;  
 
-// MAIN functions
-int loadData(int argc, char ** argv);
-int readData(string fileName);
+// MAIN functions - main.cpp
 int menu_function(void);
 int get_user_octal(string prompt, string error_text, uint16_t &word);
+// Utility functions
+int loadOperands();
+int updateTracefile(bool write, uint16_t address);
+int preIncrement();
+int postIncrement();
+
+// Memory functions - memory.cpp
+int loadData(int argc, char ** argv);
+int readData(string fileName);
 uint16_t string_to_octal(string input_string);
 uint16_t read_byte(uint16_t address); //Read a byte and return it in the low 8 bits
 uint16_t read_word(uint16_t address); //Read two bytes in memory and return as little endian word
@@ -66,11 +73,6 @@ void print_all_memory(void);
 void print_all_registers(void);
 void initializeMemory(void);
 
-// Utility functions
-int loadOperands();
-int updateTracefile(bool write, uint16_t address);
-int preIncrement();
-int postIncrement();
 
 // SINGLE OPERAND
 
