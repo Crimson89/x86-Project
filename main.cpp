@@ -71,15 +71,19 @@ int main(int argc, char ** argv)
 				// ID
 				err = parseInstruction(instruction_code, &current_instruction); 
 				// check error code
+				
+				preIncrement();
+
 				err = loadOperands();	// deal w/ addressing modes
-				// pre-increment
+				
 				// updateTracefile();
 
 				// EX
 				// call appropriate function				
 
 				// WB
-				// post-increment
+				postIncrement();
+
 				// updateTracefile();
 				
 
@@ -102,6 +106,14 @@ int main(int argc, char ** argv)
 		}
 	}
 	return 0; // never hit, program exits from menu function
+}
+
+int preIncrement() {
+
+}
+
+int postIncrement() {
+
 }
 
 int storeOperands() {
