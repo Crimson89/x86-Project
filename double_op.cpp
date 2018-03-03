@@ -1,6 +1,6 @@
 #include "header.h"
 
-// General
+// General Instructions
 int MOV(instruction *inst) // Move source to destination (B)
 {
   inst->dest = (byteMode)? (inst->src&0x00FF):inst->src;
