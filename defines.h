@@ -1,6 +1,7 @@
-#define SILENT_MODE 1
-#define VERBOSE_MODE 2
-#define MEMORY_SPACE ( (1<<15) - (1<<12) )
+#define LOW_VERBOSITY   1
+#define HIGH_VERBOSITY  2
+#define DEBUG_VERBOSITY 3
+#define MEMORY_SPACE ( (1<<16) - (1<<13) )
 //#define HALT 0x000000 (why is this here?) - Just for messing with the structure of memory, this was my "operation" that forced it to exit the loop - EG
 #define R0_REG_INDEX 0
 #define R1_REG_INDEX 1
