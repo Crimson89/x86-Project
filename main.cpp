@@ -1,7 +1,7 @@
 #include "header.h"
 
-//Make REGS and MEM global
 uint16_t REGS[7];
+uint8_t MEM[MEMORY_SPACE];
 uint16_t& R0 = REGS[0];
 uint16_t& R1 = REGS[1];
 uint16_t& R2 = REGS[2];
@@ -12,16 +12,15 @@ uint16_t& R6 = REGS[6];
 uint16_t& R7 = REGS[7];
 uint16_t& SP = REGS[6];
 uint16_t& PC = REGS[7];
-uint8_t MEM[MEMORY_SPACE];
 uint16_t starting_pc;
 instruction current_instruction;	// decoded instruction information
 int verbosity_level = 0;            // Level of verbosity in print statements
 
 int main(int argc, char ** argv)
 {
-  //int test;
-  //test = parseTest();
-  
+	//int test;
+	//test = parseTest();
+	verbosity_level = 0; // Level of verbosity in print statements, default to low 
 	uint16_t operation;
 	int program_execution_control = 0;
 	SP = 0xFFFF; // Assign at start to invalid value, detection of unassigned SP

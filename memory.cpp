@@ -184,8 +184,8 @@ int readData(string fileName){
 		temporary_addr = 0;
 	}
 	fileInput.close(); //done reading, close the file
-	cout << "Done reading file
-	if(verbosity_level == DEBUG_VERBOSITY) { cout << printing valid memory contents:"; print_all_memory();}
+	cout << "Done reading file";
+	if(verbosity_level == HIGH_VERBOSITY) { cout << ", printing valid memory contents: "; print_all_memory();}
 	cout <<endl;
 	cout << "-------------------------------------------------------------------------" <<endl;
 	cout << "                     Loading memory completed" << endl;

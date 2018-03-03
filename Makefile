@@ -9,12 +9,12 @@ unitTest.o: unitTest.cpp
 	g++ -g -std=c++11 -c unitTest.cpp parse.cpp
 
 main: main.o
-	g++ -g -std=c++11 main.o parse.o -o RunMe.exe
+	g++ -g -std=c++11 main.o parse.o memory.o -o RunMe.exe
 
 main.o: main.cpp
-	g++ -g -std=c++11 -c main.cpp parse.cpp
+	g++ -g -std=c++11 -c main.cpp parse.cpp memory.cpp
 
-filenames := main.o parse.o unitTest.o RunMe.exe RunUnitTest.exe
+filenames := main.o parse.o memory.o unitTest.o RunMe.exe RunUnitTest.exe
 
 files := $(strip $(foreach f,$(filenames),$(wildcard $(f))))
 

@@ -1,3 +1,5 @@
+#ifndef HEADER_H
+#define HEADER_H
 // Functions and defines go here
 // Function prototypes with a (B) have Byte operations as well
 
@@ -49,7 +51,25 @@ typedef struct {
 		uint8_t PSW; // Processor Status Word
 	};
   uint16_t rtsR; // placeholder till I figure this out.
-}instruction;  
+}instruction;
+
+//Define REGS, MEM, and  globals
+extern uint16_t REGS[7];
+extern uint8_t MEM[MEMORY_SPACE];
+extern uint16_t& R0;
+extern uint16_t& R1;
+extern uint16_t& R2;
+extern uint16_t& R3;
+extern uint16_t& R4;
+extern uint16_t& R5;
+extern uint16_t& R6;
+extern uint16_t& R7;
+extern uint16_t& SP;
+extern uint16_t& PC;
+extern uint16_t starting_pc;
+extern instruction current_instruction;	// decoded instruction information
+extern int verbosity_level;             // Level of verbosity in print statements
+
 
 // MAIN functions - main.cpp
 int menu_function(void);
@@ -59,6 +79,7 @@ int loadOperands();
 int updateTracefile(bool write, uint16_t address);
 int preIncrement();
 int postIncrement();
+
 
 // Memory functions - memory.cpp
 int loadData(int argc, char ** argv);
@@ -72,7 +93,6 @@ void print_octal(uint16_t value);
 void print_all_memory(void);
 void print_all_registers(void);
 void initializeMemory(void);
-
 
 // SINGLE OPERAND
 
@@ -233,3 +253,4 @@ const uint16_t maskCondC = 0000001;//0x0001;
 int parseInstruction(uint16_t instructionCode, instruction* newInstruction);
 
 int parseTest();
+#endif // HEADER_H
