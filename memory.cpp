@@ -4,6 +4,13 @@ uint16_t string_to_octal(string this_string){
 	return stoul(this_string, NULL, 8);
 }
 
+string octal_to_string(uint16_t value) {
+	stringstream temp;
+	temp << setfill('0') << setw(6) << oct << value;
+	return temp.str();
+}
+
+
 uint16_t read_byte(uint16_t address) {
 	return (0x00FF&MEM[address]);
 }
@@ -21,8 +28,8 @@ void write_word(int address, uint16_t word) {
 	MEM[address+1] = ((0xFF00&word)>>8);
 }
 
-void print_octal(uint16_t operation){
-	cout <<setfill('0')<<setw(6)<<oct<<operation;
+void print_octal(uint16_t value){
+	cout <<setfill('0')<<setw(6)<<oct<<value;
 }
 
 //print_octal(read_word(address))
@@ -33,7 +40,7 @@ void print_all_memory(void) {
 		memory_word = read_word(i);
 		if(memory_word!=0xFFFF) {
 			hasContent+=1;
-			cout <<"@ADDR="; print_octal(i); cout <<", Contents="; print_octal(memory_word);
+			cout <<"@ADDR="; print_octal(i); cout <<", Contents=" << octal_to_string(memory_word);
 			if( (PC != 0xFFFF) && (i == PC) )
 				cout << " <-- PC";
 			if( (SP != 0xFFFF) && (i == SP) )
@@ -73,16 +80,20 @@ void print_all_registers(void) {
 	cout<< endl;
 }
 
-int loadData(int argc, char ** argv){
+int get_cmd_options(int argc, char ** argv, string & data_file, string & trace_file){
 	int return_val = 1;
-	string fileName;	//File name of data file
 	int opt;
 	optind = 0;			//force getOpt to restart for repeated loading from file
 	verbosity_level = -1;
-	while ((opt = getopt(argc, argv, "f:m:")) != -1) {
+	trace_file = "FALSE";
+	data_file = "FALSE";
+	while ((opt = getopt(argc, argv, "f:m:t:")) != -1) {
 		switch (opt) {
 		case 'f':
-			fileName = string(optarg);
+			data_file = string(optarg);
+			break;
+		case 't':
+			trace_file = string(optarg);
 			break;
 		case 'm':
 			if (string(optarg) == "simple")
@@ -94,9 +105,20 @@ int loadData(int argc, char ** argv){
 			else	 //Default to invalid mode
 				verbosity_level = -1;
 			break;
+		case 'h':
+			cout << "-------------------------------------------------------------------------" <<endl;
+			cout << "-------------------------------------------------------------------------" <<endl;
+			cout << "Usage: " << argv[0] << " [-f dataFileName] [-m simple|verbose] [-t traceFileName]" << endl;
+			cout << "                All three arguments are mandatory" << endl;
+			cout << "-------------------------------------------------------------------------" <<endl;
+			cout << "-------------------------------------------------------------------------" <<endl;
+			exit(EXIT_SUCCESS);
+			break;
 		default:
+			cerr << "-------------------------------------------------------------------------" <<endl;
+			cerr << "-------------------------------------------------------------------------" <<endl;
 			cerr << "Error, invalid option" << endl;
-			cerr << "Usage: " << argv[0] << " [-f dataFileName] [-m simple|verbose]" << endl;
+			cerr << "Usage: " << argv[0] << " [-f dataFileName] [-m simple|verbose] [-t traceFileName]" << endl;
 			cerr << "           Press ENTER to exit and close application" << endl;
 			cerr << "-------------------------------------------------------------------------" <<endl;
 			cerr << "-------------------------------------------------------------------------" <<endl;
@@ -105,20 +127,43 @@ int loadData(int argc, char ** argv){
 		}
 	}
 	if (verbosity_level <= -1) { //Print error and return
-		cerr << "Invalid mode:" << endl;
-		cerr << "Usage: " << argv[0] << " [-f dataFileName] [-m simple|verbose]" << endl;
+		cerr << "-------------------------------------------------------------------------" <<endl;
+		cerr << "-------------------------------------------------------------------------" <<endl;
+		cerr << "ERROR: Invalid mode:" << endl;
+		cerr << "Usage: " << argv[0] << " [-f dataFileName] [-m simple|verbose] [-t traceFileName]" << endl;
 		cerr << "             Press ENTER to exit and close application" << endl;
 		cerr << "-------------------------------------------------------------------------" <<endl;
 		cerr << "-------------------------------------------------------------------------" <<endl;
 		cin.get();	//Wait for ENTER key press
 		exit(EXIT_FAILURE);
 	}
-	return_val = readData(fileName);
-	return return_val;
+	if(trace_file == "FALSE") {
+		cerr << "-------------------------------------------------------------------------" <<endl;
+		cerr << "-------------------------------------------------------------------------" <<endl;
+		cerr << "ERROR: Did not specify trace file:" << endl;
+		cerr << "Usage: " << argv[0] << " [-f dataFileName] [-m simple|verbose] [-t traceFileName]" << endl;
+		cerr << "             Press ENTER to exit and close application" << endl;
+		cerr << "-------------------------------------------------------------------------" <<endl;
+		cerr << "-------------------------------------------------------------------------" <<endl;
+		cin.get();	//Wait for ENTER key press
+		exit(EXIT_FAILURE);
+	}
+	if(data_file == "FALSE") {
+		cerr << "-------------------------------------------------------------------------" <<endl;
+		cerr << "-------------------------------------------------------------------------" <<endl;
+		cerr << "ERROR: Did not specify data input file name:" << endl;
+		cerr << "Usage: " << argv[0] << " [-f dataFileName] [-m simple|verbose] [-t traceFileName]" << endl;
+		cerr << "             Press ENTER to exit and close application" << endl;
+		cerr << "-------------------------------------------------------------------------" <<endl;
+		cerr << "-------------------------------------------------------------------------" <<endl;
+		cin.get();	//Wait for ENTER key press
+		exit(EXIT_FAILURE);
+	}
+	return 0;
 }
 
 
-int readData(string fileName){
+int readData(string data_file){
 	string temp;							//File read temp string
 	string input_word;						//Store input_word octal characters
 	int stringLength = 0;					//Length of temp string
@@ -128,14 +173,13 @@ int readData(string fileName){
 	uint16_t temporary_addr = 0;			//Used if this word turns out to be a memory address
 	temp.clear();							//initialize temp
 	input_word.clear();						//initialize input_word
-	ifstream fileInput(fileName);			//File ifstream handle, and open file
+	ifstream fileInput(data_file);			//File ifstream handle, and open file
 
 	initializeMemory();
 	if(!fileInput.is_open()) {
-		cerr << "failed to open file : " << fileName << endl;
 		return 1;
 	}
-	cout << "Reading from:" << fileName << "\n";
+	cout << "Reading from:" << data_file << "\n";
 	while(getline(fileInput, temp))			// continue reading consecutive lines until EOF is reached
 	{
 		stringLength = temp.length();
@@ -152,10 +196,10 @@ int readData(string fileName){
 			if(verbosity_level >= DEBUG_VERBOSITY) cout << "input_word is "<<input_word<<endl;
 			if(input_word.length() == 6 && line_type == '-') {
 				if(verbosity_level >= DEBUG_VERBOSITY) cout << "Memory load"<<endl;
-				if(verbosity_level >= DEBUG_VERBOSITY) {cout << "Loading:  ";print_octal(string_to_octal(input_word));cout<<endl;}
-				if(verbosity_level >= DEBUG_VERBOSITY) {cout << "@address: ";print_octal(address);cout<<endl;}
+				if(verbosity_level >= DEBUG_VERBOSITY) cout << "Loading:  " << input_word<<endl;
+				if(verbosity_level >= DEBUG_VERBOSITY) cout << "@address: " << octal_to_string(address)<<endl;
 				write_word(address,string_to_octal(input_word)); //Read string, convert uint16, and write to memory
-				if(verbosity_level >= DEBUG_VERBOSITY) {cout << "Loaded to memory, Read Back: "; print_octal(read_word(address)); cout<<endl;}
+				if(verbosity_level >= DEBUG_VERBOSITY) cout << "Loaded to memory, Read Back: " << octal_to_string(read_word(address))<<endl;
 				address+=2;
 			}
 			else {
@@ -163,11 +207,11 @@ int readData(string fileName){
 				if (line_type == '*') {
 					starting_pc = temporary_addr;
 					PC = starting_pc;
-					if(verbosity_level >= DEBUG_VERBOSITY) {cout << "Set PC to start @ address: "; print_octal(PC); cout <<endl;}
+					if(verbosity_level >= DEBUG_VERBOSITY) cout << "Set PC to start @ address: " << octal_to_string(PC) <<endl;
 				}
 				else if (line_type == '@') {
 					address = temporary_addr;
-				if(verbosity_level == DEBUG_VERBOSITY) {cout << "Set current memory location to address: "; print_octal(address); cout << endl;}
+				if(verbosity_level == DEBUG_VERBOSITY) cout << "Set current memory location to address: " << octal_to_string(address) << endl;
 				}
 				else
 					cerr << "Skipping invalid input in file: " << input_word << " at line#" <<dec<< file_line_num << endl;

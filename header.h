@@ -5,19 +5,20 @@
 
 #include <iostream> //io
 #include <fstream>  //file reading
+#include <iomanip>  // Octal formatting
 #include <string>   //Strings
+#include <sstream>  //String stream buffer
 #include <math.h>   //log2
 #include <unistd.h> //Getopt
 #include <vector>   //vectors
 #include <stdint.h> //64 bit ints
-#include <iomanip>  // Octal formatting
 #include <limits>   // Numerical limits
 #include "defines.h"
 
 using namespace std;
 
 //instructionType instructionFamily {singleOperand, doubleOperand}; // (? Probably not necessary) 
- 
+
 typedef struct {  
   uint16_t opcode;  
   uint16_t byteMode;  
@@ -82,9 +83,10 @@ int postIncrement();
 
 
 // Memory functions - memory.cpp
-int loadData(int argc, char ** argv);
-int readData(string fileName);
+int get_cmd_options(int argc, char ** argv, string & data_file, string & trace_file);
+int readData(string data_file);
 uint16_t string_to_octal(string input_string);
+string octal_to_string(uint16_t value);
 uint16_t read_byte(uint16_t address); //Read a byte and return it in the low 8 bits
 uint16_t read_word(uint16_t address); //Read two bytes in memory and return as little endian word
 void write_byte(uint16_t address, uint16_t byte); //Take byte in the low 8 bits and write to memory
@@ -93,6 +95,13 @@ void print_octal(uint16_t value);
 void print_all_memory(void);
 void print_all_registers(void);
 void initializeMemory(void);
+
+
+// Trace Functions - trace.cpp
+int clear_trace(const string & file_name);
+int data_read_trace(const string & file_name, uint16_t address, uint16_t value);
+int data_write_trace(const string & file_name, uint16_t address, uint16_t value);
+int instr_fetch_trace(const string & file_name, uint16_t address, uint16_t value);
 
 // SINGLE OPERAND
 
