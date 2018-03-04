@@ -19,7 +19,7 @@ using namespace std;
 
 //instructionType instructionFamily {singleOperand, doubleOperand}; // (? Probably not necessary) 
 
-typedef struct {  
+typedef struct {
   uint16_t opcode;  
   uint16_t byteMode;  
   //instructionFamily instructionType ; //Double operand, single operand, conditional jump, shit like that.  
@@ -70,6 +70,7 @@ extern uint16_t& PC;
 extern uint16_t starting_pc;
 extern instruction current_instruction;	// decoded instruction information
 extern int verbosity_level;             // Level of verbosity in print statements
+extern string trace_file;
 
 
 // MAIN functions - main.cpp
@@ -99,6 +100,7 @@ void initializeMemory(void);
 
 // Trace Functions - trace.cpp
 int clear_trace(const string & file_name);
+int print_trace(const string & file_name);
 int data_read_trace(const string & file_name, uint16_t address, uint16_t value);
 int data_write_trace(const string & file_name, uint16_t address, uint16_t value);
 int instr_fetch_trace(const string & file_name, uint16_t address, uint16_t value);

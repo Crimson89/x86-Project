@@ -14,25 +14,27 @@ uint16_t& SP = REGS[6];
 uint16_t& PC = REGS[7];
 uint16_t starting_pc;
 instruction current_instruction;	// decoded instruction information
-int verbosity_level = 0;            // Level of verbosity in print statements
+int verbosity_level;            // Level of verbosity in print statements
+string trace_file;
+string data_file;
 
 int main(int argc, char ** argv)
 {
 	//int test;
 	//test = parseTest();
-	int return_val = 0;
 	verbosity_level = 0; // Level of verbosity in print statements, default to low 
 	uint16_t operation = m_HALT;
 	int program_execution_control = 0;
+	int err;							// error checking
+	uint16_t instruction_code;			// 16-bit instruction
+	
+
+	trace_file = "test_trace.txt";
+	data_file = "FALSE";
 	SP = 0xFFFF; // Assign at start to invalid value, detection of unassigned SP
 	PC = 0xFFFF; // Assign at start to invalid value, detection of unassigned PC
 	starting_pc = PC;
 	initializeMemory();
-	int err;							// error checking
-	uint16_t instruction_code;			// 16-bit instruction
-	string trace_file = "test_trace.txt";
-	string data_file = "FALSE";
-	
 	get_cmd_options(argc, argv, data_file, trace_file); // Read command line options
 	
 	for(;;){
@@ -50,16 +52,6 @@ int main(int argc, char ** argv)
 			cin.get();
 			cout << "                            Executing program" <<endl;
 			cout << "-------------------------------------------------------------------------" <<endl;
-			cout << "-------------------------------------------------------------------------" <<endl;
-			
-			clear_trace(trace_file);
-			cout << "                     Check trace file is empty" << endl;
-			cout << "                     Press ENTER to continue" << endl;
-			cout << "-------------------------------------------------------------------------" <<endl;
-			cin.get();
-			data_read_trace(trace_file, PC, read_word(PC));
-			data_write_trace(trace_file, (PC+2), read_word(PC+2));
-			instr_fetch_trace(trace_file, (PC+4), read_word(PC+4));
 
 			// Main program loop
 			while(program_execution_control == RUN_PROGRAM) {
@@ -164,6 +156,7 @@ int menu_function() {
 		cout << "P(p) to print all register contents" << endl;
 		cout << "M(m) to print all valid memory contents" << endl;
 		cout << "L(l) to load new application" << endl;
+		cout << "T(t) to clear old trace file" << endl;
 		cout << "-------------------------------------------------------------------------" <<endl;
 		cout << "-------------------------------------------------------------------------" <<endl;
 		cout << "\n\nSelection: ";
@@ -187,6 +180,16 @@ int menu_function() {
 					cout << "-------------------------------------------------------------------------" <<endl;
 					cin.get();
 					exit(EXIT_SUCCESS);
+					break;
+					case 't':
+					cin.ignore(numeric_limits<streamsize>::max(), '\n');
+					cout << "\n\n-------------------------------------------------------------------------" <<endl;
+					cout << "                     Print old trace file, " << trace_file << endl;
+					cout << "-------------------------------------------------------------------------" <<endl;
+					print_trace(trace_file);
+					cout << "                          Press ENTER to continue" << endl;
+					cout << "-------------------------------------------------------------------------" <<endl;
+					cin.get();
 					break;
 				case 'p':
 					cout << "All registers' content:" <<endl;
