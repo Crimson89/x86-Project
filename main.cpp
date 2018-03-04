@@ -13,13 +13,14 @@ uint16_t& R7 = REGS[7];
 uint16_t& SP = REGS[6];
 uint16_t& PC = REGS[7];
 uint16_t starting_pc;
-instruction current_instruction;	// decoded instruction information
+instruction * current_instruction;	// decoded instruction information
 int verbosity_level;            // Level of verbosity in print statements
 string trace_file;
 string data_file;
 
 int main(int argc, char ** argv)
 {
+  current_instruction = new instruction;
 	//int test;
 	//test = parseTest();
 	verbosity_level = 0; // Level of verbosity in print statements, default to low 
@@ -61,7 +62,7 @@ int main(int argc, char ** argv)
 				PC += 2;	
 
 				// ID
-				err = parseInstruction(instruction_code, &current_instruction); 
+				err = parseInstruction(instruction_code, current_instruction); 
 				// check error code
 				
 				preIncrement();

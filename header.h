@@ -24,24 +24,25 @@ typedef struct {
   uint16_t byteMode;  
   //instructionFamily instructionType ; //Double operand, single operand, conditional jump, shit like that.  
   //enum instructionFamily; // J, I, R? Not in PDP right?  
-	uint8_t addressingModeSrc;  
-	uint8_t addressingModeDest;
-	uint8_t addresingModeReg;  
-	uint8_t srcBase;	// src pre-dereferencing
-	uint8_t destBase;	// dest pre-dereferencing
-	uint8_t regBase;	// reg pre-dereferencing
+	uint16_t addressingModeSrc;  
+	uint16_t addressingModeDest;
+	uint16_t addressingModeReg;  
+	uint16_t srcBase;	// src pre-dereferencing
+	uint16_t destBase;	// dest pre-dereferencing
+	uint16_t regBase;	// reg pre-dereferencing
 
 	// These should be pointers
-	uint16_t src; // src post-dereferencing
-	uint16_t dest;// dest post-dereferencing
-	uint16_t reg; // reg post-dereferencing
+	uint16_t * src; // src post-dereferencing
+	uint16_t * dest;// dest post-dereferencing
+	uint16_t * reg; // reg post-dereferencing
 
 	uint16_t offset;
 	uint16_t immediate; 
 	uint16_t registerMode;
 	uint8_t regCount; // Registers used. 0, 1, or 2  
 	bool byteInstruction;
-	union {
+  // TODO why a union?
+  union {
 		struct {
 			int SC: 3;
 			int N: 1;
@@ -68,7 +69,7 @@ extern uint16_t& R7;
 extern uint16_t& SP;
 extern uint16_t& PC;
 extern uint16_t starting_pc;
-extern instruction current_instruction;	// decoded instruction information
+extern instruction * current_instruction;	// decoded instruction information
 extern int verbosity_level;             // Level of verbosity in print statements
 extern string trace_file;
 
@@ -262,6 +263,8 @@ const uint16_t maskCondV = 0000002;//0x0002;
 const uint16_t maskCondC = 0000001;//0x0001;
 
 int parseInstruction(uint16_t instructionCode, instruction* newInstruction);
+int addressDecode(uint16_t mode, uint16_t baseAddress, uint16_t * resultAddress);
+
 
 int parseTest();
 #endif // HEADER_H

@@ -2,8 +2,8 @@
 
 int parseInstruction(uint16_t instructionCode, instruction* newInstruction)
 {
-  //instruction newInstruction;
-    int placeholder; // will be error code. 
+    //instruction newInstruction;
+    int err; // will be error code. 
 
   /* First thing is first, check against instructions with entirely unique opcodes.
    * Operate Group
@@ -16,19 +16,33 @@ int parseInstruction(uint16_t instructionCode, instruction* newInstruction)
      Other
        MARK, SOB, RTS, JSR, JMP
    */
+  
+  //TODO add masks to some of these (like EMT and TRAP) maybe pull out if needed
+  uint16_t uniqueInstructions[7] = {0000004, 0000003, 0000000, 0000001, 0000002, 0000005, 0000006};
 
-  /*uint16_t uniqueInstructions[10] = {0x0004, 0x8800, 0x8920, /*BPT, 0x0000, 0x0001, 0x0002, 0x0005, /*RTT, /*NOP}
-
-  for (int i = 0; i < 10, i++)
+  for (int i = 0; i < 10; i++)
   {
     if (instructionCode == uniqueInstructions[i])
     {
       // unique, full instruction is a unique opcode. Because why not I guess.
-      newInstruction->opcode = instructionCode;
+      current_instruction->opcode = instructionCode;
       break;
     }
       
-  }*/
+  }
+
+  // TODO fill these out
+  // EMT
+  if ((instructionCode & 0177400) == 0104000)
+  {
+
+  }
+
+  // TRAP?
+  //if ((instructionCode & ) == 0104440)
+  //{
+
+  //}
 
   // Check SOB (0 0 7) (TODO maybe double reg?)
   /*if ((instructionCode && 0xFE00) == 0x0E00)
@@ -71,10 +85,11 @@ int parseInstruction(uint16_t instructionCode, instruction* newInstruction)
     if (bitPattern == 0004000)
     {
       // Single operand
-      newInstruction->opcode = instructionCode & maskSingleOpcode;
-      newInstruction->registerMode = instructionCode & maskSingleMode;
-      newInstruction->reg = instructionCode & maskSingleRegister;
-      newInstruction->byteMode = instructionCode & maskByteMode;
+      current_instruction->opcode = instructionCode & maskSingleOpcode;
+      current_instruction->addressingModeReg = instructionCode & maskSingleMode;
+      current_instruction->regBase = instructionCode & maskSingleRegister;
+      err = addressDecode(current_instruction->addressingModeReg, current_instruction->regBase, current_instruction->reg);
+      current_instruction->byteMode = instructionCode & maskByteMode;
       cout << "SINGLE " << "\n";
     }
     else
@@ -82,20 +97,22 @@ int parseInstruction(uint16_t instructionCode, instruction* newInstruction)
       bitPattern = relevantBits & maskCondCheck;
       if ((bitPattern == 0000240) || (bitPattern == 0000260))
       {
+        //TODO fix these
         // cond check
+        /*
         newInstruction->opcode = instructionCode & maskCondCodeOpcode;
         newInstruction->SC = instructionCode & maskCondSC;
         newInstruction->N = instructionCode & maskCondN;
         newInstruction->Z = instructionCode & maskCondZ;
         newInstruction->V = instructionCode & maskCondV;
-        newInstruction->C = instructionCode & maskCondC;
+        newInstruction->C = instructionCode & maskCondC;*/
         cout << "COND " << "\n";
       }
       else
       {
         //cond branch
-        newInstruction->opcode = instructionCode & maskCondBranchOpcode;
-        newInstruction->offset = instructionCode & maskCondBranchOffset;
+        current_instruction->opcode = instructionCode & maskCondBranchOpcode;
+        current_instruction->offset = instructionCode & maskCondBranchOffset;
         cout << "COND BRANCH " << "\n";
       }
     } 
@@ -106,28 +123,108 @@ int parseInstruction(uint16_t instructionCode, instruction* newInstruction)
     if (bitPattern == 0070000)
     {
       // register source double operand
-      newInstruction->opcode = instructionCode & maskDoubleRegisterOpcode;
-      newInstruction->reg = instructionCode & maskDoubleRegisterReg;
+      current_instruction->opcode = instructionCode & maskDoubleRegisterOpcode;
+      current_instruction->regBase = instructionCode & maskDoubleRegisterReg;
       // TODO Defined by wikipedia, this is srouce/dest, how should I handle that?
-      newInstruction->src = instructionCode & maskDoubleRegisterSourceDest;
-      newInstruction->dest = instructionCode & maskDoubleRegisterSourceDest;
-      newInstruction->addressingModeSrc = instructionCode & maskDoubleRegisterSourceDestMode;
-      newInstruction->addressingModeDest = instructionCode & maskDoubleRegisterSourceDestMode;
+      current_instruction->srcBase = instructionCode & maskDoubleRegisterSourceDest;
+      current_instruction->destBase = instructionCode & maskDoubleRegisterSourceDest;
+      current_instruction->addressingModeSrc = instructionCode & maskDoubleRegisterSourceDestMode;
+      current_instruction->addressingModeDest = instructionCode & maskDoubleRegisterSourceDestMode;
       cout << "DOUBLE REG " << "\n";
+
+      err = addressDecode(current_instruction->addressingModeReg, current_instruction->regBase, current_instruction->reg);
+
+      err = addressDecode(current_instruction->addressingModeSrc, current_instruction->srcBase, current_instruction->src);
+
+      err = addressDecode(current_instruction->addressingModeDest, current_instruction->destBase, current_instruction->dest);
     }
     else
     {
       // double operand
-      newInstruction->opcode = instructionCode & maskDoubleOpcode;
-      newInstruction->src = instructionCode & maskDoubleSource;
-      newInstruction->addressingModeSrc = instructionCode & maskDoubleSourceMode;
-      newInstruction->dest = instructionCode & maskDoubleDest;
-      newInstruction->addressingModeDest = instructionCode & maskDoubleDestMode;
+      current_instruction->opcode = instructionCode & maskDoubleOpcode;
+      current_instruction->srcBase = instructionCode & maskDoubleSource;
+      current_instruction->addressingModeSrc = instructionCode & maskDoubleSourceMode;
+      current_instruction->destBase = instructionCode & maskDoubleDest;
+      current_instruction->addressingModeDest = instructionCode & maskDoubleDestMode;
+
+      err = addressDecode(current_instruction->addressingModeSrc, current_instruction->srcBase, current_instruction->src);
+
+      err = addressDecode(current_instruction->addressingModeDest, current_instruction->destBase, current_instruction->dest);
       cout << "DOUBLE" << "\n";
     }
   }
 
-  return placeholder;
+  return err;
+}
+
+int addressDecode(uint16_t mode, uint16_t baseAddress, uint16_t * resultAddress)
+{
+  // TODO review pointer stuff here, I am confident it is wrong.
+  int err;
+  uint16_t X;
+  uint16_t workingAddress;
+  
+  // TODO add assignments of values into things, needed or already done? Already done methinks.
+  // TODO add byute mode check for autoincrement and decrement. 
+  switch (mode)
+  {
+    // Register
+    case 0000000: *resultAddress = baseAddress; // Keep baseAddress the same.
+                  break;
+    // Register deferred
+    case 0000001: workingAddress = baseAddress;
+                  *resultAddress = workingAddress;
+                  break;
+    // Autoincrement
+    case 0000002: workingAddress = baseAddress;
+                  *resultAddress = workingAddress;
+                  if (current_instruction->byteInstruction == true)
+                    {
+                      baseAddress++;
+                    }
+                  else
+                    {
+                      baseAddress += 2;
+                    }
+                  break;
+    // Autoincrement deferred
+    case 0000003: workingAddress = baseAddress;
+                  *resultAddress = workingAddress;
+                  baseAddress += 2;
+                  break;
+    // Autodecrement
+    case 0000004: if (current_instruction->byteInstruction == true)
+                  {
+                    baseAddress--;
+                  }
+                  else
+                  {
+                    baseAddress -= 2;
+                  }
+                  workingAddress = baseAddress;
+                  *resultAddress = workingAddress;
+                  break;
+    // Autodecrement deferred
+    case 0000005: baseAddress -= 2;
+                  workingAddress = baseAddress;
+                  *resultAddress = workingAddress;
+                  break;
+    // Index
+    // TODO WTF how does the X translate in the instruction code?
+    case 0000006: workingAddress = baseAddress;
+                  //TODO dereference PC first?
+                  X = PC + 2;
+                  *resultAddress = workingAddress + X;
+                  break;
+    // Index deferred
+    case 0000007: workingAddress = baseAddress;
+                  //TODO dereference PC first?
+                  X = PC + 2;
+                  *resultAddress = *((uint16_t*)(workingAddress + X));
+                  break;
+  }
+  
+  return err;
 }
 
 // instruction assignType(uint16_t opCode, instruction parsedInstruction)
