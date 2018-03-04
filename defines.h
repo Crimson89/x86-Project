@@ -1,8 +1,13 @@
+//Debug message verbosity levels
 #define LOW_VERBOSITY   1
 #define HIGH_VERBOSITY  2
 #define DEBUG_VERBOSITY 3
+
+//Size of memory space
 #define MEMORY_SPACE ( (1<<16) - (1<<13) )
-//#define HALT 0x000000 (why is this here?) - Just for messing with the structure of memory, this was my "operation" that forced it to exit the loop - EG
+
+
+// Register indices
 #define R0_REG_INDEX 0
 #define R1_REG_INDEX 1
 #define R2_REG_INDEX 2
@@ -11,10 +16,35 @@
 #define R5_REG_INDEX 5
 #define SP_REG_INDEX 6
 #define PC_REG_INDEX 7
+//program_execution_control values
 #define PRINT_MENU  0
 #define RUN_PROGRAM 1
 #define LOAD_DATA   2
 
+//Addressing Modes
+// Register modes
+#define REGISTER_MODE         0
+#define REGISTER_DEFR_MODE    1
+#define AUTO_INC_MODE         2
+#define AUTO_INC_DEFR_MODE    3
+#define AUTO_DEC_MODE         4
+#define AUTO_DEC_DEFR_MODE    5
+#define INDEX_MODE            6
+#define INDEX_DEFR_MODE       7
+
+// PC Only Modes
+#define PC_IMMEDIATE_MODE     2
+#define PC_ABSOLUTE_MODE      3
+#define PC_RELATIVE_MODE      6
+#define PC_REL_DEFR_MODE      7
+
+// SP Only Modes
+#define SP_DEFR_MODE           1
+#define SP_AUTO_INC_MODE       2
+#define SP_AUTO_INC_DEFR_MODE  3
+#define SP_AUTO_DEC_MODE       4
+#define SP_INDEX_MODE          6
+#define SP_INDEX_DEFR_MODE     7
 // Opcode values
 
 // SINGLE OPERAND

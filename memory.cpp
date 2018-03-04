@@ -80,7 +80,7 @@ void print_all_registers(void) {
 	cout<< endl;
 }
 
-int get_cmd_options(int argc, char ** argv, string & data_file, string & trace_file){
+int get_cmd_options(int argc, char ** argv){
 	int return_val = 1;
 	int opt;
 	optind = 0;			//force getOpt to restart for repeated loading from file
@@ -163,7 +163,7 @@ int get_cmd_options(int argc, char ** argv, string & data_file, string & trace_f
 }
 
 
-int readData(string data_file){
+int readData(){
 	string temp;							//File read temp string
 	string input_word;						//Store input_word octal characters
 	int stringLength = 0;					//Length of temp string
