@@ -75,7 +75,7 @@ extern string trace_file;
 
 // MAIN functions - main.cpp
 int menu_function(void);
-int get_user_octal(string prompt, string error_text, uint16_t &word);
+void get_user_octal(string prompt, string error_text, uint16_t &word);
 // Utility functions
 int loadOperands();
 int updateTracefile(bool write, uint16_t address);

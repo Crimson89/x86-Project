@@ -116,7 +116,7 @@ int loadOperands() {
 
 }
 
-int get_user_octal(string prompt, string error_text, uint16_t &word){
+void get_user_octal(string prompt, string error_text, uint16_t &word){
 	string input = "FALSE";
 	string temp = "FALSE";
 	while(input == "FALSE") {
@@ -222,16 +222,15 @@ int menu_function() {
 					return RUN_PROGRAM;
 					break;
 				case 's':
-					if(!get_user_octal("Input octal address to load into PC (6 digits), then press ENTER:",
+					get_user_octal("Input octal address to load into PC (6 digits), then press ENTER:",
 					                   "ERROR: Invalid input\n\nPlease input address to load into PC (6 octal digits), then press ENTER:",
-									   PC)) {
-						cout << "Set PC to start @ address: ";
-						print_octal(PC);
-						cout <<endl;
-						cout << "                          Press ENTER to continue" << endl;
-						cout << "-------------------------------------------------------------------------" <<endl;
-						cin.get();
-					}
+									   PC);
+					cout << "Set PC to start @ address: ";
+					print_octal(PC);
+					cout <<endl;
+					cout << "                          Press ENTER to continue" << endl;
+					cout << "-------------------------------------------------------------------------" <<endl;
+					cin.get();
 					break;
 				case 'l':
 					cout << "                Press ENTER to load new application" << endl;
