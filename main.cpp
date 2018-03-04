@@ -246,8 +246,8 @@ int addr_mode(uint8_t addr_mode, uint16_t & data_in, uint16_t & data_out){
 				pointer_word1 = data_in+index_word;
 				pointer_word2 = read_word(pointer_word1);
 				data_read_trace(pointer_word1, pointer_word2);
-				data_out = read_word(pointer_word1);
-				data_read_trace(pointer_word1, data_out);
+				data_out = read_word(pointer_word2);
+				data_read_trace(pointer_word2, data_out);
 				break;
 			default:
 				cerr << "ERROR: Invalid register addressing mode : "<< addr_mode << endl;
