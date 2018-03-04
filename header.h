@@ -72,6 +72,7 @@ extern uint16_t starting_pc;
 extern instruction * current_instruction;	// decoded instruction information
 extern int verbosity_level;             // Level of verbosity in print statements
 extern string trace_file;
+extern string data_file;
 
 
 // MAIN functions - main.cpp
@@ -80,13 +81,11 @@ void get_user_octal(string prompt, string error_text, uint16_t &word);
 // Utility functions
 int loadOperands();
 int updateTracefile(bool write, uint16_t address);
-int preIncrement();
-int postIncrement();
-
+int addr_mode(uint8_t addr_mode, uint16_t & data_in, uint16_t & data_out);
 
 // Memory functions - memory.cpp
-int get_cmd_options(int argc, char ** argv, string & data_file, string & trace_file);
-int readData(string data_file);
+int get_cmd_options(int argc, char ** argv);
+int readData(void);
 uint16_t string_to_octal(string input_string);
 string octal_to_string(uint16_t value);
 uint16_t read_byte(uint16_t address); //Read a byte and return it in the low 8 bits
@@ -100,11 +99,11 @@ void initializeMemory(void);
 
 
 // Trace Functions - trace.cpp
-int clear_trace(const string & file_name);
-int print_trace(const string & file_name);
-int data_read_trace(const string & file_name, uint16_t address, uint16_t value);
-int data_write_trace(const string & file_name, uint16_t address, uint16_t value);
-int instr_fetch_trace(const string & file_name, uint16_t address, uint16_t value);
+int clear_trace(void);
+int print_trace(void);
+int data_read_trace(uint16_t address, uint16_t value);
+int data_write_trace(uint16_t address, uint16_t value);
+int instr_fetch_trace(uint16_t address, uint16_t value);
 
 // SINGLE OPERAND
 

@@ -1,31 +1,31 @@
 #include "header.h"
 
-int write_line(const string & file_name, string text) {
+int write_line(string text) {
 	ofstream outfile;
-	outfile.open(file_name, ios_base::app);
+	outfile.open(trace_file, ios_base::app);
 	if(outfile.is_open()) { //Open/create file and append this line
 		outfile << text << endl;
 		return 0;
 	}
-	cerr << "Failed to open file: "<< file_name <<endl;
+	cerr << "Failed to open file: "<< trace_file <<endl;
 	return 1;
 }
 
-int clear_trace(const string & file_name) {
+int clear_trace() {
 	ofstream outfile;
-	outfile.open(file_name);
+	outfile.open(trace_file);
 	if(outfile.is_open()) //Open/create file and erase contents
 		return 0;
-	cerr << "Failed to open file: "<< file_name <<endl;
+	cerr << "Failed to open file: "<< trace_file <<endl;
 	return 1;
 }
 
-int print_trace(const string & file_name) {
+int print_trace() {
 	string temp;
 	temp.clear();
-	cout << "Reading trace file :" << file_name << "\n";
+	cout << "Reading trace file :" << trace_file << "\n";
 	cout << "\n--- Start of trace file ---\n"<< endl;
-	ifstream fileInput(file_name);
+	ifstream fileInput(trace_file);
 	if(!fileInput.is_open()) {
 		return 1;
 	}
@@ -37,17 +37,17 @@ int print_trace(const string & file_name) {
 	return 0;
 }
 
-int data_read_trace(const string & file_name, uint16_t address, uint16_t value) {
+int data_read_trace(uint16_t address, uint16_t value) {
 	if(verbosity_level >= HIGH_VERBOSITY) cout << "Data read from address   @"<<octal_to_string(address)<<": "<<octal_to_string(value)<<endl;
-	return write_line(file_name, ("0 "+octal_to_string(address)) );
+	return write_line(("0 "+octal_to_string(address)) );
 }
 
-int data_write_trace(const string & file_name, uint16_t address, uint16_t value) {
+int data_write_trace(uint16_t address, uint16_t value) {
 	if(verbosity_level >= HIGH_VERBOSITY) cout << "Data write to address    @"<<octal_to_string(address)<<": "<<octal_to_string(value)<<endl;
-	return write_line(file_name, ("1 "+octal_to_string(address)) );
+	return write_line(("1 "+octal_to_string(address)) );
 }
 
-int instr_fetch_trace(const string & file_name, uint16_t address, uint16_t value) {
+int instr_fetch_trace(uint16_t address, uint16_t value) {
 	if(verbosity_level >= HIGH_VERBOSITY) cout << "Instr fetch from address @"<<octal_to_string(address)<<": "<<octal_to_string(value)<<endl;
-	return write_line(file_name, ("2 "+octal_to_string(address)) );
+	return write_line(("2 "+octal_to_string(address)) );
 }
