@@ -211,7 +211,7 @@ int addr_mode(uint8_t addr_mode, uint16_t & data_in, uint16_t & data_out){
 			case AUTO_INC_MODE:
 				data_out = read_word(data_in);
 				data_read_trace(data_in, data_out);
-				data_in += ((current_instruction.byteMode) ? 2:1);
+				data_in += ((current_instruction->byteMode) ? 2:1);
 				break;
 			case AUTO_INC_DEFR_MODE:
 				pointer_word1 = read_word(data_in); // Get the pointer at the memory location stored in this register
@@ -221,7 +221,7 @@ int addr_mode(uint8_t addr_mode, uint16_t & data_in, uint16_t & data_out){
 				data_read_trace(pointer_word1, data_out);
 				break;
 			case AUTO_DEC_MODE:
-				data_in -= ((current_instruction.byteMode) ? 2:1);
+				data_in -= ((current_instruction->byteMode) ? 2:1);
 				data_out = read_word(data_in);
 				data_read_trace(data_in, data_out);
 				break;
