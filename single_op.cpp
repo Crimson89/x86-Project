@@ -21,19 +21,7 @@ int NEG(instruction *inst) // 2's Compliment negate (B)
 {
 }
 
-int NOP(instruction *inst) // No operation
-{
-}
-
 int TST(instruction *inst) // Test (B)
-{
-}
-
-int TSTSET(instruction *inst) // Test, set low bit
-{
-}
-
-int WRTLCK(instruction *inst) // Read/Lock destination, write/unlock R0 into destination
 {
 }
 

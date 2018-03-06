@@ -53,10 +53,6 @@ int BLE(instruction *inst) // Branch if less than or equal (to zero)
 {
 }
 
-int SOB(instruction *inst) // Subtract one and branch (if not = 0)
-{
-}
-
 // Unsigned Conditional Branch
 int BHI(instruction *inst) // Branch if higher
 {
