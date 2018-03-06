@@ -12,7 +12,7 @@ int MOV(instruction *inst) // Move source to destination (B)
 
 int ADD(instruction *inst) // Add source to destination
 {
-  int temp = inst->dest;
+  uint16_t temp = inst->dest;
   inst->dest = inst->dest + inst->src; // Do the add
   inst->N = (inst->dest < 0)? 1:0;
   inst->Z = (inst->dest == 0)? 1:0;
@@ -27,7 +27,7 @@ int ADD(instruction *inst) // Add source to destination
 
 int SUB(instruction *inst) // Subtract source from destination
 {
-  int temp = inst->dest;
+  uint16_t temp = inst->dest;
   inst->dest = inst->dest - inst->src;
   inst->N = (inst->dest < 0)? 1:0;
   inst->Z = (inst->dest == 0)? 1:0;
@@ -42,7 +42,7 @@ int SUB(instruction *inst) // Subtract source from destination
 
 int CMP(instruction *inst) // Compare source to destination (B)
 {
-  int temp = inst->src - inst->dest;
+  uint16_t temp = inst->src - inst->dest;
   inst->N = (temp < 0)? 1:0;
   inst->Z = (temp == 0)? 1:0;
 
@@ -57,7 +57,7 @@ int CMP(instruction *inst) // Compare source to destination (B)
 // Logical
 int BIT(instruction *inst) // Bit test (B)
 {
-  int temp = inst->dest && inst->src;
+  uint16_t temp = inst->dest && inst->src;
   inst->N = (temp < 0)? 1:0;
   inst->Z = (temp == 0)? 1:0;
   inst->V = 0;
