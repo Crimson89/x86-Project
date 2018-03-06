@@ -1,17 +1,57 @@
 #include "header.h"
 
-int main()
+uint16_t REGS[7];
+uint8_t MEM[MEMORY_SPACE];
+uint16_t& R0 = REGS[0];
+uint16_t& R1 = REGS[1];
+uint16_t& R2 = REGS[2];
+uint16_t& R3 = REGS[3];
+uint16_t& R4 = REGS[4];
+uint16_t& R5 = REGS[5];
+uint16_t& R6 = REGS[6];
+uint16_t& R7 = REGS[7];
+uint16_t& SP = REGS[6];
+uint16_t& PC = REGS[7];
+uint16_t starting_pc;
+instruction * current_instruction;	// decoded instruction information
+int verbosity_level;            // Level of verbosity in print statements
+string trace_file;
+string data_file;
+
+static int octalTest()
 {
-  int result = 0;
 
-  result = parseTest();
+  uint16_t testInstruction = 00113435;
 
+  uint16_t testByte = (testInstruction &       00100000) >> 15;
+  uint16_t testOp = testInstruction &         00070000;
+  uint16_t testSourceMode = testInstruction & 00007000;
+  uint16_t testSource = testInstruction &     00000700;
+  uint16_t testDestMode = testInstruction &   00000070;
+  uint16_t testDest = testInstruction &       00000007;
+
+  cout << "testInstruction" << oct << testInstruction << "\n";
+  cout << "testByte" << oct << testByte << "\n";
+  cout << "testOp" << oct << testOp << "\n";
+  cout << "testSourceMode" << oct << testSourceMode << "\n";
+  cout << "testSource" << oct << testSource << "\n";
+  cout << "testDestMode" << oct << testDestMode << "\n";
+  cout << "testDest" << oct << testDest << "\n";
   return 1;
 }
 
 
+int main()
+{
+  int result = 0;
 
-int parseTest()
+  //result = parseTest();
+  result = octalTest();
+  
+  return 1;
+}
+
+/*int parseTest()
 {
 
   // Create array of an instruction of every unique type,
@@ -49,4 +89,4 @@ int parseTest()
     cout << "\n";
   }
 
-}
+}*/

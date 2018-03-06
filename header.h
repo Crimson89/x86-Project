@@ -32,9 +32,9 @@ typedef struct {
 	uint16_t regBase;	// reg pre-dereferencing
 
 	// These should be pointers
-	uint16_t * src; // src post-dereferencing
-	uint16_t * dest;// dest post-dereferencing
-	uint16_t * reg; // reg post-dereferencing
+	uint16_t src; // src post-dereferencing
+	uint16_t dest;// dest post-dereferencing
+	uint16_t reg; // reg post-dereferencing
 
 	uint16_t offset;
 	uint16_t immediate; 
@@ -262,7 +262,7 @@ const uint16_t maskCondV = 0000002;//0x0002;
 const uint16_t maskCondC = 0000001;//0x0001;
 
 int parseInstruction(uint16_t instructionCode, instruction* newInstruction);
-int addressDecode(uint16_t mode, uint16_t baseAddress, uint16_t * resultAddress);
+int addressDecode(uint16_t mode, uint16_t baseAddress, uint16_t resultAddress);
 
 
 int parseTest();
