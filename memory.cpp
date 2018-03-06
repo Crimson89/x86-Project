@@ -234,7 +234,7 @@ int readData(){
 	if (PC == 0xFFFF) {
 		cerr << "\n\n-------------------------------------------------------------------------" <<endl;
 		cerr << "Error: PC not set"<< endl;
-		//get_user_octal("Enter octal starting PC value: ", "ERROR: Enter only 6 octal digits: ", PC);
+		get_user_octal("Enter octal starting PC value: ", "ERROR: Enter only 6 octal digits: ", PC);
 		starting_pc= PC;
 		cerr << "Set PC to start @ address: " << octal_to_string(PC) <<endl;
 		cerr << "                     Press ENTER to continue" << endl;
