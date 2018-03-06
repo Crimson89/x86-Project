@@ -41,7 +41,6 @@ typedef struct {
 	uint16_t registerMode;
 	uint8_t regCount; // Registers used. 0, 1, or 2  
 	bool byteInstruction;
-  // TODO why a union?
   union {
 		struct {
 			int SC: 3;
@@ -78,20 +77,17 @@ extern string data_file;
 // MAIN functions - main.cpp
 int menu_function(void);
 void get_user_octal(string prompt, string error_text, uint16_t &word);
-// Utility functions
-int loadOperands();
-int updateTracefile(bool write, uint16_t address);
-int addr_mode(uint8_t addr_mode, uint16_t & data_in, uint16_t & data_out);
 
 // Memory functions - memory.cpp
 int get_cmd_options(int argc, char ** argv);
 int readData(void);
 uint16_t string_to_octal(string input_string);
 string octal_to_string(uint16_t value);
-uint16_t read_byte(uint16_t address); //Read a byte and return it in the low 8 bits
-uint16_t read_word(uint16_t address); //Read two bytes in memory and return as little endian word
-void write_byte(uint16_t address, uint16_t byte); //Take byte in the low 8 bits and write to memory
-void write_word(uint16_t address, uint16_t word); //Write little endian word to two bytes in memory
+uint16_t read_byte(uint16_t address, bool trace = true);                              //Read a byte and return it in the low 8 bits
+//uint16_t read_word(uint16_t address, bool trace = true, bool is_instruction = false); //Read two bytes in memory and return as little endian word
+uint16_t read_word(int address, bool trace = true, bool is_instruction = false); //Read two bytes in memory and return as little endian word
+void write_byte(uint16_t address, uint16_t byte, bool trace = true);                  //Take byte in the low 8 bits and write to memory
+void write_word(uint16_t address, uint16_t word, bool trace = true);                  //Write little endian word to two bytes in memory
 void print_octal(uint16_t value);
 void print_all_memory(void);
 void print_all_registers(void);
@@ -101,9 +97,9 @@ void initializeMemory(void);
 // Trace Functions - trace.cpp
 int clear_trace(void);
 int print_trace(void);
-int data_read_trace(uint16_t address, uint16_t value);
-int data_write_trace(uint16_t address, uint16_t value);
-int instr_fetch_trace(uint16_t address, uint16_t value);
+int read_trace(uint16_t address, uint16_t value, bool is_instruction = false);
+int write_trace(uint16_t address, uint16_t value);
+
 
 // SINGLE OPERAND
 

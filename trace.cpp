@@ -37,17 +37,16 @@ int print_trace() {
 	return 0;
 }
 
-int data_read_trace(uint16_t address, uint16_t value) {
+int read_trace(uint16_t address, uint16_t value, bool is_instruction) {
+	if(is_instruction) {
+		if(verbosity_level >= HIGH_VERBOSITY) cout << "Instr fetch from address @"<<octal_to_string(address)<<": "<<octal_to_string(value)<<endl;
+		return write_line(("2 "+octal_to_string(address)));
+	}
 	if(verbosity_level >= HIGH_VERBOSITY) cout << "Data read from address   @"<<octal_to_string(address)<<": "<<octal_to_string(value)<<endl;
-	return write_line(("0 "+octal_to_string(address)) );
+	return write_line(("0 "+octal_to_string(address)));
 }
 
-int data_write_trace(uint16_t address, uint16_t value) {
+int write_trace(uint16_t address, uint16_t value) {
 	if(verbosity_level >= HIGH_VERBOSITY) cout << "Data write to address    @"<<octal_to_string(address)<<": "<<octal_to_string(value)<<endl;
 	return write_line(("1 "+octal_to_string(address)) );
-}
-
-int instr_fetch_trace(uint16_t address, uint16_t value) {
-	if(verbosity_level >= HIGH_VERBOSITY) cout << "Instr fetch from address @"<<octal_to_string(address)<<": "<<octal_to_string(value)<<endl;
-	return write_line(("2 "+octal_to_string(address)) );
 }

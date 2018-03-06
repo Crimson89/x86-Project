@@ -4,7 +4,7 @@
 #define DEBUG_VERBOSITY 3
 
 //Size of memory space
-#define MEMORY_SPACE ( (1<<16) - (1<<13) )
+#define MEMORY_SPACE (1<<16)
 
 
 // Register indices
