@@ -54,22 +54,6 @@ int CMP(instruction *inst) // Compare source to destination (B)
   return 0;
 }
 
-int ASH(instruction *inst) // Shift arithmetically
-{
-}
-
-int ASHC(instruction *inst) // Arithmetic shift combined
-{
-}
-
-int MUL(instruction *inst) // Multiply
-{
-}
-
-int DIV(instruction *inst) // Divide
-{
-}
-
 // Logical
 int BIT(instruction *inst) // Bit test (B)
 {
@@ -96,8 +80,4 @@ int BIS(instruction *inst) // Bit set (B)
   inst->Z = (inst->dest == 0)? 1:0;
   inst->V = 0;
   return 0;
-}
-
-int XOR(instruction *inst) // Exclusive OR
-{
 }
