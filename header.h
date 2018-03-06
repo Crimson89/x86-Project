@@ -113,10 +113,7 @@ int COM(instruction *inst); // 1's Compliment (B)
 int INC(instruction *inst); // Increment (B)
 int DEC(instruction *inst); // Decrement (B)
 int NEG(instruction *inst); // 2's Compliment negate (B)
-int NOP(instruction *inst); // No operation
 int TST(instruction *inst); // Test (B)
-int TSTSET(instruction *inst); // Test, set low bit
-int WRTLCK(instruction *inst); // Read/Lock destination, write/unlock R0 into destination
 
 // Shift & Rotate
 int ASR(instruction *inst); // Arithmetic shift right (B)
@@ -137,16 +134,11 @@ int MOV(instruction *inst); // Move source to destination (B)
 int ADD(instruction *inst); // Add source to destination
 int SUB(instruction *inst); // Subtract source from destination
 int CMP(instruction *inst); // Compare source to destination (B)
-int ASH(instruction *inst); // Shift arithmetically
-int ASHC(instruction *inst); // Arithmetic shift combined
-int MUL(instruction *inst); // Multiply
-int DIV(instruction *inst); // Divide
 
 // Logical
 int BIT(instruction *inst); // Bit test (B)
 int BIC(instruction *inst); // Bit clear (B)
 int BIS(instruction *inst); // Bit set (B)
-int XOR(instruction *inst); // Exclusive OR
 
 // BRANCH
 
@@ -166,7 +158,6 @@ int BGE(instruction *inst); // Branch if greater than or equal (to zero)
 int BLT(instruction *inst); // Branch if less than (zero)
 int BGT(instruction *inst); // Branch if greater than (zero)
 int BLE(instruction *inst); // Branch if less than or equal (to zero)
-int SOB(instruction *inst); // Subtract one and branch (if not = 0)
 
 // Unsigned Conditional Branch
 int BHI(instruction *inst); // Branch if higher
@@ -178,34 +169,14 @@ int BLO(instruction *inst); // Branch if lower
 
 int JMP(instruction *inst); // Jump
 int JSR(instruction *inst); // Jump to subroutine
-int RTS(instruction *inst); // Return from subroutine
-int MARK(instruction *inst); // Facilitates stack clean-up procedures
 
 // TRAPS & INTERRUPTS
 
 int EMT(instruction *inst); // Emulator trap
-int TRAP(instruction *inst); // Trap
-int BPT(instruction *inst); // Breakpoint trap
-int IOT(instruction *inst); // Input/Output trap
-int CSM(instruction *inst); // Call to supervisor mode
-int RTI(instruction *inst); // Return from interrupt
-int RTT(instruction *inst); // Return from trap???
-
-// MISC
-
-//int HALT(instruction *inst); // Halt -- Nothing to do, handled in program loop - Exists loop
-int WAIT(instruction *inst); // Wait for interrupt
-int RESET(instruction *inst); // Reset UNIBUS
-int MTPD(instruction *inst); // Move to previous data space
-int MTPI(instruction *inst); // Move to previous instruction space
-int MFPD(instruction *inst); // Move from previous data space
-int MFPI(instruction *inst); // Move from previous instruction space
-int MTPS(instruction *inst); // Move byte to processor status word
-int MFPS(instruction *inst); // Move byte from processor status word
-int MFPT(instruction *inst); // Move from processor type
 
 // CONDITION CODES
 
+int SPL(instruction *inst); // Set priority level
 int CLC(instruction *inst); // Clear carry
 int CLV(instruction *inst); // Clear overflow
 int CLZ(instruction *inst); // Clear zero

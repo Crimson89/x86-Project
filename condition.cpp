@@ -1,5 +1,9 @@
 #include "header.h"
 
+int SPL(instruction *inst) // Set priority level
+{
+}
+
 int CLC(instruction *inst) // Clear carry
 {
 }
