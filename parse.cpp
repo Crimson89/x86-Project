@@ -78,7 +78,11 @@ int parseInstruction(uint16_t instructionCode, instruction* newInstruction)
   
   uint16_t relevantBits = instructionCode & maskRelevantBits;
   uint16_t bitPattern = relevantBits & maskSingleCondBranchCondCheck;
+  uint16_t tempLocation;
 
+  // TODO may need to shift certain amounts for source, dest, reg bases.
+  // Didn't think about how to actually interface with registers and memory space, 
+  // so working that out now.
   if (bitPattern == 0000000) // Define constans for these maybe.
   {
     bitPattern = relevantBits & maskSingle;
@@ -86,10 +90,11 @@ int parseInstruction(uint16_t instructionCode, instruction* newInstruction)
     {
       // Single operand
       current_instruction->opcode = instructionCode & maskSingleOpcode;
-      current_instruction->addressingModeReg = instructionCode & maskSingleMode;
-      current_instruction->regBase = instructionCode & maskSingleRegister;
+      current_instruction->addressingModeReg = (instructionCode & maskSingleMode) >> 3;
+      tempLocation = instructionCode & maskSingleRegister;
+      current_instruction->regBase = REGS[tempLocation];
       err = addressDecode(current_instruction->addressingModeReg, current_instruction->regBase, current_instruction->reg);
-      current_instruction->byteMode = instructionCode & maskByteMode;
+      current_instruction->byteMode = (instructionCode & maskByteMode) >> 15;
       cout << "SINGLE " << "\n";
     }
     else
@@ -124,12 +129,12 @@ int parseInstruction(uint16_t instructionCode, instruction* newInstruction)
     {
       // register source double operand
       current_instruction->opcode = instructionCode & maskDoubleRegisterOpcode;
-      current_instruction->regBase = instructionCode & maskDoubleRegisterReg;
+      current_instruction->regBase = (instructionCode & maskDoubleRegisterReg) >> 6;
       // TODO Defined by wikipedia, this is srouce/dest, how should I handle that?
       current_instruction->srcBase = instructionCode & maskDoubleRegisterSourceDest;
       current_instruction->destBase = instructionCode & maskDoubleRegisterSourceDest;
-      current_instruction->addressingModeSrc = instructionCode & maskDoubleRegisterSourceDestMode;
-      current_instruction->addressingModeDest = instructionCode & maskDoubleRegisterSourceDestMode;
+      current_instruction->addressingModeSrc = (instructionCode & maskDoubleRegisterSourceDestMode) >> 3;
+      current_instruction->addressingModeDest = (instructionCode & maskDoubleRegisterSourceDestMode) >> 3;
       cout << "DOUBLE REG " << "\n";
 
       err = addressDecode(current_instruction->addressingModeReg, current_instruction->regBase, current_instruction->reg);
@@ -142,10 +147,10 @@ int parseInstruction(uint16_t instructionCode, instruction* newInstruction)
     {
       // double operand
       current_instruction->opcode = instructionCode & maskDoubleOpcode;
-      current_instruction->srcBase = instructionCode & maskDoubleSource;
-      current_instruction->addressingModeSrc = instructionCode & maskDoubleSourceMode;
+      current_instruction->srcBase = (instructionCode & maskDoubleSource) >> 6;
+      current_instruction->addressingModeSrc = (instructionCode & maskDoubleSourceMode) >> 9;
       current_instruction->destBase = instructionCode & maskDoubleDest;
-      current_instruction->addressingModeDest = instructionCode & maskDoubleDestMode;
+      current_instruction->addressingModeDest = (instructionCode & maskDoubleDestMode) >> 3;
 
       err = addressDecode(current_instruction->addressingModeSrc, current_instruction->srcBase, current_instruction->src);
 
@@ -157,28 +162,30 @@ int parseInstruction(uint16_t instructionCode, instruction* newInstruction)
   return err;
 }
 
-int addressDecode(uint16_t mode, uint16_t baseAddress, uint16_t * resultAddress)
+// TODO how to handle PC and SP modes.
+int addressDecode(uint16_t mode, uint16_t baseAddress, uint16_t resultAddress)
 {
-  // TODO review pointer stuff here, I am confident it is wrong.
+  // TODO get rid of pointer stuff.
   int err;
   uint16_t X;
   uint16_t workingAddress;
-  
-  // TODO add assignments of values into things, needed or already done? Already done methinks.
-  // TODO add byute mode check for autoincrement and decrement. 
+  bool byteMode = current_instruction->byteInstruction;
+ 
+  // TODO byte vs word accesses, flag and some ifs?
   switch (mode)
   {
     // Register
-    case 0000000: *resultAddress = baseAddress; // Keep baseAddress the same.
+    case 0000000: resultAddress = baseAddress; // Keep baseAddress the same.
                   break;
     // Register deferred
-    case 0000001: workingAddress = baseAddress;
-                  *resultAddress = workingAddress;
+    case 0000001: //resultAddress = *baseAddress;
+                  resultAddress = read_byte(baseAddress); // Maybe this? Address of a spot in MEM?
                   break;
     // Autoincrement
-    case 0000002: workingAddress = baseAddress;
-                  *resultAddress = workingAddress;
-                  if (current_instruction->byteInstruction == true)
+    case 0000002: //workingAddress = baseAddress;
+                  //resultAddress = *baseAddress;
+                  resultAddress = read_byte(baseAddress);
+                  if (byteMode == true)
                     {
                       baseAddress++;
                     }
@@ -188,12 +195,14 @@ int addressDecode(uint16_t mode, uint16_t baseAddress, uint16_t * resultAddress)
                     }
                   break;
     // Autoincrement deferred
-    case 0000003: workingAddress = baseAddress;
-                  *resultAddress = workingAddress;
+    case 0000003: workingAddress = read_byte(baseAddress);
+                  //workingAddress = *baseAddress;
+                  //resultAddress = *workingAddress;
+                  resultAddress = read_byte(workingAddress);
                   baseAddress += 2;
                   break;
     // Autodecrement
-    case 0000004: if (current_instruction->byteInstruction == true)
+    case 0000004: if (byteMode == true)
                   {
                     baseAddress--;
                   }
@@ -201,26 +210,31 @@ int addressDecode(uint16_t mode, uint16_t baseAddress, uint16_t * resultAddress)
                   {
                     baseAddress -= 2;
                   }
-                  workingAddress = baseAddress;
-                  *resultAddress = workingAddress;
+                  //workingAddress = baseAddress;
+                  //resultAddress = *baseAddress;
+                  resultAddress = read_byte(baseAddress);
                   break;
     // Autodecrement deferred
     case 0000005: baseAddress -= 2;
-                  workingAddress = baseAddress;
-                  *resultAddress = workingAddress;
+                  workingAddress = read_byte(baseAddress);
+                  //workingAddress = *baseAddress;
+                  resultAddress = read_byte(workingAddress);
+                  //resultAddress = *workingAddress;
                   break;
     // Index
     // TODO WTF how does the X translate in the instruction code?
-    case 0000006: workingAddress = baseAddress;
+    case 0000006: //workingAddress = baseAddress;
                   //TODO dereference PC first?
                   X = PC + 2;
-                  *resultAddress = workingAddress + X;
+                  //resultAddress = *baseAddress + X;
+                  resultAddress = read_byte(baseAddress + X);
                   break;
     // Index deferred
-    case 0000007: workingAddress = baseAddress;
+    case 0000007: workingAddress = read_byte(baseAddress);
                   //TODO dereference PC first?
                   X = PC + 2;
-                  *resultAddress = *((uint16_t*)(workingAddress + X));
+                  resultAddress = read_byte(workingAddress + X);
+                  //resultAddress = *workingAddress + X;
                   break;
   }
   
