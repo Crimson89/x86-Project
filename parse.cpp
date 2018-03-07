@@ -437,8 +437,8 @@ uint16_t get_address(uint16_t mode, uint16_t baseAddress)
     // Register
     // TODO What to do here?
     // Probably have to check in the instruction if it's mode is register any time get address is
-    // wanted.
-    case 0000000: //resultAddress = REGS[baseAddress];
+    // wanted. Maybe not needed with new read/write_byte/word instructions.
+    case 0000000: resultAddress = baseAddress;
                   break;
     // Register deferred
     case 0000001: resultAddress = REGS[baseAddress];
