@@ -46,7 +46,7 @@ void print_octal(uint16_t value){
 void print_all_memory(void) {
 	uint16_t hasContent = 0;
 	uint16_t memory_word;
-	for(uint16_t i = 0; i < (MEMORY_SPACE-1); i+=2) {
+	for(int i = 0; i < (MEMORY_SPACE); i+=2) { //by word, this is a word access
 		memory_word = read_word(i, false, false);
 		if(memory_word!=0xFFFF) {
 			hasContent+=1;
@@ -67,7 +67,7 @@ void print_all_memory(void) {
 
 
 void initializeMemory(){
-	for(int i = 0; i < (MEMORY_SPACE-1); i++) { //Initialize memory space
+	for(int i = 0; i < (MEMORY_SPACE); i++) { //Initialize memory space, by byte, since this is a byte access
 		write_byte(i,0xFF, false);
 	}
 }
