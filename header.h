@@ -79,10 +79,10 @@ int get_cmd_options(int argc, char ** argv);
 int readData(void);
 uint16_t string_to_octal(string input_string);
 string octal_to_string(uint16_t value);
-uint16_t read_byte(uint16_t address, bool trace = true);                              //Read a byte and return it in the low 8 bits
-uint16_t read_word(uint16_t address, bool trace = true, bool is_instruction = false); //Read two bytes in memory and return as little endian word
-void write_byte(uint16_t address, uint16_t byte, bool trace = true);                  //Take byte in the low 8 bits and write to memory
-void write_word(uint16_t address, uint16_t word, bool trace = true);                  //Write little endian word to two bytes in memory
+uint16_t read_byte(uint16_t addressMode, uint16_t address, bool trace = true);                              //Read a byte and return it in the low 8 bits
+uint16_t read_word(uint16_t addressMode, uint16_t address, bool trace = true, bool is_instruction = false); //Read two bytes in memory and return as little endian word
+void write_byte(uint16_t addressMode, uint16_t address, uint16_t byte, bool trace = true);                  //Take byte in the low 8 bits and write to memory
+void write_word(uint16_t addressMode, uint16_t address, uint16_t word, bool trace = true);                  //Write little endian word to two bytes in memory
 void print_octal(uint16_t value);
 void print_all_memory(void);
 void print_all_registers(void);
@@ -224,7 +224,7 @@ const uint16_t maskCondV = 0000002;//0x0002;
 const uint16_t maskCondC = 0000001;//0x0001;
 
 int parseInstruction(uint16_t instructionCode, instruction* newInstruction);
-int addressDecode(uint16_t mode, uint16_t baseAddress, uint16_t resultAddress);
+//int addressDecode(uint16_t mode, uint16_t baseAddress, uint16_t resultAddress);
 uint16_t get_address(uint16_t mode, uint16_t baseAddress);
 uint16_t get_value(uint16_t mode, uint16_t baseAddress);
 

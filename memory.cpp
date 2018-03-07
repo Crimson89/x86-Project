@@ -11,31 +11,67 @@ string octal_to_string(uint16_t value) {
 }
 
 
-uint16_t read_byte(uint16_t address, bool trace) {
-	uint16_t data = 0x00FF&MEM[address];
-	if(trace)
-		read_trace(address, data);
+uint16_t read_byte(uint16_t addressMode, uint16_t address, bool trace) {
+	uint16_t data;
+  if (addressMode == 0)
+  {
+    data = REGS[address] & 0x00FF;
+  }
+  else
+  {
+    data = 0x00FF&MEM[address];
+	  if(trace)
+		  read_trace(address, data);
+  }
 	return (data);
 }
 
-uint16_t read_word(uint16_t address, bool trace, bool is_instruction) {
-	uint16_t data = ((MEM[address+1]<<8) | (MEM[address]));
-	if(trace)
-		read_trace(address, data, is_instruction);
+uint16_t read_word(uint16_t addressMode, uint16_t address, bool trace, bool is_instruction) {
+	uint16_t data;
+  
+  // TODO constant
+  if (addressMode == 0)
+  {
+    data = REGS[address];
+  }
+  else
+  {
+    data = ((MEM[address+1]<<8) | (MEM[address]));
+	  if(trace)
+		  read_trace(address, data, is_instruction);
+  }
 	return (data);
 }
 
-void write_byte(uint16_t address, uint16_t byte, bool trace) {
-	if(trace)
-		write_trace(address, byte);
-	MEM[address] = 0x00FF&byte;
+void write_byte(uint16_t addressMode, uint16_t address, uint16_t byte, bool trace) {
+	uint16_t tempValue = 0;
+
+  if (addressMode == 0)
+  {
+    tempValue = 0xFF00 & REGS[address];
+    tempValue = tempValue | (byte & 0x00FF);
+  }
+  else
+  {
+    if(trace)
+		  write_trace(address, byte);
+	  MEM[address] = 0x00FF&byte;
+  }
 }
 
-void write_word(uint16_t address, uint16_t word, bool trace) {
-	if(trace)
-		write_trace(address, word);
-	MEM[address]   = (0x00FF&word);
-	MEM[address+1] = ((0xFF00&word)>>8);
+void write_word(uint16_t addressMode, uint16_t address, uint16_t word, bool trace) {
+	
+  if (addressMode == 0)
+  {
+    REGS[address] = word;
+  }
+  else
+  {
+    if(trace)
+		  write_trace(address, word);
+	  MEM[address]   = (0x00FF&word);
+	  MEM[address+1] = ((0xFF00&word)>>8);
+  }
 }
 
 void print_octal(uint16_t value){
@@ -209,7 +245,7 @@ int readData(){
 				if(verbosity_level >= DEBUG_VERBOSITY) cout << "Loading:  " << input_word<<endl;
 				if(verbosity_level >= DEBUG_VERBOSITY) cout << "@address: " << octal_to_string(address)<<endl;
 				write_word(address,string_to_octal(input_word), false); //Read string, convert uint16, and write to memory
-				if(verbosity_level >= DEBUG_VERBOSITY) cout << "Loaded to memory, Read Back: " << octal_to_string(read_word(address))<<endl;
+				if(verbosity_level >= DEBUG_VERBOSITY) cout << "Loaded to memory, Read Back: " << octal_to_string(read_word(FILE_READ, address))<<endl;
 				address+=2;
 			}
 			else {

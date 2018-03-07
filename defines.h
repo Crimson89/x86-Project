@@ -31,6 +31,8 @@
 #define AUTO_DEC_DEFR_MODE    5
 #define INDEX_MODE            6
 #define INDEX_DEFR_MODE       7
+// For use in reading from file
+#define FILE_READ             8
 
 // PC Only Modes
 #define PC_IMMEDIATE_MODE     2
