@@ -12,15 +12,14 @@ string octal_to_string(uint16_t value) {
 
 
 uint16_t read_byte(uint16_t address, bool trace) {
-	uint16_t data = 0x00FF&MEM[int(address)];
+	uint16_t data = 0x00FF&MEM[address];
 	if(trace)
 		read_trace(address, data);
 	return (data);
 }
 
-//uint16_t read_word(uint16_t address, bool trace, bool is_instruction) {
-uint16_t read_word(int address, bool trace, bool is_instruction) {
-	uint16_t data = ((MEM[int(address+1)]<<8) | (MEM[int(address)]));
+uint16_t read_word(uint16_t address, bool trace, bool is_instruction) {
+	uint16_t data = ((MEM[address+1]<<8) | (MEM[address]));
 	if(trace)
 		read_trace(address, data, is_instruction);
 	return (data);
@@ -29,26 +28,26 @@ uint16_t read_word(int address, bool trace, bool is_instruction) {
 void write_byte(uint16_t address, uint16_t byte, bool trace) {
 	if(trace)
 		write_trace(address, byte);
-	MEM[int(address)] = 0x00FF&byte;
+	MEM[address] = 0x00FF&byte;
 }
 
 void write_word(uint16_t address, uint16_t word, bool trace) {
 	if(trace)
 		write_trace(address, word);
-	MEM[int(address)]   = (0x00FF&word);
-	MEM[int(address+1)] = ((0xFF00&word)>>8);
+	MEM[address]   = (0x00FF&word);
+	MEM[address+1] = ((0xFF00&word)>>8);
 }
 
 void print_octal(uint16_t value){
 	cout <<setfill('0')<<setw(6)<<oct<<value;
 }
 
-//print_octal(read_word(address))
+
 void print_all_memory(void) {
 	uint16_t hasContent = 0;
 	uint16_t memory_word;
 	for(uint16_t i = 0; i < (MEMORY_SPACE-1); i+=2) {
-		memory_word = MEM[i];
+		memory_word = read_word(i, false, false);
 		if(memory_word!=0xFFFF) {
 			hasContent+=1;
 			cout <<"@ADDR="; print_octal(i); cout <<", Contents=" << octal_to_string(memory_word);
