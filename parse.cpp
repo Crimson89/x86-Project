@@ -180,7 +180,14 @@ int addressDecode(uint16_t mode, uint16_t baseAddress, uint16_t resultAddress)
                   break;
     // Register deferred
     case 0000001: //resultAddress = *baseAddress;
-                  resultAddress = read_byte(baseAddress); // Maybe this? Address of a spot in MEM?
+                  if (bytemode)
+                  {
+                    resultAddress = read_byte(baseAddress); // Maybe this? Address of a spot in MEM?
+                  }
+                  else
+                  {
+                    resultAddress = read_word(baseAddress);
+                  }
                   break;
     // Autoincrement
     case 0000002: //workingAddress = baseAddress;
@@ -242,7 +249,7 @@ int addressDecode(uint16_t mode, uint16_t baseAddress, uint16_t resultAddress)
   return err;
 }
 
-// TODO, gotta add PC and SP?
+// TODO, gotta add PC and SP (probably just check if R6 or R7, since baseAddress is only specifying 0-7 right)?
 // This returns the address, doing N-1 trace statements. We could probably have the trace statements in
 // the read_byte and read_word functions honestly.
 uint16_t get_address(uint16_t mode, uint16_t baseAddress)
@@ -279,7 +286,14 @@ uint16_t get_address(uint16_t mode, uint16_t baseAddress)
     // Autoincrement deferred
     case 0000003: workingAddress = REGS[baseAddress]; 
                   // READ TRACE
-                  resultAddress = read_byte(workingAddress);
+                  if (byteMode)
+                  }
+                    resultAddress = read_byte(workingAddress);
+                  }
+                  else
+                  {
+                    resultAddress = read_word(workingAddress);
+                  }
                   REGS[baseAddress] += 2;
                   break;
     // Autodecrement
@@ -297,7 +311,14 @@ uint16_t get_address(uint16_t mode, uint16_t baseAddress)
     case 0000005: REGS[baseAddress] -= 2;
                   workingAddress = REGS[baseAddress];
                   // READ TRACE
-                  resultAddress = read_byte(workingAddress);
+                  if (byteMode)
+                  {
+                    resultAddress = read_byte(workingAddress);
+                  }
+                  else
+                  {
+                    resultAddress = read_word(workingAddress);
+                  }
                   break;
     // Index
     // TODO WTF how does the X translate in the instruction code?
@@ -310,7 +331,14 @@ uint16_t get_address(uint16_t mode, uint16_t baseAddress)
                   //TODO how to interface with PC?
                   X = PC + 2;
                   // READ TRACE
-                  resultAddress = read_byte(workingAddress + X);
+                  if (byteMode)
+                  {
+                    resultAddress = read_byte(workingAddress + X);
+                  }
+                  else
+                  {
+                    resultAddress = read_word(workingAddress + X);
+                  }
                   break;
   }
 
@@ -331,14 +359,30 @@ uint16_t get_value(uint16_t mode, uint16_t baseAddress)
     case 0000000: resultValue = REGS[baseAddress];
                   break;
     // Register deferred
-    case 0000001: // READ TRACE
-                  workingAddress = REGS[baseAddress];
-                  resultValue = read_byte(workingAddress);
+    case 0000001: workingAddress = REGS[baseAddress];
+                  if (byteMode)
+                  {
+                    // READ TRACE
+                    resultValue = read_byte(workingAddress);
+                  }
+                  else
+                  {
+                    // READ TRACE
+                    resultValue = read_word(workingAddress);
+                  }
                   break;
     // Autoincrement
-    case 0000002: // READ TRACE
-                  workingAddress = REGS[baseAddress];
-                  resultValue = read_byte(workingAddress);
+    case 0000002: workingAddress = REGS[baseAddress];
+                  if (byteMode)
+                  {
+                    // READ TRACE
+                    resultValue = read_byte(workingAddress);
+                  }
+                  else
+                  {
+                    // READ TRACE
+                    resultValue = read_word(workingAddress);
+                  }
                   if (byteMode == true)
                     {
                       baseAddress++;
@@ -351,9 +395,18 @@ uint16_t get_value(uint16_t mode, uint16_t baseAddress)
     // Autoincrement deferred
     case 0000003: // READ TRACE
                   workingAddress = REGS[baseAddress];
-                  workingAddress = read_byte(workingAddress);
-                  // READ TRACE
-                  resultValue = read_byte(workingAddress);
+                  if (byteMode)
+                  {
+                    workingAddress = read_byte(workingAddress);
+                    // READ TRACE
+                    resultValue = read_byte(workingAddress);
+                  }
+                  else
+                  { 
+                    workingAddress = read_word(workingAddress);
+                    // READ TRACE
+                    resultValue = read_word(workingAddress);
+                  }
                   baseAddress += 2;
                   break;
     // Autodecrement
@@ -365,32 +418,69 @@ uint16_t get_value(uint16_t mode, uint16_t baseAddress)
                   {
                     baseAddress -= 2;
                   }
-                  // READ TRACE
                   workingAddress = REGS[baseAddress];
-                  resultValue = read_byte(baseAddress);
+                  if (byteMode)
+                  {
+                    // READ TRACE
+                    resultValue = read_byte(baseAddress);
+                  }
+                  else
+                  {
+                    // READ TRACE
+                    resultValue = read_word(baseAddress);
+                  }
                   break;
     // Autodecrement deferred
     case 0000005: baseAddress -= 2;
-                  // READ TRACE
                   workingAddress = REGS[baseAddress];
-                  workingAddress = read_byte(workingAddress);
-                  // READ TRACE
-                  resultValue = read_byte(workingAddress);
+                  if (byteMode)
+                  {
+                    // READ TRACE
+                    workingAddress = read_byte(workingAddress);
+                    // READ TRACE
+                    resultValue = read_byte(workingAddress);
+                  }
+                  else
+                  { 
+                    // READ TRACE
+                    workingAddress = read_word(workingAddress);
+                    // READ TRACE
+                    resultValue = read_word(workingAddress);
+                  }
                   break;
     // Index
     // TODO WTF how does the X translate in the instruction code?
-    case 0000006: //TODO dereference PC first?
+    case 0000006: //TODO how to properly interface with PC?
                   X = PC + 2;
-                  // READ TRACE
-                  resultValue = read_byte(baseAddress + X);
+                  if (byteMode)
+                  {
+                    // READ TRACE
+                    resultValue = read_byte(baseAddress + X);
+                  }
+                  else
+                  { 
+                    // READ TRACE
+                    resultValue = read_byte(baseAddress + X);
+                  }
                   break;
     // Index deferred
-    case 0000007: // READ TRACE
-                  workingAddress = read_byte(baseAddress);
-                  //TODO dereference PC first?
+    case 0000007: 
+                  //TODO how to properly interface with PC? X is the second word of the instruction?
                   X = PC + 2;
-                  // READ TRACE
-                  resultValue = read_byte(workingAddress + X);
+                  if (byteMode)
+                  {
+                    // READ TRACE
+                    workingAddress = read_byte(baseAddress);
+                    // READ TRACE
+                    resultValue = read_byte(workingAddress + X);
+                  }
+                  else
+                  {
+                    // READ TRACE
+                    workingAddress = read_byte(baseAddress);
+                    // READ TRACE
+                    resultValue = read_byte(workingAddress + X);
+                  }
                   break;
   }
 
