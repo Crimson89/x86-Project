@@ -22,8 +22,6 @@ using namespace std;
 typedef struct {
   uint16_t opcode;  
   uint16_t byteMode;  
-  //instructionFamily instructionType ; //Double operand, single operand, conditional jump, shit like that.  
-  //enum instructionFamily; // J, I, R? Not in PDP right?  
 	uint16_t addressingModeSrc;  
 	uint16_t addressingModeDest;
 	uint16_t addressingModeReg;  
@@ -31,7 +29,6 @@ typedef struct {
 	uint16_t destBase;	// dest pre-dereferencing
 	uint16_t regBase;	// reg pre-dereferencing
 
-	// These should be pointers
 	uint16_t src; // src post-dereferencing
 	uint16_t dest;// dest post-dereferencing
 	uint16_t reg; // reg post-dereferencing
@@ -39,7 +36,6 @@ typedef struct {
 	uint16_t offset;
 	uint16_t immediate; 
 	uint16_t registerMode;
-	uint8_t regCount; // Registers used. 0, 1, or 2  
 	bool byteInstruction;
   union {
 		struct {
@@ -229,7 +225,8 @@ const uint16_t maskCondC = 0000001;//0x0001;
 
 int parseInstruction(uint16_t instructionCode, instruction* newInstruction);
 int addressDecode(uint16_t mode, uint16_t baseAddress, uint16_t resultAddress);
-
+uint16_t get_address(uint16_t mode, uint16_t baseAddress);
+uint16_t get_value(uint16_t mode, uint16_t baseAddress);
 
 int parseTest();
 #endif // HEADER_H
