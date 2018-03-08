@@ -29,6 +29,7 @@ void write_byte(uint16_t address, uint16_t byte, bool trace) {
 	if(trace)
 		write_trace(address, byte);
 	MEM[address] = 0x00FF&byte;
+	MEM_USED_FLAGS[address] = true;
 }
 
 void write_word(uint16_t address, uint16_t word, bool trace) {
@@ -36,10 +37,75 @@ void write_word(uint16_t address, uint16_t word, bool trace) {
 		write_trace(address, word);
 	MEM[address]   = (0x00FF&word);
 	MEM[address+1] = ((0xFF00&word)>>8);
+	MEM_USED_FLAGS[address] = true;
+	MEM_USED_FLAGS[address+1] = true;
 }
 
 void print_octal(uint16_t value){
 	cout <<setfill('0')<<setw(6)<<oct<<value;
+}
+
+int set_breakpoint(uint16_t address){
+	if(BREAK_POINT[(address/2)]) {
+		cout <<"Breakpoint already set @ADDR="; print_octal(address); cout << endl;
+		return 0;
+	}
+	BREAK_POINT[(address/2)] = true;
+	cout <<"Breakpoint set @ADDR="; print_octal(address); cout << endl;
+	return 1;
+}
+
+int clear_all_breakpoints(void) {
+	bool breakpoints = false;
+	for(int i = 0; i < (MEMORY_SPACE/2); i+=1) {
+		if(BREAK_POINT[i])
+			breakpoints = true;
+		BREAK_POINT[i] = false;
+	}
+	if(breakpoints) {
+		cout <<"Cleared all breakpoints" << endl;
+		return 1;
+	}
+	cout <<"No breakpoints to clear" << endl;
+	return 0;	
+}
+
+int clear_breakpoint(uint16_t address) {
+	if(BREAK_POINT[(address/2)]) {
+		BREAK_POINT[(address/2)] = false;
+		cout <<"Clear breakpoint @ADDR="; print_octal(address); cout << endl;
+		return 1;
+	}
+	cout <<"No breakpoint @ADDR="; print_octal(address); cout << endl;
+	return 0;
+}
+
+int check_breakpoint(uint16_t address){
+	if(BREAK_POINT[(address/2)]) {
+		cout << "\n\n-------------------------------------------------------------------------" <<endl;
+		cout <<"Hit breakpoint @ADDR="; print_octal(address); cout << endl;
+		cout << "Print Memory Contents" << endl;
+		print_all_memory();
+		cout << "End of Valid Memory" << endl;
+		cout << "Print Register Contents" << endl;
+		print_all_registers();
+		cout << "End of Registers" << endl;
+		cout << "\n\n                      Press ENTER to continue" << endl;
+		cout << "-------------------------------------------------------------------------" <<endl;
+		cin.get();
+		return 1;
+	}
+	return 0;
+}
+
+void print_all_breakpoints(void){
+for(int i = 0; i < (MEMORY_SPACE/2); i+=1)
+	if(BREAK_POINT[i]) {
+		cout <<"Breakpoint @ADDR="; print_octal(i*2);
+		cout <<", Contents=";
+		print_octal(read_word(i*2, false, false));
+		cout << endl;
+	}
 }
 
 
@@ -47,8 +113,8 @@ void print_all_memory(void) {
 	uint16_t hasContent = 0;
 	uint16_t memory_word;
 	for(int i = 0; i < (MEMORY_SPACE); i+=2) { //by word, this is a word access
-		memory_word = read_word(i, false, false);
-		if(memory_word!=0xFFFF) {
+		if(MEM_USED_FLAGS[i] == true) {
+			memory_word = read_word(i, false, false);
 			hasContent+=1;
 			cout <<"@ADDR="; print_octal(i); cout <<", Contents=" << octal_to_string(memory_word);
 			if( (PC != 0xFFFF) && (i == PC) )
@@ -68,7 +134,8 @@ void print_all_memory(void) {
 
 void initializeMemory(){
 	for(int i = 0; i < (MEMORY_SPACE); i++) { //Initialize memory space, by byte, since this is a byte access
-		write_byte(i,0xFF, false);
+		write_byte(i,0x00, false);
+		MEM_USED_FLAGS[i] = false;
 	}
 }
 

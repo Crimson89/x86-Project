@@ -57,6 +57,8 @@ typedef struct {
 //Define REGS, MEM, and  globals
 extern uint16_t REGS[7];
 extern uint8_t MEM[MEMORY_SPACE];
+extern bool MEM_USED_FLAGS[MEMORY_SPACE];
+extern bool BREAK_POINT[MEMORY_SPACE/2];
 extern uint16_t& R0;
 extern uint16_t& R1;
 extern uint16_t& R2;
@@ -91,6 +93,12 @@ void print_octal(uint16_t value);
 void print_all_memory(void);
 void print_all_registers(void);
 void initializeMemory(void);
+int set_breakpoint(uint16_t address);
+int clear_all_breakpoints(void);
+int clear_breakpoint(uint16_t address);
+int check_breakpoint(uint16_t address);
+void print_all_breakpoints(void);
+
 
 
 // Trace Functions - trace.cpp

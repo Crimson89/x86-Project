@@ -1,7 +1,9 @@
 #include "header.h"
 
-uint16_t REGS[7];
-uint8_t MEM[MEMORY_SPACE];
+uint16_t REGS[7];                  //CPU Registers
+uint8_t MEM[MEMORY_SPACE];         //Byte memory array, index is memory address
+bool MEM_USED_FLAGS[MEMORY_SPACE]; //Memory used array, true==memory used/valid, false==invalid
+bool BREAK_POINT[MEMORY_SPACE/2];    //Breakpoint address, when PC == this value the program pauses
 uint16_t& R0 = REGS[0];
 uint16_t& R1 = REGS[1];
 uint16_t& R2 = REGS[2];
@@ -14,7 +16,7 @@ uint16_t& SP = REGS[6];
 uint16_t& PC = REGS[7];
 uint16_t starting_pc;
 instruction * current_instruction;	// decoded instruction information
-int verbosity_level;            // Level of verbosity in print statements
+int verbosity_level;                // Level of verbosity in print statements
 string trace_file;
 string data_file;
 
@@ -60,6 +62,7 @@ int main(int argc, char ** argv)
 				// IF
 				instruction_code = read_word(PC, true);
 				PC += 2;
+				check_breakpoint(PC); // Check this memory location for a breakpoint
 
 				// ID
 				err = parseInstruction(instruction_code, current_instruction); 
@@ -119,10 +122,12 @@ void get_user_octal(string prompt, string error_text, uint16_t &word){
 	}
 }
 
+
 int menu_function() {
 	string input;
 	char input_char;
 	int menu_continue = 1;
+	uint16_t bp_address;
 	while(menu_continue) {
 		cout << "-------------------------------------------------------------------------" <<endl;
 		cout << "-------------------------------------------------------------------------" <<endl;
@@ -135,6 +140,10 @@ int menu_function() {
 		cout << "M(m) to print all valid memory contents" << endl;
 		cout << "L(l) to load new application" << endl;
 		cout << "T(t) to clear old trace file" << endl;
+		cout << "B(b) to set break point" << endl;
+		cout << "C(c) to clear breakpoint" << endl;
+		cout << "V(v) to clear all breakpoints" << endl;
+		cout << "N(n) to print all breakpoints" << endl;
 		cout << "-------------------------------------------------------------------------" <<endl;
 		cout << "-------------------------------------------------------------------------" <<endl;
 		cout << "\n\nSelection: ";
@@ -150,41 +159,41 @@ int menu_function() {
 		else {
 			switch(input_char){
 				case 'q':
-					cin.ignore(numeric_limits<streamsize>::max(), '\n');
 					cout << "-------------------------------------------------------------------------" <<endl;
 					cout << "-------------------------------------------------------------------------" <<endl;
 					cout << "                          Press ENTER to exit" << endl;
 					cout << "-------------------------------------------------------------------------" <<endl;
 					cout << "-------------------------------------------------------------------------" <<endl;
+					cin.ignore(numeric_limits<streamsize>::max(), '\n');
 					cin.get();
 					exit(EXIT_SUCCESS);
 					break;
 					case 't':
-					cin.ignore(numeric_limits<streamsize>::max(), '\n');
 					cout << "\n\n-------------------------------------------------------------------------" <<endl;
 					cout << "                     Print old trace file, " << trace_file << endl;
 					cout << "-------------------------------------------------------------------------" <<endl;
 					print_trace();
 					cout << "                          Press ENTER to continue" << endl;
 					cout << "-------------------------------------------------------------------------" <<endl;
+					cin.ignore(numeric_limits<streamsize>::max(), '\n');
 					cin.get();
 					break;
 				case 'p':
 					cout << "All registers' content:" <<endl;
 					print_all_registers();
-					cin.ignore(numeric_limits<streamsize>::max(), '\n');
 					cout << "-------------------------------------------------------------------------" <<endl;
 					cout << "                     Press ENTER to continue" << endl;
 					cout << "-------------------------------------------------------------------------" <<endl;
+					cin.ignore(numeric_limits<streamsize>::max(), '\n');
 					cin.get();
 					break;
 				case 'm':
 					cout << "All valid memory contents:" <<endl;
 					print_all_memory();
-					cin.ignore(numeric_limits<streamsize>::max(), '\n');
 					cout << "-------------------------------------------------------------------------" <<endl;
 					cout << "                     Press ENTER to continue" << endl;
 					cout << "-------------------------------------------------------------------------" <<endl;
+					cin.ignore(numeric_limits<streamsize>::max(), '\n');
 					cin.get();
 					break;
 				case 'r':
@@ -199,6 +208,48 @@ int menu_function() {
 					cout << "-------------------------------------------------------------------------" <<endl;
 					return RUN_PROGRAM;
 					break;
+				case 'b':
+					get_user_octal("Input octal breakpoint address(6 digits), then press ENTER:",
+					                   "ERROR: Invalid input\n\nPlease input address (6 octal digits), then press ENTER:",
+									   bp_address);
+					set_breakpoint(bp_address);
+					cout <<endl;
+					cout << "                          Press ENTER to continue" << endl;
+					cout << "-------------------------------------------------------------------------" <<endl;
+					cin.ignore(numeric_limits<streamsize>::max(), '\n');
+					cin.get();
+					break;
+				case 'c':
+					get_user_octal("Input octal breakpoint address to clear (6 digits), then press ENTER:",
+					                   "ERROR: Invalid input\n\nPlease input address (6 octal digits), then press ENTER:",
+									   bp_address);
+					clear_breakpoint(bp_address);
+					cout <<endl;
+					cout << "                          Press ENTER to continue" << endl;
+					cout << "-------------------------------------------------------------------------" <<endl;
+					cin.ignore(numeric_limits<streamsize>::max(), '\n');
+					cin.get();
+					break;
+				case 'v':
+					cout << "-------------------------------------------------------------------------" <<endl;
+					cout << "                     Clearing all breakpoints" << endl;
+					clear_all_breakpoints();
+					cout <<endl;
+					cout << "                      Press ENTER to continue" << endl;
+					cout << "-------------------------------------------------------------------------" <<endl;
+					cin.ignore(numeric_limits<streamsize>::max(), '\n');
+					cin.get();
+					break;
+				case 'n':
+					cout << "-------------------------------------------------------------------------" <<endl;
+					cout << "                     Printing all breakpoints" << endl;
+					print_all_breakpoints();
+					cout <<endl;
+					cout << "                      Press ENTER to continue" << endl;
+					cout << "-------------------------------------------------------------------------" <<endl;
+					cin.ignore(numeric_limits<streamsize>::max(), '\n');
+					cin.get();
+					break;
 				case 's':
 					get_user_octal("Input octal address to load into PC (6 digits), then press ENTER:",
 					                   "ERROR: Invalid input\n\nPlease input address to load into PC (6 octal digits), then press ENTER:",
@@ -208,6 +259,7 @@ int menu_function() {
 					cout <<endl;
 					cout << "                          Press ENTER to continue" << endl;
 					cout << "-------------------------------------------------------------------------" <<endl;
+					cin.ignore(numeric_limits<streamsize>::max(), '\n');
 					cin.get();
 					break;
 				case 'l':
