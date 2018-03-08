@@ -25,18 +25,20 @@ typedef struct {
 	uint16_t addressingModeSrc;  
 	uint16_t addressingModeDest;
 	uint16_t addressingModeReg;  
-	uint16_t srcBase;	// src pre-dereferencing
-	uint16_t destBase;	// dest pre-dereferencing
-	uint16_t regBase;	// reg pre-dereferencing
+	uint16_t srcBase;	// src register
+	uint16_t destBase;	// dest register
+	uint16_t regBase;	// reg register (lol)
 
-	uint16_t src; // src post-dereferencing
+	/* TODO make sure these aren't needed
+  uint16_t src; // src post-dereferencing
 	uint16_t dest;// dest post-dereferencing
 	uint16_t reg; // reg post-dereferencing
-
+  */
 	uint16_t offset;
-	uint16_t immediate; 
-	uint16_t registerMode;
-	bool byteInstruction;
+	// TODO don't think this is needed
+  uint16_t immediate; 
+	// TODO don't think this is needed
+  uint16_t registerMode;
   union {
 		struct {
 			int SC: 3;
@@ -47,7 +49,7 @@ typedef struct {
 		};
 		uint8_t PSW; // Processor Status Word
 	};
-  uint16_t rtsR; // placeholder till I figure this out.
+  uint16_t rtsReg;
 }instruction;
 
 //Define REGS, MEM, and  globals
@@ -228,5 +230,7 @@ int parseInstruction(uint16_t instructionCode, instruction* newInstruction);
 uint16_t get_address(uint16_t mode, uint16_t baseAddress);
 uint16_t get_value(uint16_t mode, uint16_t baseAddress);
 
+int printInstruction(instruction* newInstruction);
+int clearInstruction(instruction* newInstruction);
 int parseTest();
 #endif // HEADER_H

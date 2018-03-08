@@ -1,5 +1,39 @@
 #include "header.h"
 
+int printInstruction(instruction* newInstruction)
+{
+  printf("\nopcode %u\n", newInstruction->opcode);
+  printf("byteMode %u\n", newInstruction->byteMode);
+  printf("addressingModeSrc %u\n", newInstruction->addressingModeSrc);
+  printf("addressingModeDest %u\n", newInstruction->addressingModeDest);
+  printf("addressingModeReg %u\n", newInstruction->addressingModeReg);
+  printf("srcBase %u\n", newInstruction->srcBase);
+  printf("destBase %u\n", newInstruction->destBase);
+  printf("regBase %u\n", newInstruction->regBase);
+  printf("offset %u\n", newInstruction->offset);
+  printf("rtsReg %u\n\n", newInstruction->rtsReg);
+  //printf("opcode % u", newInstruction->opcode);
+  //printf("opcode % u", newInstruction->opcode);
+  return 0;
+}
+
+int clearInstruction(instruction* newInstruction)
+{
+  newInstruction->opcode = 0;
+  newInstruction->byteMode = 0;
+  newInstruction->addressingModeSrc = 0;
+  newInstruction->addressingModeDest = 0;
+  newInstruction->addressingModeReg = 0;
+  newInstruction->srcBase = 0;
+  newInstruction->destBase = 0;
+  newInstruction->regBase = 0;
+  newInstruction->offset = 0;
+  newInstruction->PSW = 0;
+  newInstruction->rtsReg = 0;
+
+  return 0;
+}
+
 int parseInstruction(uint16_t instructionCode, instruction* newInstruction)
 {
     //instruction newInstruction;
@@ -20,6 +54,8 @@ int parseInstruction(uint16_t instructionCode, instruction* newInstruction)
   //TODO add masks to some of these (like EMT and TRAP) maybe pull out if needed
   uint16_t uniqueInstructions[7] = {0000004, 0000003, 0000000, 0000001, 0000002, 0000005, 0000006};
 
+  // TODO need to account for EMT, JMP, 
+  // EMT should be the only one to implement needed with a full opcode.
   for (int i = 0; i < 10; i++)
   {
     if (instructionCode == uniqueInstructions[i])
@@ -57,15 +93,14 @@ int parseInstruction(uint16_t instructionCode, instruction* newInstruction)
   }*/
   
   // Check RTS (0 0 0 2 0)
-  /*if ((instructionCode && 0xFFF8) == 0x0080)
+  if ((instructionCode && 0xFFF8) == 0x0080)
   {
-    //TODO what is R?
     newInstruction->opcode = instructionCode & 0xFF80;
-    newInstruction->rtsR = instructionCode & 0x0007;
+    newInstruction->rtsReg = instructionCode & 0x0007;
   }
   
   // Check JSR (0 0 4) (maybe taken care of by single operand)
-  if ((instructionCode && 0xFE00) == 0x0800)
+  /*if ((instructionCode && 0xFE00) == 0x0800)
   {
 
   }*/
@@ -92,7 +127,7 @@ int parseInstruction(uint16_t instructionCode, instruction* newInstruction)
       current_instruction->opcode = instructionCode & maskSingleOpcode;
       current_instruction->addressingModeReg = (instructionCode & maskSingleMode) >> 3;
       tempLocation = instructionCode & maskSingleRegister;
-      current_instruction->regBase = REGS[tempLocation];
+      current_instruction->regBase = tempLocation;
 //      err = addressDecode(current_instruction->addressingModeReg, current_instruction->regBase, current_instruction->reg);
       current_instruction->byteMode = (instructionCode & maskByteMode) >> 15;
       cout << "SINGLE " << "\n";
