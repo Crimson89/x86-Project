@@ -170,7 +170,7 @@ uint16_t get_address(uint16_t mode, uint16_t baseAddress)
 {
   uint16_t X;
   uint16_t workingAddress;
-  bool byteMode = current_instruction->byteInstruction;
+  bool byte = current_instruction->byteMode;
   uint16_t resultAddress = 0;
 
   // TODO define constants for all the values used for logic in here.
@@ -193,7 +193,7 @@ uint16_t get_address(uint16_t mode, uint16_t baseAddress)
     // Autoincrement deferred
     case 0000003: workingAddress = PC; 
                   // READ TRACE
-                  if (byteMode)
+                  if (byte)
                   {
                     resultAddress = read_byte(REGISTER_MODE, workingAddress, false);
                   }
@@ -219,7 +219,7 @@ uint16_t get_address(uint16_t mode, uint16_t baseAddress)
                   PC += 2;
                   workingAddress = PC + X;
                   // READ TRACE
-                  if (byteMode)
+                  if (byte)
                   {
                     resultAddress = read_byte(mode, workingAddress, true);
                   }
@@ -249,7 +249,7 @@ uint16_t get_address(uint16_t mode, uint16_t baseAddress)
     // Autoincrement deferred
     case 0000003: workingAddress = SP; 
                   // READ TRACE
-                  if (byteMode)
+                  if (byte)
                   {
                     resultAddress = read_byte(mode, workingAddress, true);
                   }
@@ -267,7 +267,7 @@ uint16_t get_address(uint16_t mode, uint16_t baseAddress)
     case 0000005: /*REGS[baseAddress] -= 2;
                   workingAddress = REGS[baseAddress];
                   // READ TRACE
-                  if (byteMode)
+                  if (byte)
                   {
                     resultAddress = read_byte(mode, workingAddress, true);
                   }
@@ -289,7 +289,7 @@ uint16_t get_address(uint16_t mode, uint16_t baseAddress)
                   X = read_word(mode, PC, true);
                   PC += 2;
                   // READ TRACE
-                  if (byteMode)
+                  if (byte)
                   {
                     resultAddress = read_byte(mode, workingAddress + X, true);
                   }
@@ -312,7 +312,7 @@ uint16_t get_address(uint16_t mode, uint16_t baseAddress)
                   break;
     // Autoincrement
     case 0000002: resultAddress = REGS[baseAddress];
-                  if (byteMode == true)
+                  if (byte == true)
                     {
                       REGS[baseAddress]++;
                     }
@@ -324,7 +324,7 @@ uint16_t get_address(uint16_t mode, uint16_t baseAddress)
     // Autoincrement deferred
     case 0000003: workingAddress = REGS[baseAddress]; 
                   // READ TRACE
-                  if (byteMode)
+                  if (byte)
                   {
                     resultAddress = read_byte(mode, workingAddress, true);
                   }
@@ -335,7 +335,7 @@ uint16_t get_address(uint16_t mode, uint16_t baseAddress)
                   REGS[baseAddress] += 2;
                   break;
     // Autodecrement
-    case 0000004: if (byteMode == true)
+    case 0000004: if (byte == true)
                   {
                     REGS[baseAddress]--;
                   }
@@ -349,7 +349,7 @@ uint16_t get_address(uint16_t mode, uint16_t baseAddress)
     case 0000005: REGS[baseAddress] -= 2;
                   workingAddress = REGS[baseAddress];
                   // READ TRACE
-                  if (byteMode)
+                  if (byte)
                   {
                     resultAddress = read_byte(mode, workingAddress, true);
                   }
@@ -371,7 +371,7 @@ uint16_t get_address(uint16_t mode, uint16_t baseAddress)
                   X = read_word(mode, PC, true);
                   PC += 2;
                   // READ TRACE
-                  if (byteMode)
+                  if (byte)
                   {
                     resultAddress = read_byte(mode, workingAddress + X, true);
                   }
@@ -390,7 +390,7 @@ uint16_t get_value(uint16_t mode, uint16_t baseAddress)
 {
   uint16_t X;
   uint16_t workingAddress;
-  bool byteMode = current_instruction->byteInstruction;
+  bool byte = current_instruction->byteMode;
   uint16_t resultValue = 0;
   
   if (baseAddress == 7)
@@ -403,7 +403,7 @@ uint16_t get_value(uint16_t mode, uint16_t baseAddress)
                     break;
       // Register deferred
       case 0000001: /*workingAddress = REGS[baseAddress];
-                    if (byteMode)
+                    if (byte)
                     {
                       // READ TRACE
                       resultValue = read_byte(mode, workingAddress, true);
@@ -416,7 +416,7 @@ uint16_t get_value(uint16_t mode, uint16_t baseAddress)
                     break;
       // Autoincrement
       case 0000002: workingAddress = PC;
-                    if (byteMode)
+                    if (byte)
                     {
                       // READ TRACE
                       resultValue = read_byte(mode, workingAddress, true);
@@ -431,7 +431,7 @@ uint16_t get_value(uint16_t mode, uint16_t baseAddress)
       // Autoincrement deferred
       case 0000003: // READ TRACE
                     workingAddress = PC;
-                    if (byteMode)
+                    if (byte)
                     {
                       workingAddress = read_byte(mode, workingAddress, true);
                       // READ TRACE
@@ -439,7 +439,7 @@ uint16_t get_value(uint16_t mode, uint16_t baseAddress)
                     }
                     else
                     { 
-                      workingAddress = read_word(mode, workingAddress, true;
+                      workingAddress = read_word(mode, workingAddress, true);
                       // READ TRACE
                       resultValue = read_word(mode, workingAddress, true);
                     }
@@ -455,7 +455,7 @@ uint16_t get_value(uint16_t mode, uint16_t baseAddress)
       case 0000006: // READ TRACE
                     X = read_word(mode, PC, true);
                     PC += 2;
-                    if (byteMode)
+                    if (byte)
                     {
                       // READ TRACE
                       resultValue = read_byte(mode, PC + X, true);
@@ -470,7 +470,7 @@ uint16_t get_value(uint16_t mode, uint16_t baseAddress)
       case 0000007: // READ TRACE
                     X = read_word(mode, PC, true);
                     PC += 2;
-                    if (byteMode)
+                    if (byte)
                     {
                       // READ TRACE
                       workingAddress = read_byte(mode, PC + X, true);
@@ -498,7 +498,7 @@ uint16_t get_value(uint16_t mode, uint16_t baseAddress)
                     break;
       // Register deferred
       case 0000001: workingAddress = SP;
-                    if (byteMode)
+                    if (byte)
                     {
                       // READ TRACE
                       resultValue = read_byte(mode, workingAddress, true);
@@ -511,7 +511,7 @@ uint16_t get_value(uint16_t mode, uint16_t baseAddress)
                     break;
       // Autoincrement
       case 0000002: workingAddress = SP;
-                    if (byteMode)
+                    if (byte)
                     {
                       // READ TRACE
                       resultValue = read_byte(mode, workingAddress, true);
@@ -526,7 +526,7 @@ uint16_t get_value(uint16_t mode, uint16_t baseAddress)
       // Autoincrement deferred
       case 0000003: // READ TRACE
                     workingAddress = SP;
-                    if (byteMode)
+                    if (byte)
                     {
                       workingAddress = read_byte(mode, workingAddress, true);
                       // READ TRACE
@@ -543,7 +543,7 @@ uint16_t get_value(uint16_t mode, uint16_t baseAddress)
       // Autodecrement
       case 0000004: SP -= 2;
                     workingAddress = SP;
-                    if (byteMode)
+                    if (byte)
                     {
                       // READ TRACE
                       resultValue = read_byte(mode, workingAddress, true);
@@ -557,7 +557,7 @@ uint16_t get_value(uint16_t mode, uint16_t baseAddress)
       // Autodecrement deferred
       case 0000005: /*baseAddress -= 2;
                     workingAddress = REGS[baseAddress];
-                    if (byteMode)
+                    if (byte)
                     {
                       // READ TRACE
                       workingAddress = read_byte(mode, workingAddress, true);
@@ -577,7 +577,7 @@ uint16_t get_value(uint16_t mode, uint16_t baseAddress)
                     workingAddress = SP;
                     X = read_word(mode, PC, true);
                     PC += 2;
-                    if (byteMode)
+                    if (byte)
                     {
                       // READ TRACE
                       resultValue = read_byte(mode, workingAddress + X, true);
@@ -593,7 +593,7 @@ uint16_t get_value(uint16_t mode, uint16_t baseAddress)
                     workingAddress = SP;
                     X = read_word(mode, PC, true);
                     PC += 2;
-                    if (byteMode)
+                    if (byte)
                     {
                       // READ TRACE
                       workingAddress = read_byte(mode, workingAddress + X, true);
@@ -619,7 +619,7 @@ uint16_t get_value(uint16_t mode, uint16_t baseAddress)
                     break;
       // Register deferred
       case 0000001: workingAddress = REGS[baseAddress];
-                    if (byteMode)
+                    if (byte)
                     {
                       // READ TRACE
                       resultValue = read_byte(mode, workingAddress, true);
@@ -632,7 +632,7 @@ uint16_t get_value(uint16_t mode, uint16_t baseAddress)
                     break;
       // Autoincrement
       case 0000002: workingAddress = REGS[baseAddress];
-                    if (byteMode)
+                    if (byte)
                     {
                       // READ TRACE
                       resultValue = read_byte(mode, workingAddress, true);
@@ -642,7 +642,7 @@ uint16_t get_value(uint16_t mode, uint16_t baseAddress)
                       // READ TRACE
                       resultValue = read_word(mode, workingAddress, true);
                     }
-                    if (byteMode == true)
+                    if (byte == true)
                     {
                       REGS[baseAddress]++;
                     }
@@ -654,7 +654,7 @@ uint16_t get_value(uint16_t mode, uint16_t baseAddress)
       // Autoincrement deferred
       case 0000003: // READ TRACE
                     workingAddress = REGS[baseAddress];
-                    if (byteMode)
+                    if (byte)
                     {
                       workingAddress = read_byte(mode, workingAddress, true);
                       // READ TRACE
@@ -669,7 +669,7 @@ uint16_t get_value(uint16_t mode, uint16_t baseAddress)
                     REGS[baseAddress] += 2;
                     break;
       // Autodecrement
-      case 0000004: if (byteMode == true)
+      case 0000004: if (byte == true)
                     {
                       REGS[baseAddress]--;
                     }
@@ -678,7 +678,7 @@ uint16_t get_value(uint16_t mode, uint16_t baseAddress)
                       REGS[baseAddress] -= 2;
                     }
                     workingAddress = REGS[baseAddress];
-                    if (byteMode)
+                    if (byte)
                     {
                       // READ TRACE
                       resultValue = read_byte(mode, baseAddress, true);
@@ -692,7 +692,7 @@ uint16_t get_value(uint16_t mode, uint16_t baseAddress)
       // Autodecrement deferred
       case 0000005: REGS[baseAddress] -= 2;
                     workingAddress = REGS[baseAddress];
-                    if (byteMode)
+                    if (byte)
                     {
                       // READ TRACE
                       workingAddress = read_byte(mode, workingAddress, true);
@@ -712,7 +712,7 @@ uint16_t get_value(uint16_t mode, uint16_t baseAddress)
                     workingAddress = REGS[baseAddress];
                     X = read_word(mode, PC, true);
                     PC += 2;
-                    if (byteMode)
+                    if (byte)
                     {
                       // READ TRACE
                       resultValue = read_byte(mode, workingAddress + X, true);
@@ -728,7 +728,7 @@ uint16_t get_value(uint16_t mode, uint16_t baseAddress)
                     workingAddress = REGS[baseAddress];
                     X = read_word(mode, PC, true);
                     PC += 2;
-                    if (byteMode)
+                    if (byte)
                     {
                       // READ TRACE
                       workingAddress = read_byte(mode, workingAddress + X, true);

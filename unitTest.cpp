@@ -18,6 +18,139 @@ int verbosity_level;            // Level of verbosity in print statements
 string trace_file;
 string data_file;
 
+void get_user_octal(string prompt, string error_text, uint16_t &word)
+{
+
+}
+
+uint8_t TESTMEM[20];
+static int ADDTEST(instruction * instr)
+{
+  uint16_t src;
+  uint16_t dest;
+
+  src = get_value(instr->addressingModeSrc, instr->srcBase);
+  dest = get_value(instr->addressingModeDest, instr->destBase);
+
+  cout << src << "\n";
+  cout << dest << "\n";
+  uint16_t destAddress;
+
+  destAddress = get_address(instr->addressingModeDest, instr->destBase);
+
+  cout << destAddress << "\n";
+
+  dest = dest + src;
+
+  cout << dest << "\n";
+  
+  write_word(instr->addressingModeDest, destAddress, dest, false);
+  
+  return 1;
+}
+
+static int MOVTEST(instruction * instr)
+{ 
+  uint16_t src;
+  //uint16_t dest;
+
+  src = get_value(instr->addressingModeSrc, instr->srcBase);
+  //dest = get_value(instr->addressingModeDest, instr->destBase);
+
+  uint16_t destAddress;
+
+  destAddress = get_address(instr->addressingModeDest, instr->destBase);
+
+  write_word(instr->addressingModeDest, destAddress, src, false);
+
+  return 1;
+}
+
+static int CLRTEST(instruction * instr)
+{
+  uint16_t reg;
+  //uint16_t dest;
+
+  reg = get_value(instr->addressingModeReg, instr->regBase);
+  //dest = get_value(instr->addressingModeDest, instr->destBase);
+
+  uint16_t regAddress;
+
+  regAddress = get_address(instr->addressingModeReg, instr->regBase);
+
+  write_word(instr->addressingModeReg, regAddress, 0, false);
+}
+
+static int decodeTest()
+{
+  current_instruction = new instruction;
+  int size = 20;
+  //uint8_t TESTMEM[size];
+  uint16_t addInstruction = 00061314; // ADD (R4),(R3)
+  uint16_t movInstruction = 00010102; // MOV R2,R1
+  uint16_t clrInstruction = 00005025; // CLR (R5)+
+  uint16_t addbInstruction = 0;
+  uint16_t movbInstruction = 0;
+  uint16_t clrbInstruction = 0;
+
+  cout << 1;
+
+  current_instruction->srcBase = (addInstruction & maskDoubleSource) >> 6;
+  printf("\nsrcBase: %o, addInstruction: %o, maskDoubleSource: %o\n", current_instruction->srcBase, addInstruction, maskDoubleSource);
+  
+  current_instruction->destBase = addInstruction & maskDoubleDest;
+  printf("\ndestBase: %o, addInstruction: %o, maskDoubleDest: %o\n", current_instruction->destBase, addInstruction, maskDoubleDest);
+  
+  current_instruction->addressingModeSrc = (addInstruction & maskDoubleSourceMode) >> 9;
+  printf("\nsrcMode: %o, addInstruction: %o, maskDoubleSrcMode: %o\n", current_instruction->addressingModeSrc, addInstruction, maskDoubleSourceMode);
+  
+  current_instruction->addressingModeDest = (addInstruction & maskDoubleDestMode) >> 3;
+  printf("\ndestMode: %o, addInstruction: %o, maskDoubleDestMode: %o\n", current_instruction->addressingModeDest, addInstruction, maskDoubleDestMode);
+  
+  current_instruction->byteMode = (addInstruction & maskByteMode) >> 15;
+  printf("\nByte: %o, addInstruction: %o, maskDoubleByte: %o\n", current_instruction->byteMode, addInstruction, maskByteMode);
+
+
+  int val = 0;
+  for (int i = 0; i < size; i++)
+  {
+    MEM[i] = val;
+    val++;
+  }
+
+  cout << 2;
+  R4 = 10;
+  R3 = 14;
+  
+  MEM[10] = 4;
+  MEM[14] = 3;
+  
+  cout << 3;
+  for (int i = 0; i < 20; i++)
+  {
+    printf("\naddress: %d   val: %u\n", i, MEM[i]);
+  }
+
+  for (int i = 0; i <= 7; i++)
+  {
+    printf("\nReg: %d   val: %u\n", i, REGS[i]);
+  }
+
+  int test = ADDTEST(current_instruction);
+  
+  // Result: R4 = 10, R3 = 14, TESTMEM[10] = 5, TESTMEM[14] = 3
+  
+  for (int i = 0; i < size; i++)
+  {
+    printf("\naddress: %d   val: %u\n", i, MEM[i]);
+  }
+
+  for (int i = 0; i <= 7; i++)
+  {
+    printf("\nReg: %d   val: %u\n", i, REGS[i]);
+  }
+}
+
 static int octalTest()
 {
 
@@ -46,8 +179,8 @@ int main()
   int result = 0;
 
   //result = parseTest();
-  result = octalTest();
-  
+  //result = octalTest();
+  result = decodeTest();
   return 1;
 }
 
