@@ -162,93 +162,6 @@ int parseInstruction(uint16_t instructionCode, instruction* newInstruction)
   return err;
 }
 
-// TODO how to handle PC and SP modes.
-// TODO this function will be deprecated most likely.
-/*int addressDecode(uint16_t mode, uint16_t baseAddress, uint16_t resultAddress)
-{
-  // TODO get rid of pointer stuff.
-  int err;
-  uint16_t X;
-  uint16_t workingAddress;
-  bool byteMode = current_instruction->byteInstruction;
- 
-  // TODO byte vs word accesses, flag and some ifs?
-  switch (mode)
-  {
-    // Register
-    case 0000000: resultAddress = baseAddress; // Keep baseAddress the same.
-                  // No traces. Set a flag here.
-                  break;
-    // Register deferred
-    case 0000001: //resultAddress = *baseAddress;
-                  if (byteMode)
-                  {
-                    resultAddress = read_byte(mode, baseAddress); // Maybe this? Address of a spot in MEM?
-                  }
-                  else
-                  {
-                    resultAddress = read_word(mode, baseAddress);
-                  }
-                  break;
-    // Autoincrement
-    case 0000002: //workingAddress = baseAddress;
-                  //resultAddress = *baseAddress;
-                  resultAddress = read_byte(mode, baseAddress);
-                  if (byteMode == true)
-                    {
-                      baseAddress++;
-                    }
-                  else
-                    {
-                      baseAddress += 2;
-                    }
-                  break;
-    // Autoincrement deferred
-    case 0000003: workingAddress = read_byte(baseAddress);
-                  //workingAddress = *baseAddress;
-                  //resultAddress = *workingAddress;
-                  resultAddress = read_byte(workingAddress);
-                  baseAddress += 2;
-                  break;
-    // Autodecrement
-    case 0000004: if (byteMode == true)
-                  {
-                    baseAddress--;
-                  }
-                  else
-                  {
-                    baseAddress -= 2;
-                  }
-                  //workingAddress = baseAddress;
-                  //resultAddress = *baseAddress;
-                  resultAddress = read_byte(baseAddress);
-                  break;
-    // Autodecrement deferred
-    case 0000005: baseAddress -= 2;
-                  workingAddress = read_byte(baseAddress);
-                  //workingAddress = *baseAddress;
-                  resultAddress = read_byte(workingAddress);
-                  //resultAddress = *workingAddress;
-                  break;
-    // Index
-    // TODO WTF how does the X translate in the instruction code?
-    case 0000006: //workingAddress = baseAddress;
-                  //TODO dereference PC first?
-                  X = PC + 2;
-                  //resultAddress = *baseAddress + X;
-                  resultAddress = read_byte(baseAddress + X);
-                  break;
-    // Index deferred
-    case 0000007: workingAddress = read_byte(baseAddress);
-                  //TODO dereference PC first?
-                  X = PC + 2;
-                  resultAddress = read_byte(workingAddress + X);
-                  //resultAddress = *workingAddress + X;
-                  break;
-  }
-  
-  return err;
-}*/
 
 // TODO, gotta add PC and SP (probably just check if R6 or R7, since baseAddress is only specifying 0-7 right)?
 // This returns the address, doing N-1 trace statements. We could probably have the trace statements in
@@ -263,32 +176,48 @@ uint16_t get_address(uint16_t mode, uint16_t baseAddress)
   // TODO define constants for all the values used for logic in here.
   if (baseAddress == 7)
   {
-    // TODO PC
-    /*switch (mode)
+    // TODO PC take into account differences between address and value
+    switch (mode)
     {
     // Register
     // What to do here?
-    // Probably have to check in the instruction if it's mode is register any time get address is
-    // wanted.
     case 0000000: //INVALID
                   break;
     // Register deferred
-    case 0000001: resultAddress = REGS[baseAddress];
+    case 0000001: //INVALID
                   break;
     // Autoincrement
-    // TODO something is wrong here for sure with the increment, this used to be a pointer.
-    case 0000002: resultAddress = REGS[baseAddress];
-                  if (byteMode == true)
-                    {
-                      REGS[baseAddress]++;
-                    }
-                  else
-                    {
-                      REGS[baseAddress] += 2;
-                    }
+    case 0000002: resultAddress = PC;
+                  PC += 2;
                   break;
     // Autoincrement deferred
-    case 0000003: workingAddress = REGS[baseAddress]; 
+    case 0000003: workingAddress = PC; 
+                  // READ TRACE
+                  if (byteMode)
+                  {
+                    resultAddress = read_byte(REGISTER_MODE, workingAddress, false);
+                  }
+                  else
+                  {
+                    resultAddress = read_word(REGISTER_MODE, workingAddress, false);
+                  }
+                  PC += 2;
+                  break;
+    // Autodecrement
+    case 0000004: 
+    // Autodecrement deferred
+    case 0000005: 
+    // Index
+    // TODO WTF how does the X translate in the instruction code?
+    case 0000006: //TODO how to interface with PC?
+                  X = PC;
+                  PC += 2;
+                  resultAddress = PC + X;
+                  break;
+    // Index deferred
+    case 0000007: X = PC;
+                  PC += 2;
+                  workingAddress = PC + X;
                   // READ TRACE
                   if (byteMode)
                   {
@@ -298,21 +227,44 @@ uint16_t get_address(uint16_t mode, uint16_t baseAddress)
                   {
                     resultAddress = read_word(mode, workingAddress, true);
                   }
-                  REGS[baseAddress] += 2;
                   break;
-    // Autodecrement
-    case 0000004: if (byteMode == true)
+    }
+  }
+  else if (baseAddress == 6)
+  {
+    // TODO SP
+
+    switch (mode)
+    {
+    // Register
+    case 0000000: //resultAddress = baseAddress;
+                  break;
+    // Register deferred
+    case 0000001: resultAddress = SP;
+                  break;
+    // Autoincrement
+    case 0000002: resultAddress = SP;
+                  SP += 2;
+                  break;
+    // Autoincrement deferred
+    case 0000003: workingAddress = SP; 
+                  // READ TRACE
+                  if (byteMode)
                   {
-                    REGS[baseAddress]--;
+                    resultAddress = read_byte(mode, workingAddress, true);
                   }
                   else
                   {
-                    REGS[baseAddress] -= 2;
+                    resultAddress = read_word(mode, workingAddress, true);
                   }
-                  resultAddress = REGS[baseAddress];
+                  SP += 2;
+                  break;
+    // Autodecrement
+    case 0000004: SP -= 2;
+                  resultAddress = SP;
                   break;
     // Autodecrement deferred
-    case 0000005: REGS[baseAddress] -= 2;
+    case 0000005: /*REGS[baseAddress] -= 2;
                   workingAddress = REGS[baseAddress];
                   // READ TRACE
                   if (byteMode)
@@ -322,18 +274,20 @@ uint16_t get_address(uint16_t mode, uint16_t baseAddress)
                   else
                   {
                     resultAddress = read_word(mode, workingAddress, true);
-                  }
+                  }*/
                   break;
     // Index
-    // TODO WTF how does the X translate in the instruction code?
-    case 0000006: //TODO how to interface with PC?
-                  X = PC + 2;
-                  resultAddress = REGS[baseAddress] + X;
+    case 0000006: // READ TRACE
+                  X = read_word(mode, PC, true);
+                  PC += 2;
+                  resultAddress = SP + X;
                   break;
     // Index deferred
-    case 0000007: workingAddress = REGS[baseAddress];
-                  //TODO how to interface with PC?
-                  X = PC + 2;
+    case 0000007: workingAddress = SP;
+                  //TODO only read word?
+                  // READ TRACE
+                  X = read_word(mode, PC, true);
+                  PC += 2;
                   // READ TRACE
                   if (byteMode)
                   {
@@ -344,100 +298,13 @@ uint16_t get_address(uint16_t mode, uint16_t baseAddress)
                     resultAddress = read_word(mode, workingAddress + X, true);
                   }
                   break;
-    }*/
-  }
-  else if (baseAddress == 6)
-  {
-    // TODO SP
-
-    /*switch (mode)
-    {
-    // Register
-    // What to do here?
-    // Probably have to check in the instruction if it's mode is register any time get address is
-    // wanted.
-    case 0000000: //INVALID
-                  break;
-    // Register deferred
-    case 0000001: resultAddress = REGS[baseAddress];
-                  break;
-    // Autoincrement
-    // TODO something is wrong here for sure with the increment, this used to be a pointer.
-    case 0000002: resultAddress = REGS[baseAddress];
-                  if (byteMode == true)
-                    {
-                      REGS[baseAddress]++;
-                    }
-                  else
-                    {
-                      REGS[baseAddress] += 2;
-                    }
-                  break;
-    // Autoincrement deferred
-    case 0000003: workingAddress = REGS[baseAddress]; 
-                  // READ TRACE
-                  if (byteMode)
-                  {
-                    resultAddress = read_byte(workingAddress);
-                  }
-                  else
-                  {
-                    resultAddress = read_word(workingAddress);
-                  }
-                  REGS[baseAddress] += 2;
-                  break;
-    // Autodecrement
-    case 0000004: if (byteMode == true)
-                  {
-                    REGS[baseAddress]--;
-                  }
-                  else
-                  {
-                    REGS[baseAddress] -= 2;
-                  }
-                  resultAddress = REGS[baseAddress];
-                  break;
-    // Autodecrement deferred
-    case 0000005: REGS[baseAddress] -= 2;
-                  workingAddress = REGS[baseAddress];
-                  // READ TRACE
-                  if (byteMode)
-                  {
-                    resultAddress = read_byte(workingAddress);
-                  }
-                  else
-                  {
-                    resultAddress = read_word(workingAddress);
-                  }
-                  break;
-    // Index
-    case 0000006: 
-                  X = PC + 2;
-                  resultAddress = REGS[baseAddress] + X;
-                  break;
-    // Index deferred
-    case 0000007: workingAddress = REGS[baseAddress];
-                  X = PC + 2;
-                  // READ TRACE
-                  if (byteMode)
-                  {
-                    resultAddress = read_byte(workingAddress + X);
-                  }
-                  else
-                  {
-                    resultAddress = read_word(workingAddress + X);
-                  }
-                  break;
-    }*/
+    }
   }
   else
   {
     switch (mode)
     {
     // Register
-    // TODO What to do here?
-    // Probably have to check in the instruction if it's mode is register any time get address is
-    // wanted. Maybe not needed with new read/write_byte/word instructions.
     case 0000000: resultAddress = baseAddress;
                   break;
     // Register deferred
@@ -493,7 +360,7 @@ uint16_t get_address(uint16_t mode, uint16_t baseAddress)
                   break;
     // Index
     case 0000006: // READ TRACE
-                  X = read_word(mode, PC + 2, true);
+                  X = read_word(mode, PC, true);
                   PC += 2;
                   resultAddress = REGS[baseAddress] + X;
                   break;
@@ -501,7 +368,7 @@ uint16_t get_address(uint16_t mode, uint16_t baseAddress)
     case 0000007: workingAddress = REGS[baseAddress];
                   //TODO only read word?
                   // READ TRACE
-                  X = read_word(mode, PC + 2, true);
+                  X = read_word(mode, PC, true);
                   PC += 2;
                   // READ TRACE
                   if (byteMode)
@@ -526,138 +393,358 @@ uint16_t get_value(uint16_t mode, uint16_t baseAddress)
   bool byteMode = current_instruction->byteInstruction;
   uint16_t resultValue = 0;
   
-  // TODO byte vs word accesses, flag and some ifs?
-  switch (mode)
+  if (baseAddress == 7)
   {
-    // Register
-    case 0000000: resultValue = REGS[baseAddress];
-                  break;
-    // Register deferred
-    case 0000001: workingAddress = REGS[baseAddress];
-                  if (byteMode)
-                  {
-                    // READ TRACE
-                    resultValue = read_byte(mode, workingAddress, true);
-                  }
-                  else
-                  {
-                    // READ TRACE
-                    resultValue = read_word(mode, workingAddress, true);
-                  }
-                  break;
-    // Autoincrement
-    case 0000002: workingAddress = REGS[baseAddress];
-                  if (byteMode)
-                  {
-                    // READ TRACE
-                    resultValue = read_byte(mode, workingAddress, true);
-                  }
-                  else
-                  {
-                    // READ TRACE
-                    resultValue = read_word(mode, workingAddress, true);
-                  }
-                  if (byteMode == true)
+    // PC ADDRESSING
+    switch (mode)
+    {
+      // Register
+      case 0000000: //resultValue = REGS[baseAddress];
+                    break;
+      // Register deferred
+      case 0000001: /*workingAddress = REGS[baseAddress];
+                    if (byteMode)
                     {
-                      baseAddress++;
+                      // READ TRACE
+                      resultValue = read_byte(mode, workingAddress, true);
                     }
-                  else
+                    else
                     {
-                      baseAddress += 2;
+                      // READ TRACE
+                      resultValue = read_word(mode, workingAddress, true);
+                    }*/
+                    break;
+      // Autoincrement
+      case 0000002: workingAddress = PC;
+                    if (byteMode)
+                    {
+                      // READ TRACE
+                      resultValue = read_byte(mode, workingAddress, true);
                     }
-                  break;
-    // Autoincrement deferred
-    case 0000003: // READ TRACE
-                  workingAddress = REGS[baseAddress];
-                  if (byteMode)
-                  {
-                    workingAddress = read_byte(mode, workingAddress, true);
-                    // READ TRACE
-                    resultValue = read_byte(mode, workingAddress, true);
-                  }
-                  else
-                  { 
-                    workingAddress = read_word(mode, workingAddress, true);
-                    // READ TRACE
-                    resultValue = read_word(mode, workingAddress, true);
-                  }
-                  baseAddress += 2;
-                  break;
-    // Autodecrement
-    case 0000004: if (byteMode == true)
-                  {
-                    baseAddress--;
-                  }
-                  else
-                  {
-                    baseAddress -= 2;
-                  }
-                  workingAddress = REGS[baseAddress];
-                  if (byteMode)
-                  {
-                    // READ TRACE
-                    resultValue = read_byte(mode, baseAddress, true);
-                  }
-                  else
-                  {
-                    // READ TRACE
-                    resultValue = read_word(mode, baseAddress, true);
-                  }
-                  break;
-    // Autodecrement deferred
-    case 0000005: baseAddress -= 2;
-                  workingAddress = REGS[baseAddress];
-                  if (byteMode)
-                  {
-                    // READ TRACE
-                    workingAddress = read_byte(mode, workingAddress, true);
-                    // READ TRACE
-                    resultValue = read_byte(mode, workingAddress, true);
-                  }
-                  else
-                  { 
-                    // READ TRACE
-                    workingAddress = read_word(mode, workingAddress, true);
-                    // READ TRACE
-                    resultValue = read_word(mode, workingAddress, true);
-                  }
-                  break;
-    // Index
-    case 0000006: // READ TRACE
-                  X = read_word(mode, PC + 2, true);
-                  PC += 2;
-                  if (byteMode)
-                  {
-                    // READ TRACE
-                    resultValue = read_byte(mode, baseAddress + X, true);
-                  }
-                  else
-                  { 
-                    // READ TRACE
-                    resultValue = read_word(mode, baseAddress + X, true);
-                  }
-                  break;
-    // Index deferred
-    case 0000007: // READ TRACE
-                  X = read_word(mode, PC + 2, true);
-                  PC += 2;
-                  if (byteMode)
-                  {
-                    // READ TRACE
-                    workingAddress = read_byte(mode, baseAddress, true);
-                    // READ TRACE
-                    resultValue = read_byte(mode, workingAddress + X, true);
-                  }
-                  else
-                  {
-                    // READ TRACE
-                    workingAddress = read_word(mode, baseAddress, true);
-                    // READ TRACE
-                    resultValue = read_word(mode, workingAddress + X, true);
-                  }
-                  break;
+                    else
+                    {
+                      // READ TRACE
+                      resultValue = read_word(mode, workingAddress, true);
+                    }
+                    PC += 2;
+                    break;
+      // Autoincrement deferred
+      case 0000003: // READ TRACE
+                    workingAddress = PC;
+                    if (byteMode)
+                    {
+                      workingAddress = read_byte(mode, workingAddress, true);
+                      // READ TRACE
+                      resultValue = read_byte(mode, workingAddress, true);
+                    }
+                    else
+                    { 
+                      workingAddress = read_word(mode, workingAddress, true;
+                      // READ TRACE
+                      resultValue = read_word(mode, workingAddress, true);
+                    }
+                    PC += 2;
+                    break;
+      // Autodecrement
+      case 0000004: 
+                    break;
+      // Autodecrement deferred
+      case 0000005: 
+                    break;
+      // Index
+      case 0000006: // READ TRACE
+                    X = read_word(mode, PC, true);
+                    PC += 2;
+                    if (byteMode)
+                    {
+                      // READ TRACE
+                      resultValue = read_byte(mode, PC + X, true);
+                    }
+                    else
+                    { 
+                      // READ TRACE
+                      resultValue = read_word(mode, PC + X, true);
+                    }
+                    break;
+      // Index deferred
+      case 0000007: // READ TRACE
+                    X = read_word(mode, PC, true);
+                    PC += 2;
+                    if (byteMode)
+                    {
+                      // READ TRACE
+                      workingAddress = read_byte(mode, PC + X, true);
+                      // READ TRACE
+                      resultValue = read_byte(mode, workingAddress, true);
+                    }
+                    else
+                    {
+                      // READ TRACE
+                      workingAddress = read_word(mode, PC + X, true);
+                      // READ TRACE
+                      resultValue = read_word(mode, workingAddress, true);
+                    }
+                    break;
+    }
   }
-
+  else if (baseAddress == 6)
+  {
+    switch (mode)
+    {
+      // SP ADDRESSING
+      // Register
+      case 0000000: // TODO how to gracefully handle these?
+                    //resultValue = REGS[baseAddress];
+                    break;
+      // Register deferred
+      case 0000001: workingAddress = SP;
+                    if (byteMode)
+                    {
+                      // READ TRACE
+                      resultValue = read_byte(mode, workingAddress, true);
+                    }
+                    else
+                    {
+                      // READ TRACE
+                      resultValue = read_word(mode, workingAddress, true);
+                    }
+                    break;
+      // Autoincrement
+      case 0000002: workingAddress = SP;
+                    if (byteMode)
+                    {
+                      // READ TRACE
+                      resultValue = read_byte(mode, workingAddress, true);
+                    }
+                    else
+                    {
+                      // READ TRACE
+                      resultValue = read_word(mode, workingAddress, true);
+                    }
+                    SP += 2;
+                    break;
+      // Autoincrement deferred
+      case 0000003: // READ TRACE
+                    workingAddress = SP;
+                    if (byteMode)
+                    {
+                      workingAddress = read_byte(mode, workingAddress, true);
+                      // READ TRACE
+                      resultValue = read_byte(mode, workingAddress, true);
+                    }
+                    else
+                    { 
+                      workingAddress = read_word(mode, workingAddress, true);
+                      // READ TRACE
+                      resultValue = read_word(mode, workingAddress, true);
+                    }
+                    SP += 2;
+                    break;
+      // Autodecrement
+      case 0000004: SP -= 2;
+                    workingAddress = SP;
+                    if (byteMode)
+                    {
+                      // READ TRACE
+                      resultValue = read_byte(mode, workingAddress, true);
+                    }
+                    else
+                    {
+                      // READ TRACE
+                      resultValue = read_word(mode, workingAddress, true);
+                    }
+                    break;
+      // Autodecrement deferred
+      case 0000005: /*baseAddress -= 2;
+                    workingAddress = REGS[baseAddress];
+                    if (byteMode)
+                    {
+                      // READ TRACE
+                      workingAddress = read_byte(mode, workingAddress, true);
+                      // READ TRACE
+                      resultValue = read_byte(mode, workingAddress, true);
+                    }
+                    else
+                    { 
+                      // READ TRACE
+                      workingAddress = read_word(mode, workingAddress, true);
+                      // READ TRACE
+                      resultValue = read_word(mode, workingAddress, true);
+                    }*/
+                    break;
+      // Index
+      case 0000006: // READ TRACE
+                    workingAddress = SP;
+                    X = read_word(mode, PC, true);
+                    PC += 2;
+                    if (byteMode)
+                    {
+                      // READ TRACE
+                      resultValue = read_byte(mode, workingAddress + X, true);
+                    }
+                    else
+                    { 
+                      // READ TRACE
+                      resultValue = read_word(mode, workingAddress + X, true);
+                    }
+                    break;
+      // Index deferred
+      case 0000007: // READ TRACE
+                    workingAddress = SP;
+                    X = read_word(mode, PC, true);
+                    PC += 2;
+                    if (byteMode)
+                    {
+                      // READ TRACE
+                      workingAddress = read_byte(mode, workingAddress + X, true);
+                      // READ TRACE
+                      resultValue = read_byte(mode, workingAddress, true);
+                    }
+                    else
+                    {
+                      // READ TRACE
+                      workingAddress = read_word(mode, workingAddress + X, true);
+                      // READ TRACE
+                      resultValue = read_word(mode, workingAddress, true);
+                    }
+                    break;
+    }
+  }
+  else
+  {
+    switch (mode)
+    {
+      // Register
+      case 0000000: resultValue = REGS[baseAddress];
+                    break;
+      // Register deferred
+      case 0000001: workingAddress = REGS[baseAddress];
+                    if (byteMode)
+                    {
+                      // READ TRACE
+                      resultValue = read_byte(mode, workingAddress, true);
+                    }
+                    else
+                    {
+                      // READ TRACE
+                      resultValue = read_word(mode, workingAddress, true);
+                    }
+                    break;
+      // Autoincrement
+      case 0000002: workingAddress = REGS[baseAddress];
+                    if (byteMode)
+                    {
+                      // READ TRACE
+                      resultValue = read_byte(mode, workingAddress, true);
+                    }
+                    else
+                    {
+                      // READ TRACE
+                      resultValue = read_word(mode, workingAddress, true);
+                    }
+                    if (byteMode == true)
+                    {
+                      REGS[baseAddress]++;
+                    }
+                    else
+                    {
+                      REGS[baseAddress] += 2;
+                    }
+                    break;
+      // Autoincrement deferred
+      case 0000003: // READ TRACE
+                    workingAddress = REGS[baseAddress];
+                    if (byteMode)
+                    {
+                      workingAddress = read_byte(mode, workingAddress, true);
+                      // READ TRACE
+                      resultValue = read_byte(mode, workingAddress, true);
+                    }
+                    else
+                    { 
+                      workingAddress = read_word(mode, workingAddress, true);
+                      // READ TRACE
+                      resultValue = read_word(mode, workingAddress, true);
+                    }
+                    REGS[baseAddress] += 2;
+                    break;
+      // Autodecrement
+      case 0000004: if (byteMode == true)
+                    {
+                      REGS[baseAddress]--;
+                    }
+                    else
+                    {
+                      REGS[baseAddress] -= 2;
+                    }
+                    workingAddress = REGS[baseAddress];
+                    if (byteMode)
+                    {
+                      // READ TRACE
+                      resultValue = read_byte(mode, baseAddress, true);
+                    }
+                    else
+                    {
+                      // READ TRACE
+                      resultValue = read_word(mode, baseAddress, true);
+                    }
+                    break;
+      // Autodecrement deferred
+      case 0000005: REGS[baseAddress] -= 2;
+                    workingAddress = REGS[baseAddress];
+                    if (byteMode)
+                    {
+                      // READ TRACE
+                      workingAddress = read_byte(mode, workingAddress, true);
+                      // READ TRACE
+                      resultValue = read_byte(mode, workingAddress, true);
+                    }
+                    else
+                    { 
+                      // READ TRACE
+                      workingAddress = read_word(mode, workingAddress, true);
+                      // READ TRACE
+                      resultValue = read_word(mode, workingAddress, true);
+                    }
+                    break;
+      // Index
+      case 0000006: // READ TRACE
+                    workingAddress = REGS[baseAddress];
+                    X = read_word(mode, PC, true);
+                    PC += 2;
+                    if (byteMode)
+                    {
+                      // READ TRACE
+                      resultValue = read_byte(mode, workingAddress + X, true);
+                    }
+                    else
+                    { 
+                      // READ TRACE
+                      resultValue = read_word(mode, workingAddress + X, true);
+                    }
+                    break;
+      // Index deferred
+      case 0000007: // READ TRACE
+                    workingAddress = REGS[baseAddress];
+                    X = read_word(mode, PC, true);
+                    PC += 2;
+                    if (byteMode)
+                    {
+                      // READ TRACE
+                      workingAddress = read_byte(mode, workingAddress + X, true);
+                      // READ TRACE
+                      resultValue = read_byte(mode, workingAddress, true);
+                    }
+                    else
+                    {
+                      // READ TRACE
+                      workingAddress = read_word(mode, workingAddress + X, true);
+                      // READ TRACE
+                      resultValue = read_word(mode, workingAddress, true);
+                    }
+                    break;
+    }
+  }
   return resultValue;
 }
 
