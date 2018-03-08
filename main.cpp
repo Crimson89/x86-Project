@@ -1,5 +1,14 @@
 #include "header.h"
 
+
+struct {      // Global Processor Status Word
+  int SC: 3;
+  int N: 1;
+  int Z: 1;
+  int V: 1;
+  int C: 1;
+} PSW;
+
 uint16_t REGS[7];                  //CPU Registers
 uint8_t MEM[MEMORY_SPACE];         //Byte memory array, index is memory address
 bool MEM_USED_FLAGS[MEMORY_SPACE]; //Memory used array, true==memory used/valid, false==invalid

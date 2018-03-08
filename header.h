@@ -23,10 +23,11 @@ typedef struct {
   uint16_t opcode;  
   uint16_t byteMode;  
   //instructionFamily instructionType ; //Double operand, single operand, conditional jump, shit like that.  
-  //enum instructionFamily; // J, I, R? Not in PDP right?  
 	uint16_t addressingModeSrc;  
 	uint16_t addressingModeDest;
 	uint16_t addressingModeReg;  
+
+  // Are these being used?
 	uint16_t srcBase;	// src pre-dereferencing
 	uint16_t destBase;	// dest pre-dereferencing
 	uint16_t regBase;	// reg pre-dereferencing
