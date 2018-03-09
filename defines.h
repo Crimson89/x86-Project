@@ -110,9 +110,9 @@
 // BRANCH
 
 // Branch
-#define m_BR     000400 // Branch unconditional
-#define m_BNE    001000 // Branch if not equal (to zero)
-#define m_BEQ    001400 // Branch if equal (to zero)
+#define m_BR     0000400 // Branch unconditional
+#define m_BNE    0001000 // Branch if not equal (to zero)
+#define m_BEQ    0001400 // Branch if equal (to zero)
 #define m_BPL    0100000 // Branch if plus
 #define m_BMI    0100400 // Branch if minus
 #define m_BVC    0102000 // Branch if overflow is clear
@@ -121,11 +121,11 @@
 #define m_BCS    0103400 // Branch if carry is set
 
 // Signed Conditional Branch
-#define m_BGE    002000 // Branch if greater than or equal (to zero)
-#define m_BLT    002400 // Branch if less than (zero)
-#define m_BGT    003000 // Branch if greater than (zero)
-#define m_BLE    003400 // Branch if less than or equal (to zero)
-#define m_SOB    077000 // Subtract one and branch (if not = 0)
+#define m_BGE    0002000 // Branch if greater than or equal (to zero)
+#define m_BLT    0002400 // Branch if less than (zero)
+#define m_BGT    0003000 // Branch if greater than (zero)
+#define m_BLE    0003400 // Branch if less than or equal (to zero)
+#define m_SOB    0077000 // Subtract one and branch (if not = 0)
 
 // Unsigned Conditional Branch
 #define m_BHI    0101000 // Branch if higher
@@ -135,71 +135,44 @@
 
 // JUMP & SUBROUTINE
 
-#define m_JMP    000100 // Jump
-#define m_JSR    004000 // Jump to subroutine
-#define m_RTS    000200 // Return from subroutine
-#define m_MARK   006400 // Facilitates stack clean-up procedures
+#define m_JMP    0000100 // Jump
+#define m_JSR    0004000 // Jump to subroutine
+#define m_RTS    0000200 // Return from subroutine
+#define m_MARK   0006400 // Facilitates stack clean-up procedures
 
 // TRAPS & INTERRUPTS
 
 #define m_EMT    0104000 // Emulator trap
 #define m_TRAP   0104400 // Trap
-#define m_BPT    000003 // Breakpoint trap
-#define m_IOT    000004 // Input/Output trap
-#define m_CSM    // Call to supervisor mode
-#define m_RTI    000002 // Return from interrupt
-#define m_RTT    000002 // Return from trace trap (Same as RTI but supresses the immidialty-following trace trap)
+#define m_BPT    0000003 // Breakpoint trap
+#define m_IOT    0000004 // Input/Output trap
+#define m_CSM    0007000 // Call to supervisor mode
+#define m_RTI    0000002 // Return from interrupt
+#define m_RTT    0000006 // Return from trace trap (Same as RTI but supresses the immidialty-following trace trap)
 
 // MISC
 
-#define m_HALT   000000 // Halt
-#define m_WAIT   000001 // Wait for interrupt
-#define m_RESET  000005 // Reset UNIBUS
+#define m_HALT   0000000 // Halt
+#define m_WAIT   0000001 // Wait for interrupt
+#define m_RESET  0000005 // Reset UNIBUS
 #define m_MTPD   0106600 // Move to previous data space
-#define m_MTPI   006600 // Move to previous instruction space
+#define m_MTPI   0006600 // Move to previous instruction space
 #define m_MFPD   0106500 // Move from previous data space
-#define m_MFPI   006500 // Move from previous instruction space
+#define m_MFPI   0006500 // Move from previous instruction space
 #define m_MTPS   0106400 // Move byte to processor status word
 #define m_MFPS   0106700 // Move byte from processor status word
-#define m_MFPT   // Move from processor type
+#define m_MFPT   0000007 // Move from processor type
+#define m_SPL    0000230 //SPL is not implemented in PDP-11
 
 // CONDITION CODES
 
-#define m_CLC   000241 // Clear carry
-#define m_CLV   000242 // Clear overflow
-#define m_CLZ   000244 // Clear zero
-#define m_CLN   000250 // Clear negative
-#define m_CCC   000257 // Clear all flags
-#define m_SEC   000261 // Set carry
-#define m_SEV   000262 // Set overflow
-#define m_SEZ   000264 // Set zero
-#define m_SEN   000270 // Set negative
-#define m_SCC   000277 // Set all flags
-
-// Signed Conditional Branch
-#define m_BGE    002000 // Branch if greater than or equal (to zero)
-#define m_BLT    002400 // Branch if less than (zero)
-#define m_BGT    003000 // Branch if greater than (zero)
-#define m_BLE    003400 // Branch if less than or equal (to zero)
-#define m_SOB    077000 // Subtract one and branch (if not = 0)
-
-// JUMP & SUBROUTINE
-
-#define m_JMP    000100 // Jump
-#define m_JSR    004000 // Jump to subroutine
-#define m_RTS    000200 // Return from subroutine
-#define m_MARK   006400 // Facilitates stack clean-up procedures
-
-// CONDITION CODES
-
-#define m_CLC   000241 // Clear carry
-#define m_CLV   000242 // Clear overflow
-#define m_CLZ   000244 // Clear zero
-#define m_CLN   000250 // Clear negative
-#define m_CCC   000257 // Clear all flags
-#define m_SEC   000261 // Set carry
-#define m_SEV   000262 // Set overflow
-#define m_SEZ   000264 // Set zero
-#define m_SEN   000270 // Set negative
-#define m_SCC   000277 // Set all flags
-
+#define m_CLC   0000241 // Clear carry
+#define m_CLV   0000242 // Clear overflow
+#define m_CLZ   0000244 // Clear zero
+#define m_CLN   0000250 // Clear negative
+#define m_CCC   0000257 // Clear all flags
+#define m_SEC   0000261 // Set carry
+#define m_SEV   0000262 // Set overflow
+#define m_SEZ   0000264 // Set zero
+#define m_SEN   0000270 // Set negative
+#define m_SCC   0000277 // Set all flags

@@ -78,13 +78,12 @@ void print_octal(uint16_t value){
 	cout <<setfill('0')<<setw(6)<<oct<<value;
 }
 
-
 void print_all_memory(void) {
 	uint16_t hasContent = 0;
 	uint16_t memory_word;
 	for(int i = 0; i < (MEMORY_SPACE); i+=2) { //by word, this is a word access
-		memory_word = read_word(i, false, false);
-		if(memory_word!=0xFFFF) {
+		if(MEM_USED_FLAGS[i] == true) {
+			memory_word = read_word(i, false, false);
 			hasContent+=1;
 			cout <<"@ADDR="; print_octal(i); cout <<", Contents=" << octal_to_string(memory_word);
 			if( (PC != 0xFFFF) && (i == PC) )
@@ -104,7 +103,8 @@ void print_all_memory(void) {
 
 void initializeMemory(){
 	for(int i = 0; i < (MEMORY_SPACE); i++) { //Initialize memory space, by byte, since this is a byte access
-		write_byte(i,0xFF, false);
+		write_byte(i,0x00, false);
+		MEM_USED_FLAGS[i] = false;
 	}
 }
 
