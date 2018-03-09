@@ -101,7 +101,7 @@
 #define m_CMP    0020000 // Compare source to destination
 #define m_CMPB   0120000 // Compare source to destination (B)
 #define m_ASH    0072000 // Shift arithmetically
-#define m_ASHC   0073000// Arithmetic shift combined
+#define m_ASHC   0073000 // Arithmetic shift combined
 #define m_MUL    0070000 // Multiply
 #define m_DIV    0071000 // Divide
 
