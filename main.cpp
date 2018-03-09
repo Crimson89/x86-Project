@@ -39,6 +39,8 @@ int main(int argc, char ** argv)
 	int program_execution_control = 0;
 	int err;							// error checking
 	uint16_t instruction_code;			// 16-bit instruction
+	bool at_breakpoint = false;         // Current PC triggered breakpoint
+	uint16_t breakpoint_pc;             // PC when breakpoint was triggered
 	
 
 	trace_file = "test_trace.txt";
@@ -71,12 +73,22 @@ int main(int argc, char ** argv)
 				// IF
 				instruction_code = read_word(PC, true);
 				PC += 2;
-				check_breakpoint(PC); // Check this memory location for a breakpoint
+				if(check_breakpoint(PC)){ // Check for a breakpoint pointing to this memory location
+					breakpoint_pc = PC;
+					at_breakpoint = true;
+				}
+				else
+					at_breakpoint = false;
 
 				// ID
 				err = parseInstruction(instruction_code, current_instruction); 
 				// check error code
 				
+				// Print breakpoint information
+				if(at_breakpoint){
+					handle_breakpoint(breakpoint_pc, instruction_code);
+					at_breakpoint = false;
+				}
 
 				// EX
 				// call appropriate function				

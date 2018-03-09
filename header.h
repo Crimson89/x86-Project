@@ -97,8 +97,10 @@ void initializeMemory(void);
 int set_breakpoint(uint16_t address);
 int clear_all_breakpoints(void);
 int clear_breakpoint(uint16_t address);
-int check_breakpoint(uint16_t address);
+bool check_breakpoint(uint16_t address);
+void handle_breakpoint(uint16_t address, uint16_t instruction_code);
 void print_all_breakpoints(void);
+string get_op_name(void);
 
 
 
