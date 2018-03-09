@@ -3,10 +3,10 @@ all: main
 remake: clean main
 
 unitTest: unitTest.o
-	g++ -g -std=c++11 unitTest.o parse.o memory.o -o RunUnitTest.exe
+	g++ -g -std=c++11 unitTest.o parse.o memory.o trace.o -o RunUnitTest.exe
 
 unitTest.o: unitTest.cpp
-	g++ -g -std=c++11 -c unitTest.cpp parse.cpp memory.cpp
+	g++ -g -std=c++11 -c unitTest.cpp parse.cpp memory.cpp trace.cpp
 
 main: main.o
 	g++ -g -std=c++11 main.o parse.o memory.o trace.o debug.o -o RunMe.exe
