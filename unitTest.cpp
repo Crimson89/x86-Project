@@ -1,5 +1,7 @@
 #include "header.h"
 
+bool MEM_USED_FLAGS[MEMORY_SPACE]; //dummy define for compilation error
+
 uint16_t REGS[7];
 uint8_t MEM[MEMORY_SPACE];
 uint16_t& R0 = REGS[0];
