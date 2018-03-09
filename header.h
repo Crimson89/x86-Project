@@ -22,26 +22,23 @@ using namespace std;
 typedef struct {
   uint16_t opcode;  
   uint16_t byteMode;  
-  //instructionFamily instructionType ; //Double operand, single operand, conditional jump, shit like that.  
 	uint16_t addressingModeSrc;  
 	uint16_t addressingModeDest;
 	uint16_t addressingModeReg;  
+	uint16_t srcBase;	// src register
+	uint16_t destBase;	// dest register
+	uint16_t regBase;	// reg register (lol)
 
-  // Are these being used?
-	uint16_t srcBase;	// src pre-dereferencing
-	uint16_t destBase;	// dest pre-dereferencing
-	uint16_t regBase;	// reg pre-dereferencing
-
-	// These should be pointers
-	uint16_t src; // src post-dereferencing
+	/* TODO make sure these aren't needed
+  uint16_t src; // src post-dereferencing
 	uint16_t dest;// dest post-dereferencing
 	uint16_t reg; // reg post-dereferencing
-
+  */
 	uint16_t offset;
-	uint16_t immediate; 
-	uint16_t registerMode;
-	uint8_t regCount; // Registers used. 0, 1, or 2  
-	bool byteInstruction;
+	// TODO don't think this is needed
+  uint16_t immediate; 
+	// TODO don't think this is needed
+  uint16_t registerMode;
   union {
 		struct {
 			int SC: 3;
@@ -52,7 +49,7 @@ typedef struct {
 		};
 		uint8_t PSW; // Processor Status Word
 	};
-  uint16_t rtsR; // placeholder till I figure this out.
+  uint16_t rtsReg;
 }instruction;
 
 //Define REGS, MEM, and  globals
@@ -86,10 +83,10 @@ int get_cmd_options(int argc, char ** argv);
 int readData(void);
 uint16_t string_to_octal(string input_string);
 string octal_to_string(uint16_t value);
-uint16_t read_byte(uint16_t address, bool trace = true);                              //Read a byte and return it in the low 8 bits
-uint16_t read_word(uint16_t address, bool trace = true, bool is_instruction = false); //Read two bytes in memory and return as little endian word
-void write_byte(uint16_t address, uint16_t byte, bool trace = true);                  //Take byte in the low 8 bits and write to memory
-void write_word(uint16_t address, uint16_t word, bool trace = true);                  //Write little endian word to two bytes in memory
+uint16_t read_byte(uint16_t addressMode, uint16_t address, bool trace = true);                              //Read a byte and return it in the low 8 bits
+uint16_t read_word(uint16_t addressMode, uint16_t address, bool trace = true, bool is_instruction = false); //Read two bytes in memory and return as little endian word
+void write_byte(uint16_t addressMode, uint16_t address, uint16_t byte, bool trace = true);                  //Take byte in the low 8 bits and write to memory
+void write_word(uint16_t addressMode, uint16_t address, uint16_t word, bool trace = true);                  //Write little endian word to two bytes in memory
 void print_octal(uint16_t value);
 void print_all_memory(void);
 void print_all_registers(void);
@@ -222,7 +219,7 @@ const uint16_t maskDoubleRegisterSourceDestMode = 0000070;//0x0038;
 const uint16_t maskDoubleRegisterSourceDest = 0000007;//0x0007;
 
 // Single-operand
-const uint16_t maskSingleOpcode = 0003700;//0x0730;
+const uint16_t maskSingleOpcode = 0077700;//0x0730;
 const uint16_t maskSingleMode = 0000070;//0x0038;
 const uint16_t maskSingleRegister = 0000007;//0x0007;
 
@@ -239,8 +236,10 @@ const uint16_t maskCondV = 0000002;//0x0002;
 const uint16_t maskCondC = 0000001;//0x0001;
 
 int parseInstruction(uint16_t instructionCode, instruction* newInstruction);
-int addressDecode(uint16_t mode, uint16_t baseAddress, uint16_t resultAddress);
+//int addressDecode(uint16_t mode, uint16_t baseAddress, uint16_t resultAddress);
+uint16_t get_address(uint16_t mode, uint16_t baseAddress);
+uint16_t get_value(uint16_t mode, uint16_t baseAddress);
 
-
-int parseTest();
+int printInstruction(instruction* newInstruction);
+int clearInstruction(instruction* newInstruction);
 #endif // HEADER_H
