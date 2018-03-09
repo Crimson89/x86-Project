@@ -209,7 +209,7 @@ const uint16_t maskDoubleRegisterSourceDestMode = 0000070;//0x0038;
 const uint16_t maskDoubleRegisterSourceDest = 0000007;//0x0007;
 
 // Single-operand
-const uint16_t maskSingleOpcode = 0003700;//0x0730;
+const uint16_t maskSingleOpcode = 0077700;//0x0730;
 const uint16_t maskSingleMode = 0000070;//0x0038;
 const uint16_t maskSingleRegister = 0000007;//0x0007;
 
@@ -232,5 +232,4 @@ uint16_t get_value(uint16_t mode, uint16_t baseAddress);
 
 int printInstruction(instruction* newInstruction);
 int clearInstruction(instruction* newInstruction);
-int parseTest();
 #endif // HEADER_H
