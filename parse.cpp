@@ -115,9 +115,6 @@ int parseInstruction(uint16_t instructionCode, instruction* newInstruction)
   uint16_t bitPattern = relevantBits & maskSingleCondBranchCondCheck;
   uint16_t tempLocation;
 
-  // TODO may need to shift certain amounts for source, dest, reg bases.
-  // Didn't think about how to actually interface with registers and memory space, 
-  // so working that out now.
   if (bitPattern == 0000000) // Define constans for these maybe.
   {
     bitPattern = relevantBits & maskSingle;
@@ -159,24 +156,18 @@ int parseInstruction(uint16_t instructionCode, instruction* newInstruction)
   }
   else
   {
+    // TODO don't actually need this, I don't think we handle any "double reg" instructions.
     bitPattern = relevantBits & maskRegSource;
     if (bitPattern == 0070000)
     {
       // register source double operand
       current_instruction->opcode = instructionCode & maskDoubleRegisterOpcode;
       current_instruction->regBase = (instructionCode & maskDoubleRegisterReg) >> 6;
-      // TODO Defined by wikipedia, this is srouce/dest, how should I handle that?
       current_instruction->srcBase = instructionCode & maskDoubleRegisterSourceDest;
       current_instruction->destBase = instructionCode & maskDoubleRegisterSourceDest;
       current_instruction->addressingModeSrc = (instructionCode & maskDoubleRegisterSourceDestMode) >> 3;
       current_instruction->addressingModeDest = (instructionCode & maskDoubleRegisterSourceDestMode) >> 3;
       cout << "DOUBLE REG " << "\n";
-
-  //    err = addressDecode(current_instruction->addressingModeReg, current_instruction->regBase, current_instruction->reg);
-
-    //  err = addressDecode(current_instruction->addressingModeSrc, current_instruction->srcBase, current_instruction->src);
-
-      //err = addressDecode(current_instruction->addressingModeDest, current_instruction->destBase, current_instruction->dest);
     }
     else
     {
@@ -186,10 +177,6 @@ int parseInstruction(uint16_t instructionCode, instruction* newInstruction)
       current_instruction->addressingModeSrc = (instructionCode & maskDoubleSourceMode) >> 9;
       current_instruction->destBase = instructionCode & maskDoubleDest;
       current_instruction->addressingModeDest = (instructionCode & maskDoubleDestMode) >> 3;
-
-    //  err = addressDecode(current_instruction->addressingModeSrc, current_instruction->srcBase, current_instruction->src);
-
-      //err = addressDecode(current_instruction->addressingModeDest, current_instruction->destBase, current_instruction->dest);
       cout << "DOUBLE" << "\n";
     }
   }
@@ -198,7 +185,7 @@ int parseInstruction(uint16_t instructionCode, instruction* newInstruction)
 }
 
 
-// TODO, gotta add PC and SP (probably just check if R6 or R7, since baseAddress is only specifying 0-7 right)?
+// TODO, test PC and SP?
 // This returns the address, doing N-1 trace statements. We could probably have the trace statements in
 // the read_byte and read_word functions honestly.
 uint16_t get_address(uint16_t mode, uint16_t baseAddress)
@@ -211,11 +198,10 @@ uint16_t get_address(uint16_t mode, uint16_t baseAddress)
   // TODO define constants for all the values used for logic in here.
   if (baseAddress == 7)
   {
-    // TODO PC take into account differences between address and value
     switch (mode)
     {
     // Register
-    // What to do here?
+    // TODO What to do here?
     case 0000000: //INVALID
                   break;
     // Register deferred
@@ -243,8 +229,7 @@ uint16_t get_address(uint16_t mode, uint16_t baseAddress)
     // Autodecrement deferred
     case 0000005: 
     // Index
-    // TODO WTF how does the X translate in the instruction code?
-    case 0000006: //TODO how to interface with PC?
+    case 0000006: 
                   X = PC;
                   PC += 2;
                   resultAddress = PC + X;
@@ -267,7 +252,6 @@ uint16_t get_address(uint16_t mode, uint16_t baseAddress)
   }
   else if (baseAddress == 6)
   {
-    // TODO SP
 
     switch (mode)
     {
