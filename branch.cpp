@@ -14,7 +14,7 @@ int BR(instruction *inst) // Branch unconditional
 
 int BNE(instruction *inst) // Branch if not equal (to zero)
 {
-  if(inst->PSW.Z) {
+  if(inst->Z) {
     int16_t signed_offset;
     memcpy(&signed_offset, &(inst->offset), 2);
     PC += (signed_offset << 1); 
@@ -25,7 +25,7 @@ int BNE(instruction *inst) // Branch if not equal (to zero)
 
 int BEQ(instruction *inst) // Branch if equal (to zero)
 {
-  if(!(inst->PSW.Z)) {
+  if(!(inst->Z)) {
     int16_t signed_offset;
     memcpy(&signed_offset, &(inst->offset), 2);
     PC += (signed_offset << 1); 
@@ -36,7 +36,7 @@ int BEQ(instruction *inst) // Branch if equal (to zero)
 
 int BPL(instruction *inst) // Branch if plus
 {
-  if(!(inst->PSW.N)) {
+  if(!(inst->N)) {
     int16_t signed_offset;
     memcpy(&signed_offset, &(inst->offset), 2);
     PC += (signed_offset << 1); 
@@ -47,7 +47,7 @@ int BPL(instruction *inst) // Branch if plus
 
 int BMI(instruction *inst) // Branch if minus
 {
-  if(inst->PSW.N) {
+  if(inst->N) {
     int16_t signed_offset;
     memcpy(&signed_offset, &(inst->offset), 2);
     PC += (signed_offset << 1); 
@@ -58,7 +58,7 @@ int BMI(instruction *inst) // Branch if minus
 
 int BVC(instruction *inst) // Branch if overflow is clear
 {
-  if(!(inst->PSW.V)) {
+  if(!(inst->V)) {
     int16_t signed_offset;
     memcpy(&signed_offset, &(inst->offset), 2);
     PC += (signed_offset << 1); 
@@ -69,7 +69,7 @@ int BVC(instruction *inst) // Branch if overflow is clear
 
 int BVS(instruction *inst) // Branch if overflow is set
 {
-  if(inst->PSW.V) {
+  if(inst->V) {
     int16_t signed_offset;
 		memcpy(&signed_offset, &(inst->offset), 2);
     PC += (signed_offset << 1); 
@@ -80,7 +80,7 @@ int BVS(instruction *inst) // Branch if overflow is set
 
 int BCC(instruction *inst) // Branch if carry is clear
 {
-  if(!inst->PSW.C) {
+  if(!inst->C) {
     int16_t signed_offset;
 		memcpy(&signed_offset, &(inst->offset), 2);
     PC += (signed_offset << 1); 
@@ -91,7 +91,7 @@ int BCC(instruction *inst) // Branch if carry is clear
 
 int BCS(instruction *inst) // Branch if carry is set
 {
-  if(inst->PSW.C) {
+  if(inst->C) {
     int16_t signed_offset;
 		memcpy(&signed_offset, &(inst->offset), 2);
     PC += (signed_offset << 1); 
@@ -104,7 +104,7 @@ int BCS(instruction *inst) // Branch if carry is set
 int BGE(instruction *inst) // Branch if greater than or equal (to zero)
 {
   // Branch if N XNOR V 
-  if(inst->PSW.N == inst->PSW.V) {
+  if(inst->N == inst->V) {
     int16_t signed_offset;
 		memcpy(&signed_offset, &(inst->offset), 2);
     PC += (signed_offset << 1); 
@@ -116,7 +116,7 @@ int BGE(instruction *inst) // Branch if greater than or equal (to zero)
 int BLT(instruction *inst) // Branch if less than (zero)
 {
   // Branch if N XOR V
-  if(inst->PSW.N != inst->PSW.V) {
+  if(inst->N != inst->V) {
     int16_t signed_offset;
 		memcpy(&signed_offset, &(inst->offset), 2);
     PC += (signed_offset << 1); 
@@ -128,7 +128,7 @@ int BLT(instruction *inst) // Branch if less than (zero)
 int BGT(instruction *inst) // Branch if greater than (zero)
 {
   // Branch if (N XNOR V) && !Z
-  if((inst->PSW.N == inst->PSW.V) && !(inst->PSW.Z)) {
+  if((inst->N == inst->V) && !(inst->Z)) {
     int16_t signed_offset;
 		memcpy(&signed_offset, &(inst->offset), 2);
     PC += (signed_offset << 1); 
@@ -140,7 +140,7 @@ int BGT(instruction *inst) // Branch if greater than (zero)
 int BLE(instruction *inst) // Branch if less than or equal (to zero)
 {
   // Branch if (N XOR V) || Z
-  if(inst->PSW.Z || (inst->PSW.N != inst->PSW.V)) {
+  if(inst->Z || (inst->N != inst->V)) {
     int16_t signed_offset;
 		memcpy(&signed_offset, &(inst->offset), 2);
     PC += (signed_offset << 1); 
@@ -152,17 +152,19 @@ int BLE(instruction *inst) // Branch if less than or equal (to zero)
 // Unsigned Conditional Branch
 int BHI(instruction *inst) // Branch if higher
 {
-  if(!(inst->PSW.C) && !(inst->PSW.Z)) {
+  if(!(inst->C) && !(inst->Z)) {
     int16_t signed_offset;
 		memcpy(&signed_offset, &(inst->offset), 2);
     PC += (signed_offset << 1); 
+  }
 
   return 0;
 }
 
+
 int BLOS(instruction *inst) // Branch if lower or same
 {
-  if(inst->PSW.C || inst->PSW.Z) {
+  if(inst->C || inst->Z) {
     int16_t signed_offset;
 		memcpy(&signed_offset, &(inst->offset), 2);
     PC += (signed_offset << 1); 
@@ -174,7 +176,7 @@ int BLOS(instruction *inst) // Branch if lower or same
 // Duplicate of BCC
 int BHIS(instruction *inst) // Branch if higher or same
 {
-  if(!(inst->PSW.C)) {
+  if(!(inst->C)) {
     int16_t signed_offset;
 		memcpy(&signed_offset, &(inst->offset), 2);
     PC += (signed_offset << 1); 
@@ -186,7 +188,7 @@ int BHIS(instruction *inst) // Branch if higher or same
 // Duplicate of BCS
 int BLO(instruction *inst) // Branch if lower
 {
-  if(inst->PSW.C) {
+  if(inst->C) {
     int16_t signed_offset;
 		memcpy(&signed_offset, &(inst->offset), 2);
     PC += (signed_offset << 1); 

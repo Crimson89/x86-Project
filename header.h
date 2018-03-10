@@ -7,6 +7,7 @@
 #include <fstream>  //file reading
 #include <iomanip>  // Octal formatting
 #include <string>   //Strings
+#include <string.h> // memcpy
 #include <sstream>  //String stream buffer
 #include <math.h>   //log2
 #include <unistd.h> //Getopt
@@ -104,6 +105,8 @@ string op_formatted(string op_name, instruction * op);
 int dispatch(instruction * inst);
 
 
+// dispatch.cpp
+int dispatch(instruction *inst);
 
 
 // Trace Functions - trace.cpp
@@ -177,6 +180,7 @@ int BLO(instruction *inst); // Branch if lower
 
 int JMP(instruction *inst); // Jump
 int JSR(instruction *inst); // Jump to subroutine
+int RST(instruction *inst); // Return from subroutine
 
 // TRAPS & INTERRUPTS
 

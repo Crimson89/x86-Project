@@ -35,7 +35,6 @@ int main(int argc, char ** argv)
 	//int test;
 	//test = parseTest();
 	verbosity_level = 0; // Level of verbosity in print statements, default to low 
-	uint16_t operation = m_HALT;
 	int program_execution_control = 0;
 	int err;							// error checking
 	uint16_t instruction_code;			// 16-bit instruction
@@ -91,13 +90,13 @@ int main(int argc, char ** argv)
 				}
 
 				// EX
-        // err = dispatch(current_instruction);
+				err = dispatch(current_instruction);
 
 				// WB
 				// updateTracefile();
 				
 
-				if(operation == m_HALT)
+				if(current_instruction->opcode == m_HALT)
 					program_execution_control = PRINT_MENU;
 			}
 			cout << "-------------------------------------------------------------------------" <<endl;

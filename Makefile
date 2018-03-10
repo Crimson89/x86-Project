@@ -3,18 +3,18 @@ all: main
 remake: clean main
 
 unitTest: unitTest.o
-	g++ -g -std=c++11 unitTest.o parse.o memory.o trace.o -o RunUnitTest.exe
+	g++ -g -std=c++11 unitTest.o parse.o memory.o trace.o dispatch.o single_op.o double_op.o branch.o jump_sub.0 -o RunUnitTest.exe
 
 unitTest.o: unitTest.cpp
-	g++ -g -std=c++11 -c unitTest.cpp parse.cpp memory.cpp trace.cpp
+	g++ -g -std=c++11 -c unitTest.cpp parse.cpp memory.cpp trace.cpp dispatch.cpp single_op.cpp double_op.cpp branch.cpp jump_sub.cpp
 
 main: main.o
-	g++ -g -std=c++11 main.o parse.o memory.o trace.o debug.o -o RunMe.exe
+	g++ -g -std=c++11 main.o parse.o memory.o trace.o debug.o dispatch.o single_op.o double_op.o branch.o jump_sub.o -o RunMe.exe
 
 main.o: main.cpp
-	g++ -g -std=c++11 -c main.cpp parse.cpp trace.cpp memory.cpp debug.cpp
+	g++ -g -std=c++11 -c main.cpp parse.cpp trace.cpp memory.cpp debug.cpp dispatch.cpp single_op.cpp double_op.cpp branch.cpp jump_sub.cpp
 
-filenames := main.o parse.o memory.o trace.o unitTest.o debug.o dispatch.o RunMe.exe RunUnitTest.exe
+filenames := main.o parse.o memory.o trace.o branch.o unitTest.o debug.o dispatch.o single_op.o double_op.o branch.o jump_sub.o RunMe.exe RunUnitTest.exe
 
 files := $(strip $(foreach f,$(filenames),$(wildcard $(f))))
 

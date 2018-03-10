@@ -15,13 +15,13 @@ uint16_t read_byte(uint16_t addressMode, uint16_t address, bool trace) {
 	uint16_t data;
   if (addressMode == 0)
   {
-    data = REGS[address] & 0x00FF;
+	data = REGS[address] & 0x00FF;
   }
   else
   {
     data = 0x00FF&MEM[address];
-	  if(trace)
-		  read_trace(address, data);
+	if(trace)
+		read_trace(address, data);
   }
 	return (data);
 }
@@ -32,13 +32,13 @@ uint16_t read_word(uint16_t addressMode, uint16_t address, bool trace, bool is_i
   // TODO constant
   if (addressMode == 0)
   {
-    data = REGS[address];
+	data = REGS[address];
   }
   else
   {
     data = ((MEM[address+1]<<8) | (MEM[address]));
-	  if(trace)
-		  read_trace(address, data, is_instruction);
+	if(trace)
+		read_trace(address, data, is_instruction);
   }
 	return (data);
 }
@@ -54,8 +54,9 @@ void write_byte(uint16_t addressMode, uint16_t address, uint16_t byte, bool trac
   else
   {
     if(trace)
-		  write_trace(address, byte);
-	  MEM[address] = 0x00FF&byte;
+		write_trace(address, byte);
+	MEM[address] = 0x00FF&byte;
+	MEM_USED_FLAGS[address] = true;
   }
 }
 
@@ -68,9 +69,11 @@ void write_word(uint16_t addressMode, uint16_t address, uint16_t word, bool trac
   else
   {
     if(trace)
-		  write_trace(address, word);
-	  MEM[address]   = (0x00FF&word);
-	  MEM[address+1] = ((0xFF00&word)>>8);
+		write_trace(address, word);
+	MEM[address]   = (0x00FF&word);
+	MEM_USED_FLAGS[address] = true;
+	MEM[address+1] = ((0xFF00&word)>>8);
+	MEM_USED_FLAGS[address+1] = true;
   }
 }
 
@@ -83,7 +86,7 @@ void print_all_memory(void) {
 	uint16_t memory_word;
 	for(int i = 0; i < (MEMORY_SPACE); i+=2) { //by word, this is a word access
 		if(MEM_USED_FLAGS[i] == true) {
-			memory_word = read_word(i, false, false);
+			memory_word = read_word(1, i, false, false);
 			hasContent+=1;
 			cout <<"@ADDR="; print_octal(i); cout <<", Contents=" << octal_to_string(memory_word);
 			if( (PC != 0xFFFF) && (i == PC) )
@@ -103,7 +106,7 @@ void print_all_memory(void) {
 
 void initializeMemory(){
 	for(int i = 0; i < (MEMORY_SPACE); i++) { //Initialize memory space, by byte, since this is a byte access
-		write_byte(i,0x00, false);
+		write_byte(1, i,0x00, false);
 		MEM_USED_FLAGS[i] = false;
 	}
 }
@@ -244,7 +247,7 @@ int readData(){
 				if(verbosity_level >= DEBUG_VERBOSITY) cout << "Memory load"<<endl;
 				if(verbosity_level >= DEBUG_VERBOSITY) cout << "Loading:  " << input_word<<endl;
 				if(verbosity_level >= DEBUG_VERBOSITY) cout << "@address: " << octal_to_string(address)<<endl;
-				write_word(address,string_to_octal(input_word), false); //Read string, convert uint16, and write to memory
+				write_word(1, address,string_to_octal(input_word), false); //Read string, convert uint16, and write to memory
 				if(verbosity_level >= DEBUG_VERBOSITY) cout << "Loaded to memory, Read Back: " << octal_to_string(read_word(FILE_READ, address))<<endl;
 				address+=2;
 			}
