@@ -218,6 +218,7 @@ string format_arg(uint8_t reg, uint8_t mode, uint16_t immediate) {
 string op_formatted(string op_name, instruction * op) {
 	stringstream temp;
 	string print_string;
+	temp << get_op_name();
 	switch(op->opcode){
 						//Single Operand
 		case m_CLR   :
