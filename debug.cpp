@@ -48,6 +48,7 @@ void handle_breakpoint(uint16_t address, uint16_t instruction_code){
 	cout <<"Hit breakpoint @ADDR="; print_octal(address); cout << endl;
 	op_name = get_op_name();
 	cout <<"Operation: \'" << op_name << "\', raw op-code value :" << octal_to_string(instruction_code) << endl;
+	cout <<"Operation: :" << op_formatted(op_name, current_instruction) << endl;
 	cout << "-------------------------------------------------------------------------\n\n" <<endl;
 	cout << "Print Memory Contents" << endl;
 	print_all_memory();
@@ -167,4 +168,177 @@ string get_op_name(void) {
 		default			: op_name = "UNKNOWN"; break;
 	}
 	return op_name;
+}
+
+
+string format_arg(uint8_t reg, uint8_t mode, uint16_t immediate) {
+	stringstream temp;
+	if (reg <= 5) {
+		temp << "R" << reg;
+		switch(mode){
+				case 0:                                                        break;
+				case 1: temp << "("       << temp.str()      << ")";                 break;
+				case 2: temp << "("       << temp.str()      << ")+";                break;
+				case 3: temp << "@("      << temp.str()      << ")+";                break;
+				case 4: temp << "-("      << temp.str()      << ")";                 break;
+				case 5: temp << "@-("     << temp.str()      << ")";                 break;
+				case 6: temp << immediate << "("       << temp.str() << ")";         break;
+				case 7: temp << "@"       << immediate << "("  << temp.str() << ")"; break;
+		}
+	}
+	else if(reg == 6) {
+		switch(mode){
+				case 0: temp << "SP";                                          break;
+				case 1: temp << "("       << "SP"      << ")";                 break;
+				case 2: temp << "("       << "SP"      << ")+";                break;
+				case 3: temp << "@("      << "SP"      << ")+";                break;
+				case 4: temp << "-("      << "SP"      << ")";                 break;
+				case 5: temp << "@-("     << "SP"      << ")";                 break;
+				case 6: temp << immediate << "("       << "SP" << ")";         break;
+				case 7: temp << "@"       << immediate << "("  << "SP" << ")"; break;
+		}
+	}
+	else if(reg == 7) {
+		switch(mode){
+				case 0: temp << "PC";                                          break;
+				case 1: temp << "("       << "PC"      << ")";                 break;
+				case 2: temp << "("       << "PC"      << ")+";                break;
+				case 3: temp << "@("      << "PC"      << ")+";                break;
+				case 4: temp << "-("      << "PC"      << ")";                 break;
+				case 5: temp << "@-("     << "PC"      << ")";                 break;
+				case 6: temp << immediate << "("       << "PC" << ")";         break;
+				case 7: temp << "@"       << immediate << "("  << "PC" << ")"; break;
+		}
+	}
+	else
+		return " ";
+	return temp.str();
+}
+
+string op_formatted(string op_name, instruction * op) {
+	stringstream temp;
+	string print_string;
+	switch(op->opcode){
+						//Single Operand
+		case m_CLR   :
+		case m_CLRB  :
+		case m_COM   :
+		case m_COMB  :
+		case m_INC   :
+		case m_INCB  :
+		case m_DEC   :
+		case m_DECB  :
+		case m_NEG   :
+		case m_NEGB  :
+		case m_TST   :
+		case m_TSTB  :
+		case m_ASR   :
+		case m_ASRB  :
+		case m_ASL   :
+		case m_ASLB  :
+		case m_JMP   :
+		case m_ROR   :
+		case m_RORB  :
+		case m_ROL   :
+		case m_ROLB  :
+		case m_SWAB  :
+		case m_ADC   :
+		case m_ADCB  :
+		case m_SBC   :
+		case m_SBCB  :
+		case m_SXT   :
+		case m_MTPS  :
+		case m_MFPS  :
+		case m_XOR   : 	temp << op_name << " " << 
+						format_arg(op->destBase,op->addressingModeDest,op->immediate);
+					break;
+							// Double Operand Group
+		case m_BIT   :
+		case m_BITB  :
+		case m_BIC   :
+		case m_BICB  :
+		case m_BIS   :
+		case m_BISB  :
+		case m_MOV   :
+		case m_MOVB  :
+		case m_ADD   :
+		case m_SUB   :   temp << op_name << " " << 
+						format_arg(op->srcBase,op->addressingModeSrc,op->immediate)
+						<< ", " << 
+						format_arg(op->destBase,op->addressingModeDest,op->immediate); 
+					break;
+							//Program Control Group
+		case m_CMP   :
+		case m_CMPB  :
+		case m_BR    :
+		case m_BNE   :
+		case m_BEQ   :
+		case m_BPL   :
+		case m_BMI   :
+		case m_BVC   :
+		case m_BVS   :
+		case m_BCC   :
+		case m_BCS   :
+		case m_BGE   :
+		case m_BLT   :
+		case m_BGT   :
+		case m_BLE   :
+		case m_BHI   :
+		case m_BLOS  :    temp << op_name << " " << octal_to_string(op->offset); 
+					break;
+							// JSR
+		case m_JSR   :	temp << op_name << " " << 
+						format_arg(op->regBase,op->addressingModeReg,op->immediate)
+						<< ", " << 
+						format_arg(op->destBase,op->addressingModeDest,op->immediate); 
+					break;
+							// RTS
+		case m_RTS   :
+					if     (op->rtsReg <= 5)
+						temp << "R" << op->rtsReg;
+					else if(op->rtsReg == 6)
+						temp << op_name << " " << "SP"; 
+					else if(op->rtsReg == 7)
+						temp << op_name << " " << "PC"; 
+					break;
+							// Mark
+		case m_MARK  :temp << op_name << " " << "VALUE"; break; // Cheating here, we didn't implement this, so I use "value" for the MARK "NM" value
+							// SOB
+		case m_SOB   :temp << op_name << " Rn VALUE"; break; // Cheating here, we didn't implement this, so I use dummy values for the SOB "NM" and R values
+							// Trap, Operate Group, Condition Code Operators, and Other stuff
+		case m_EMT   :
+		case m_TRAP  :
+		case m_BPT   :
+		case m_IOT   : 
+		case m_NOP   :
+		case m_HALT  :
+		case m_WAIT  :
+		case m_RESET :
+		case m_RTI   :
+		case m_RTT   :
+		case m_MTPD  :
+		case m_MTPI  :
+		case m_MFPD  :
+		case m_MFPI  :
+		case m_SPL   :
+		case m_CSM   :
+		case m_CLC   :
+		case m_CLV   :
+		case m_CLZ   :
+		case m_CLN   :
+		case m_CCC   :
+		case m_SEC   :
+		case m_SEV   :
+		case m_SEZ   :
+		case m_SEN   :
+		case m_SCC   : break; // Just return the OP name
+							// FP Operations
+		case m_ASH   :
+		case m_ASHC  :
+		case m_MUL   :
+		case m_DIV   : temp << op_name << " Rn"; break; // Cheating here, we didn't implement this, so I use dummy value for the FP op R values
+		default      : print_string = "?????";   break;
+	}
+	print_string = temp.str();
+	return print_string;
 }

@@ -35,8 +35,7 @@ typedef struct {
 	uint16_t reg; // reg post-dereferencing
   */
 	uint16_t offset;
-	// TODO don't think this is needed
-  uint16_t immediate; 
+	uint16_t immediate; //Used for debug pretty-print
 	// TODO don't think this is needed
   uint16_t registerMode;
   union {
@@ -98,6 +97,12 @@ bool check_breakpoint(uint16_t address);
 void handle_breakpoint(uint16_t address, uint16_t instruction_code);
 void print_all_breakpoints(void);
 string get_op_name(void);
+string format_arg(uint8_t reg, uint8_t mode, uint16_t immediate);
+string op_formatted(string op_name, instruction * op);
+
+//Function dispatcher
+int dispatch(instruction * inst);
+
 
 
 
@@ -191,6 +196,20 @@ int SEZ(instruction *inst); // Set zero
 int SEN(instruction *inst); // Set negative
 int SCC(instruction *inst); // Set Condition Codes
 
+
+//Temporary dummy functions
+int NOP(instruction *inst);
+int XOR(instruction *inst);
+int ASH(instruction *inst);
+int ASHC(instruction *inst);
+int MUL(instruction *inst);
+int DIV(instruction *inst);
+int NEQ(instruction *inst);
+int SOB(instruction *inst);
+int RTS(instruction *inst);
+int MARK(instruction *inst);
+int HALT(instruction *inst);
+int WAIT(instruction *inst);
 
 // Parsing functions
 

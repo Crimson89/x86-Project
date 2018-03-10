@@ -231,11 +231,13 @@ uint16_t get_address(uint16_t mode, uint16_t baseAddress)
     // Index
     case 0000006: 
                   X = PC;
+				  current_instruction->immediate = X;
                   PC += 2;
                   resultAddress = PC + X;
                   break;
     // Index deferred
     case 0000007: X = PC;
+				  current_instruction->immediate = X;
                   PC += 2;
                   workingAddress = PC + X;
                   // READ TRACE
@@ -298,6 +300,7 @@ uint16_t get_address(uint16_t mode, uint16_t baseAddress)
     // Index
     case 0000006: // READ TRACE
                   X = read_word(mode, PC, true);
+				  current_instruction->immediate = X;
                   PC += 2;
                   resultAddress = SP + X;
                   break;
@@ -306,6 +309,7 @@ uint16_t get_address(uint16_t mode, uint16_t baseAddress)
                   //TODO only read word?
                   // READ TRACE
                   X = read_word(mode, PC, true);
+				  current_instruction->immediate = X;
                   PC += 2;
                   // READ TRACE
                   if (byte)
@@ -381,6 +385,7 @@ uint16_t get_address(uint16_t mode, uint16_t baseAddress)
     // Index
     case 0000006: // READ TRACE
                   X = read_word(mode, PC, true);
+				  current_instruction->immediate = X;
                   PC += 2;
                   resultAddress = REGS[baseAddress] + X;
                   break;
@@ -389,6 +394,7 @@ uint16_t get_address(uint16_t mode, uint16_t baseAddress)
                   //TODO only read word?
                   // READ TRACE
                   X = read_word(mode, PC, true);
+				  current_instruction->immediate = X;
                   PC += 2;
                   // READ TRACE
                   if (byte)
@@ -474,6 +480,7 @@ uint16_t get_value(uint16_t mode, uint16_t baseAddress)
       // Index
       case 0000006: // READ TRACE
                     X = read_word(mode, PC, true);
+					current_instruction->immediate = X;
                     PC += 2;
                     if (byte)
                     {
@@ -489,6 +496,7 @@ uint16_t get_value(uint16_t mode, uint16_t baseAddress)
       // Index deferred
       case 0000007: // READ TRACE
                     X = read_word(mode, PC, true);
+					current_instruction->immediate = X;
                     PC += 2;
                     if (byte)
                     {
@@ -596,6 +604,7 @@ uint16_t get_value(uint16_t mode, uint16_t baseAddress)
       case 0000006: // READ TRACE
                     workingAddress = SP;
                     X = read_word(mode, PC, true);
+					current_instruction->immediate = X;
                     PC += 2;
                     if (byte)
                     {
@@ -612,6 +621,7 @@ uint16_t get_value(uint16_t mode, uint16_t baseAddress)
       case 0000007: // READ TRACE
                     workingAddress = SP;
                     X = read_word(mode, PC, true);
+					current_instruction->immediate = X;
                     PC += 2;
                     if (byte)
                     {
@@ -731,6 +741,7 @@ uint16_t get_value(uint16_t mode, uint16_t baseAddress)
       case 0000006: // READ TRACE
                     workingAddress = REGS[baseAddress];
                     X = read_word(mode, PC, true);
+					current_instruction->immediate = X;
                     PC += 2;
                     if (byte)
                     {
@@ -747,6 +758,7 @@ uint16_t get_value(uint16_t mode, uint16_t baseAddress)
       case 0000007: // READ TRACE
                     workingAddress = REGS[baseAddress];
                     X = read_word(mode, PC, true);
+					current_instruction->immediate = X;
                     PC += 2;
                     if (byte)
                     {

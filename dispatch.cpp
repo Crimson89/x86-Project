@@ -1,4 +1,4 @@
-
+#include "header.h"
 // dispatch.cpp
 
 
@@ -6,9 +6,9 @@
 // Takes instruction* (current instruction) & uint16_t (opcode)
 // Passes back return value from the function it called
 
-int dispatch(instruction * inst, uin16_t opcode)
+int dispatch(instruction * inst)
 {
-  switch (opcode) {
+  switch (inst->opcode) {
 
     // SINGLE OPERAND
 
@@ -144,12 +144,6 @@ int dispatch(instruction * inst, uin16_t opcode)
     case 0102400: // BVS
       return BVS(inst);
       break;
-    case 0103000: // BCC
-      return BCC(inst);
-      break;
-    case 0103400: // BCS
-      return BCS(inst);
-      break;
 
     // Signed Conditional Branch
     case 0002000: // BGE
@@ -175,11 +169,11 @@ int dispatch(instruction * inst, uin16_t opcode)
     case 0101400: // BLOS
       return BLOS(inst);
       break;
-    case 0103000: // BHIS
+    case 0103000: // BHIS and BCC
       return BHIS(inst);
       break;
-    case 0103400: // BLO
-      return BLO(inst);
+    case 0103400: // BCS and  BLO
+      return BCS(inst);
       break;
 
     // JUMP & SUBROUTINE
