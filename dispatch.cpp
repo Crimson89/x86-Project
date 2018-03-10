@@ -1,6 +1,6 @@
-#include "header.h"
 // dispatch.cpp
 
+#include "header.h"
 
 // Function to call operation functions
 // Takes instruction* (current instruction) & uint16_t (opcode)
@@ -33,9 +33,9 @@ int dispatch(instruction * inst)
     case 0105400: // NEGB
       return NEG(inst);
       break;
-    case 0000240: // NOP
-      return NOP(inst);
-      break;
+    //case 0000240: // NOP
+    //  return NOP(inst);
+    //  break;
     case 0005700: // TST
     case 0105700: // TSTB
       return TST(inst);
@@ -90,9 +90,9 @@ int dispatch(instruction * inst)
     case 0150000: // BISB
       return BIS(inst);
       break;
-    case 0074000: // XOR
-      return XOR(inst);
-      break;
+    //case 0074000: // XOR
+    //  return XOR(inst);
+    //  break;
     case 0010000: // MOV
     case 0110000: // MOVB
       return MOV(inst);
@@ -107,18 +107,18 @@ int dispatch(instruction * inst)
     case 0120000: // CMPB
       return CMP(inst);
       break;
-    case 0072000: // ASH
-      return ASH(inst);
-      break;
-    case 0073000: // ASHC
-      return ASHC(inst);  
-      break;
-    case 0070000: // MUL
-      return MUL(inst);
-      break;
-    case 0071000: // DIV
-      return DIV(inst);
-      break;
+    //case 0072000: // ASH
+    //  return ASH(inst);
+    //  break;
+    //case 0073000: // ASHC
+    //  return ASHC(inst);  
+    //  break;
+    //case 0070000: // MUL
+    //  return MUL(inst);
+    //  break;
+    //case 0071000: // DIV
+    //  return DIV(inst);
+    //  break;
 
     // BRANCH
 
@@ -129,9 +129,9 @@ int dispatch(instruction * inst)
     case 0001000: // BNE
       return BNE(inst);
       break;
-    case 0001400: // BEQ
-      return NEQ(inst);
-      break;
+    //case 0001400: // BEQ
+    //  return NEQ(inst);
+    //  break;
     case 0100000: // BPL
       return BPL(inst);
       break;
@@ -158,9 +158,9 @@ int dispatch(instruction * inst)
     case 0003400: // BLE
       return BLE(inst);
       break;
-    case 0077000: // SOB
-      return SOB(inst);
-      break;
+    //case 0077000: // SOB
+    //  return SOB(inst);
+    //  break;
 
     // Unsigned Conditional Branch
     case 0101000: // BHI
@@ -169,12 +169,12 @@ int dispatch(instruction * inst)
     case 0101400: // BLOS
       return BLOS(inst);
       break;
-    case 0103000: // BHIS and BCC
-      return BHIS(inst);
-      break;
-    case 0103400: // BCS and  BLO
-      return BCS(inst);
-      break;
+    //case 0103000: // BHIS
+    //  return BHIS(inst);
+    //  break;
+    //case 0103400: // BLO
+    //  return BLO(inst);
+    //  break;
 
     // JUMP & SUBROUTINE
 
@@ -184,12 +184,12 @@ int dispatch(instruction * inst)
     case 0004000: // JSR
       return JSR(inst);
       break;
-    case 0000200: // RTS
-      return RTS(inst);
+    case 0000200: // RST
+      return RST(inst);
       break;
-    case 0006400: // MARK
-      return MARK(inst);
-      break;
+    //case 0006400: // MARK
+    //  return MARK(inst);
+    //  break;
 
     // TRAPS & INTERRUPTS
     /*
@@ -218,12 +218,12 @@ int dispatch(instruction * inst)
 
     // MISC
 
-    case 0000000: // HALT
-      return HALT(inst);
-      break;
-    case 0000001: // WAIT
-      return WAIT(inst);
-      break;
+    //case 0000000: // HALT
+    //  return HALT(inst);
+    //  break;
+    //case 0000001: // WAIT
+    //  return WAIT(inst);
+    //  break;
     /*
     case 0000005: // RESET
       return RESET(inst);
@@ -255,7 +255,7 @@ int dispatch(instruction * inst)
     */
 
     // CONDITION CODES
-
+/*
     case 0000241: // CLC
       return CLC(inst);
       break;
@@ -286,6 +286,7 @@ int dispatch(instruction * inst)
     case 0000277: // SCC
       return SCC(inst);
       break;
+*/
   }
 
 }

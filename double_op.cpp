@@ -13,7 +13,7 @@ int MOV(instruction *inst) // Move source to destination (B)
     uint16_t src = read_word(inst->addressingModeSrc, inst->srcBase);
     write_word(inst->addressingModeDest, inst->destBase, src);
   }
-  uint16_t temp = get_value(inst->srcBase);
+  uint16_t temp = get_value(inst->addressingModeSrc, inst->srcBase);
   inst->N = (temp < 0)? 1:0; // Set Negative flag if below zero
   inst->Z = (temp == 0)? 1:0; // Set Zero flag if zero
   inst->V = 0; // Clear
@@ -34,7 +34,7 @@ int ADD(instruction *inst) // Add source to destination
   write_word(inst->addressingModeDest, inst->destBase, dest);
 
   // Check if MSB is 1 for negative
-  inst->N = (msb_check == 0x8000)? 1:0;
+  inst->N = (msb_result == 0x8000)? 1:0;
 
   // Overflow, i.e. pos + pos = neg, neg + neg = pos
   inst->V =(((msb_dest == 0x0000) && (msb_src == 0x0000) && (msb_result == 0x8000)) || ((msb_dest == 0x8000) && (msb_src == 0x8000) && (msb_result == 0x0000)))? 1:0;
