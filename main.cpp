@@ -91,7 +91,7 @@ int main(int argc, char ** argv)
 				}
 
 				// EX
-				// call appropriate function				
+        err = dispatch(current_instruction);
 
 				// WB
 				// updateTracefile();

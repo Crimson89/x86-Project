@@ -25,21 +25,23 @@ int ADD(instruction *inst) // Add source to destination
   // Read values from memory
   uint16_t dest = get_value(inst->addressingModeDest, inst->destBase);
   uint16_t src = get_value(inst->addressingModeSrc, inst->srcBase);
-  uint16_t temp = dest;
+  uint16_t msb_dest = (dest && 0x8000);
+  uint16_t msb_src = (src && 0x8000);
+  uint32_t temp = dest + src;
 
-  // Do the operation and write to memory
   dest += src;
+  uint16_t msb_result = (dest && 0x8000);
   write_word(inst->addressingModeDest, inst->destBase, dest);
 
-  // Set NZVC flags
-  inst->N = (dest < 0)? 1:0;
-  inst->Z = (dest == 0)? 1:0;
+  // Check if MSB is 1 for negative
+  inst->N = (msb_check == 0x8000)? 1:0;
 
   // Overflow, i.e. pos + pos = neg, neg + neg = pos
-  inst->V = ((temp > 0 && src > 0 && dest < 0) || (temp < 0 && src < 0 && dest > 0))? 1:0;
+  inst->V =(((msb_dest == 0x0000) && (msb_src == 0x0000) && (msb_result == 0x8000)) || ((msb_dest == 0x8000) && (msb_src == 0x8000) && (msb_result == 0x0000)))? 1:0;
 
   // Set C flag if there was a carry to the MSB
-  inst->C = (dest > 0xFFFF) ? 1:0;
+  inst->C = (temp > 0xFFFF) ? 1:0;
+  inst->Z = (temp == 0) ? 1:0;
   return 0;
 }
 
