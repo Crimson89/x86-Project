@@ -87,6 +87,24 @@ int DEC(instruction *inst) // Decrement (B)
 
 int NEG(instruction *inst) // 2's Compliment negate (B)
 {
+  uint16_t dest = get_value(inst->addressingModeDest, inst->destBase);
+  inst->V = (dest == 0x8000) ? 1:0;
+  dest = (~dest)+1;
+
+  if(inst->byteMode)
+  {
+    write_byte(inst->addressingModeDest, inst->destBase, dest);
+    inst->N = (dest && 0x80) ? 1:0;
+  }
+  else
+  {
+    write_word(inst->addressingModeDest, inst->destBase, dest);
+    inst->N = (dest && 0x8000) ? 1:0;
+  }
+
+  inst->Z = (dest == 0)? 1:0;
+  inst->C = (dest != 0) ? 1:0;
+  return 0;
 }
 
 int TST(instruction *inst) // Test (B)
@@ -260,4 +278,17 @@ int SBC(instruction *inst) // Subtract carry (B)
 
 int SXT(instruction *inst) // Sign extend
 {
+  if (inst->N == 1)
+  {
+    uint16_t dest = 0xFFFF;
+    write_word(inst->addressingModeDest, inst->destBase, dest);
+    inst->Z = 0;
+  }
+  else
+  {
+    uint16_t dest = 0x0000;
+    write_word(inst->addressingModeDest, inst->destBase, dest);
+    inst->Z = 1;
+  }
+  return 0;
 }
