@@ -56,7 +56,7 @@ int JSR(instruction *inst)
 }
 
 // Return from subroutine
-int RST(instruction *inst)
+int RTS(instruction *inst)
 {
   uint16_t tmp;
 

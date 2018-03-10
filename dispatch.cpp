@@ -13,181 +13,181 @@ int dispatch(instruction * inst)
     // SINGLE OPERAND
 
     // General
-    case 0005000: // CLR
-    case 0105000: // CLRB
+    case m_CLR:
+    case m_CLRB:
       return CLR(inst);
       break;
-    case 0005100: // COM
-    case 0105100: // COMB
+    case m_COM:
+    case m_COMB:
       return COM(inst);
       break;
-    case 0005200: // INC
-    case 0105200: // INCB
+    case m_INC:
+    case m_INCB:
       return INC(inst);
       break;
-    case 0005300: // DEC
-    case 0105300: // DECB
+    case m_DEC:
+    case m_DECB:
       return DEC(inst);
       break;
-    case 0005400: // NEG
-    case 0105400: // NEGB
+    case m_NEG:
+    case m_NEGB:
       return NEG(inst);
       break;
     //case 0000240: // NOP
     //  return NOP(inst);
     //  break;
-    case 0005700: // TST
-    case 0105700: // TSTB
+    case m_TST:
+    case m_TSTB:
       return TST(inst);
       break;
     
     // Shift & Rotate
-    case 0006200: // ASR
-    case 0106200: // ASRB
+    case m_ASR:
+    case m_ASRB:
       return ASR(inst);
       break;
-    case 0006300: // ASL
-    case 0106300: // ASLB
+    case m_ASL:
+    case m_ASLB:
       return ASL(inst);
       break;
-    case 0006000: // ROR
-    case 0106000: // RORB
+    case m_ROR:
+    case m_RORB:
       return ROR(inst);
       break;
-    case 0006100: // ROL
-    case 0106100: // ROLB
+    case m_ROL:
+    case m_ROLB:
       return ROL(inst);
       break;
-    case 0000300: // SWAB
+    case m_SWAB:
       return SWAB(inst);
       break;
 
     // Multiple precision
-    case 0005500: // ADC
-    case 0105500: // ADCB
+    case m_ADC:
+    case m_ADCB:
       return ADC(inst);
       break;
-    case 0005600: // SBC
-    case 0105600: // SBCB
+    case m_SBC:
+    case m_SBCB:
       return SBC(inst);
       break;
-    case 0006700: // SXT
+    case m_SXT:
       return SXT(inst);
       break;
 
     // DOUBLE OPERAND
 
     // Logical
-    case 0030000: // BIT
-    case 0130000: // BITB
+    case m_BIT:
+    case m_BITB:
       return BIT(inst);
       break;
-    case 0040000: // BIC
-    case 0140000: // BICB
+    case m_BIC:
+    case m_BICB:
       return BIC(inst);
       break;
-    case 0050000: // BIS
-    case 0150000: // BISB
+    case m_BIS:
+    case m_BISB:
       return BIS(inst);
       break;
-    //case 0074000: // XOR
+    //case m_XOR:
     //  return XOR(inst);
     //  break;
-    case 0010000: // MOV
-    case 0110000: // MOVB
+    case m_MOV:
+    case m_MOVB:
       return MOV(inst);
       break;
-    case 0060000: // ADD
+    case m_ADD:
       return ADD(inst);
       break;
-    case 0160000: // SUB
+    case m_SUB:
       return SUB(inst);
       break;
-    case 0020000: // CMP
-    case 0120000: // CMPB
+    case m_CMP:
+    case m_CMPB:
       return CMP(inst);
       break;
-    //case 0072000: // ASH
+    //case m_ASH:
     //  return ASH(inst);
     //  break;
-    //case 0073000: // ASHC
+    //case m_ASHC:
     //  return ASHC(inst);  
     //  break;
-    //case 0070000: // MUL
+    //case m_MUL:
     //  return MUL(inst);
     //  break;
-    //case 0071000: // DIV
+    //case m_DIV:
     //  return DIV(inst);
     //  break;
 
     // BRANCH
 
     // Branch
-    case 0000400: // BR
+    case m_BR:
       return BR(inst);
       break;
-    case 0001000: // BNE
+    case m_BNE:
       return BNE(inst);
       break;
-    //case 0001400: // BEQ
-    //  return NEQ(inst);
-    //  break;
-    case 0100000: // BPL
+    case m_BEQ:
+      return BEQ(inst);
+      break;
+    case m_BPL:
       return BPL(inst);
       break;
-    case 0100400: // BMI
+    case m_BMI:
       return BMI(inst);
       break;
-    case 0102000: // BVC
+    case m_BVC:
       return BVC(inst);
       break;
-    case 0102400: // BVS
+    case m_BVS:
       return BVS(inst);
       break;
 
     // Signed Conditional Branch
-    case 0002000: // BGE
+    case m_BGE:
       return BGE(inst);
       break;
-    case 0002400: // BLT
+    case m_BLT:
       return BLT(inst);
       break;
-    case 0003000: // BGT
+    case m_BGT:
       return BGT(inst);
       break;
-    case 0003400: // BLE
+    case m_BLE:
       return BLE(inst);
       break;
-    //case 0077000: // SOB
+    //case m_SOB:
     //  return SOB(inst);
     //  break;
 
     // Unsigned Conditional Branch
-    case 0101000: // BHI
+    case m_BHI:
       return BHI(inst);
       break;
-    case 0101400: // BLOS
+    case m_BLOS:
       return BLOS(inst);
       break;
-    //case 0103000: // BHIS
+    //case m_BHIS:
     //  return BHIS(inst);
     //  break;
-    //case 0103400: // BLO
+    //case m_BLO:
     //  return BLO(inst);
     //  break;
 
     // JUMP & SUBROUTINE
 
-    case 0000100: // JMP
+    case m_JMP:
       return JMP(inst);
       break;
-    case 0004000: // JSR
+    case m_JSR:
       return JSR(inst);
       break;
-    case 0000200: // RST
-      return RST(inst);
+    case m_RTS:
+      return RTS(inst);
       break;
-    //case 0006400: // MARK
+    //case m_MARK
     //  return MARK(inst);
     //  break;
 
@@ -256,34 +256,34 @@ int dispatch(instruction * inst)
 
     // CONDITION CODES
 /*
-    case 0000241: // CLC
+    case m_CLC:
       return CLC(inst);
       break;
-    case 0000242: // CLV
+    case m_CLV:
       return CLV(inst);
       break;
-    case 0000244: // CLZ
+    case m_CLZ:
       return CLZ(inst);
       break;
-    case 0000250: // CLN
+    case m_CLN:
       return CLN(inst);
       break;
-    case 0000257: // CCC
+    case m_CCC:
       return CCC(inst);
       break;
-    case 0000261: // SEC
+    case m_SEC:
       return SEC(inst);
       break;
-    case 0000262: // SEV
+    case m_SEV:
       return SEV(inst);
       break;
-    case 0000264: // SEZ
+    case m_SEZ:
       return SEZ(inst);
       break;
-    case 0000270: // SEN
+    case m_SEN:
       return SEN(inst);
       break;
-    case 0000277: // SCC
+    case m_SCC:
       return SCC(inst);
       break;
 */
