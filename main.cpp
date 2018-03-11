@@ -103,8 +103,8 @@ int main(int argc, char ** argv)
 
 //////////////////////////
 // Debug, print stuff////
-//printInstruction(newInstruction);
-cout << "Instruction: " << op_formatted(newInstruction) << endl;
+//printInstruction(current_instruction);
+cout << "Instruction: " << op_formatted(current_instruction) << endl;
 // End Debug, print stuff////
 //////////////////////////
 

@@ -250,7 +250,7 @@ string op_formatted(instruction * op) {
 		case m_MTPS  :
 		case m_MFPS  :
 		case m_XOR   : 	temp << " " << 
-						format_arg(op->destBase,op->addressingModeDest,op->immediate);
+						format_arg(op->regBase,op->addressingModeReg,op->immediate);
 					break;
 							// Double Operand Group
 		case m_BIT   :
