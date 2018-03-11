@@ -41,7 +41,7 @@ typedef struct {
   uint16_t registerMode;
   union {
 		struct {
-			int SC: 3;
+			int SC: 1;
 			int N: 1;
 			int Z: 1;
 			int V: 1;

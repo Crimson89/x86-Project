@@ -136,16 +136,14 @@ int parseInstruction(uint16_t instructionCode, instruction* newInstruction)
       bitPattern = relevantBits & maskCondCheck;
       if ((bitPattern == 0000240) || (bitPattern == 0000260))
       {
-        //TODO fix these
         // cond check
-        /*
+        
         newInstruction->opcode = instructionCode & maskCondCodeOpcode;
         newInstruction->SC = instructionCode & maskCondSC;
         newInstruction->N = instructionCode & maskCondN;
         newInstruction->Z = instructionCode & maskCondZ;
         newInstruction->V = instructionCode & maskCondV;
-        newInstruction->C = instructionCode & maskCondC;*/
-        //cout << "COND " << "\n";
+        newInstruction->C = instructionCode & maskCondC;
       }
       else
       {
