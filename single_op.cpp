@@ -23,15 +23,15 @@ int COM(instruction *inst) // 1's Compliment (B)
   if(inst->byteMode)
   {
     write_byte(inst->addressingModeDest, inst->destBase, dest);
-    inst->N = (dest && 0x80) ? 1:0;
+    inst->N = IS_NEGATIVE_BYTE(dest) ? 1:0;
   }
   else
   {
     write_word(inst->addressingModeDest, inst->destBase, dest);
-    inst->N = (dest && 0x8000) ? 1:0;
+    inst->N = IS_NEGATIVE_WORD(dest) ? 1:0;
   }
 
-  inst->Z = (dest == 0)? 1:0;
+  inst->Z = IS_ZERO(dest)? 1:0;
   inst->V = 0;
   inst->C = 1;
   return 0;
@@ -46,17 +46,17 @@ int INC(instruction *inst) // Increment (B)
   if(inst->byteMode)
   {
     write_byte(inst->addressingModeDest, inst->destBase, dest);
-    inst->N = (dest && 0x80) ? 1:0;
+    inst->N = IS_NEGATIVE_BYTE(dest) ? 1:0;
     inst->V = ((temp == 0xFF) && (dest == 0x00))? 1:0;
   }
    else
    {
     write_word(inst->addressingModeDest, inst->destBase, dest);
-    inst->N = (dest && 0x8000) ? 1:0;
+    inst->N = IS_NEGATIVE_WORD(dest) ? 1:0;
     inst->V = ((temp == 0xFFFF) && (dest == 0x0000))? 1:0;
    }
 
-  inst->Z = (dest == 0)? 1:0;
+  inst->Z = IS_ZERO(dest)? 1:0;
   inst->C = 0;
   return 0;
 }
@@ -70,17 +70,17 @@ int DEC(instruction *inst) // Decrement (B)
   if(inst->byteMode)
   {
     write_byte(inst->addressingModeDest, inst->destBase, dest);
-    inst->N = (dest && 0x80) ? 1:0;
+    inst->N = IS_NEGATIVE_BYTE(dest) ? 1:0;
     inst->V = ((temp == 0x00) && (dest == 0xFF))? 1:0;
   }
    else
    {
     write_word(inst->addressingModeDest, inst->destBase, dest);
-    inst->N = (dest && 0x8000) ? 1:0;
+    inst->N = IS_NEGATIVE_WORD(dest) ? 1:0;
     inst->V = ((temp == 0x0000) && (dest == 0xFFFF))? 1:0;
    }
 
-  inst->Z = (dest == 0)? 1:0;
+  inst->Z = IS_ZERO(dest)? 1:0;
   inst->C = 0;
   return 0;
 }
@@ -94,15 +94,15 @@ int NEG(instruction *inst) // 2's Compliment negate (B)
   if(inst->byteMode)
   {
     write_byte(inst->addressingModeDest, inst->destBase, dest);
-    inst->N = (dest && 0x80) ? 1:0;
+    inst->N = IS_NEGATIVE_BYTE(dest) ? 1:0;
   }
   else
   {
     write_word(inst->addressingModeDest, inst->destBase, dest);
-    inst->N = (dest && 0x8000) ? 1:0;
+    inst->N = IS_NEGATIVE_WORD(dest) ? 1:0;
   }
 
-  inst->Z = (dest == 0)? 1:0;
+  inst->Z = IS_ZERO(dest)? 1:0;
   inst->C = (dest != 0) ? 1:0;
   return 0;
 }
@@ -111,10 +111,10 @@ int TST(instruction *inst) // Test (B)
 {
   uint16_t dest = get_value(inst->addressingModeDest, inst->destBase);
   if(inst->byteMode)
-    inst->N = (dest && 0x80) ? 1:0;
+    inst->N = IS_NEGATIVE_BYTE(dest) ? 1:0;
   else
-    inst->N = (dest && 0x8000) ? 1:0;
-  inst->Z = (dest == 0)? 1:0;
+    inst->N = IS_NEGATIVE_WORD(dest) ? 1:0;
+  inst->Z = IS_ZERO(dest)? 1:0;
   inst->V = 0;
   inst->C = 0;
   return 0;
@@ -130,15 +130,15 @@ int ASR(instruction *inst) // Arithmetic shift right (B)
    if(inst->byteMode)
   {
     write_byte(inst->addressingModeDest, inst->destBase, dest);
-    inst->N = (dest && 0x80) ? 1:0;
+    inst->N = IS_NEGATIVE_BYTE(dest) ? 1:0;
   }
   else
   {
     write_word(inst->addressingModeDest, inst->destBase, dest);
-    inst->N = (dest && 0x8000) ? 1:0;
+    inst->N = IS_NEGATIVE_WORD(dest) ? 1:0;
   }
 
-  inst->Z = (dest == 0)? 1:0;
+  inst->Z = IS_ZERO(dest)? 1:0;
   inst->V = inst->N ^ inst->C;
   return 0;
 }
@@ -152,15 +152,15 @@ int ASL(instruction *inst) // Arithmetic shift left (B)
   if(inst->byteMode)
   {
     write_byte(inst->addressingModeDest, inst->destBase, dest);
-    inst->N = (dest && 0x80) ? 1:0;
+    inst->N = IS_NEGATIVE_BYTE(dest) ? 1:0;
   }
   else
   {
     write_word(inst->addressingModeDest, inst->destBase, dest);
-    inst->N = (dest && 0x8000) ? 1:0;
+    inst->N = IS_NEGATIVE_WORD(dest) ? 1:0;
   }
 
-  inst->Z = (dest == 0)? 1:0;
+  inst->Z = IS_ZERO(dest)? 1:0;
   inst->V = inst->N ^ inst->C;
   return 0;
 }
@@ -176,15 +176,15 @@ int ROR(instruction *inst) // Rotate right (B)
   if(inst->byteMode)
   {
     write_byte(inst->addressingModeDest, inst->destBase, dest);
-    inst->N = (dest && 0x80) ? 1:0;
+    inst->N = IS_NEGATIVE_BYTE(dest) ? 1:0;
   }
   else
   {
     write_word(inst->addressingModeDest, inst->destBase, dest);
-    inst->N = (dest && 0x8000) ? 1:0;
+    inst->N = IS_NEGATIVE_WORD(dest) ? 1:0;
   }
 
-  inst->Z = (dest == 0)? 1:0;
+  inst->Z = IS_ZERO(dest)? 1:0;
   inst->C = (dest > temp2)? 1:0;
   inst->V = inst->N ^ inst->C;
   return 0;
@@ -201,15 +201,15 @@ int ROL(instruction *inst) // Rotate left (B)
   if(inst->byteMode)
   {
     write_byte(inst->addressingModeDest, inst->destBase, dest);
-    inst->N = (dest && 0x80) ? 1:0;
+    inst->N = IS_NEGATIVE_BYTE(dest) ? 1:0;
   }
   else
   {
     write_word(inst->addressingModeDest, inst->destBase, dest);
-    inst->N = (dest && 0x8000) ? 1:0;
+    inst->N = IS_NEGATIVE_WORD(dest) ? 1:0;
   }
 
-  inst->Z = (dest == 0)? 1:0;
+  inst->Z = IS_ZERO(dest)? 1:0;
   inst->C = (dest < temp2)? 1:0;
   inst->V = inst->N ^ inst->C;
   return 0;
@@ -224,8 +224,8 @@ int SWAB(instruction *inst) // Swap bytes
 
   write_word(inst->addressingModeDest, inst->destBase, dest);
 
-  inst->N = (dest && 0x8000)? 1:0;
-  inst->Z = (dest == 0)? 1:0;
+  inst->N = IS_NEGATIVE_WORD(dest)? 1:0;
+  inst->Z = IS_ZERO(dest)? 1:0;
   inst->C = 0;
   inst->V = 0;
   return 0;
@@ -241,15 +241,15 @@ int ADC(instruction *inst) // Add carry (B)
   if(inst->byteMode)
   {
     write_byte(inst->addressingModeDest, inst->destBase, dest);
-    inst->N = (dest && 0x80) ? 1:0;
+    inst->N = IS_NEGATIVE_BYTE(dest) ? 1:0;
   }
   else
   {
     write_word(inst->addressingModeDest, inst->destBase, dest);
-    inst->N = (dest && 0x8000) ? 1:0;
+    inst->N = IS_NEGATIVE_WORD(dest) ? 1:0;
   }
 
-  inst->Z = (dest == 0)? 1:0;
+  inst->Z = IS_ZERO(dest)? 1:0;
   inst->C = ((temp == 0xFFFF) && (dest == 0x0000))? 1:0;
   return 0;
 }
@@ -263,15 +263,15 @@ int SBC(instruction *inst) // Subtract carry (B)
   if(inst->byteMode)
   {
     write_byte(inst->addressingModeDest, inst->destBase, dest);
-    inst->N = (dest && 0x80) ? 1:0;
+    inst->N = IS_NEGATIVE_BYTE(dest) ? 1:0;
   }
   else
   {
     write_word(inst->addressingModeDest, inst->destBase, dest);
-    inst->N = (dest && 0x8000) ? 1:0;
+    inst->N = IS_NEGATIVE_WORD(dest) ? 1:0;
   }
 
-  inst->Z = (dest == 0)? 1:0;
+  inst->Z = IS_ZERO(dest)? 1:0;
   inst->C = ((temp == 0x0000) && (dest == 0xFFFF))? 1:0;
   return 0;
 }
