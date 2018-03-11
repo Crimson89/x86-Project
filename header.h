@@ -99,7 +99,7 @@ void handle_breakpoint(uint16_t address, uint16_t instruction_code);
 void print_all_breakpoints(void);
 string get_op_name(void);
 string format_arg(uint8_t reg, uint8_t mode, uint16_t immediate);
-string op_formatted(string op_name, instruction * op);
+string op_formatted(instruction * op);
 
 //Function dispatcher
 int dispatch(instruction * inst);

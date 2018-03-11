@@ -70,7 +70,15 @@ int main(int argc, char ** argv)
 			while(program_execution_control == RUN_PROGRAM) {
 
 				// IF
-				instruction_code = read_word(PC, true);
+				instruction_code = read_word(1, PC, true);
+				
+//////////////////////////
+// Debug, print stuff////
+				//cerr << "\n\n Debug: OpCode: " << instruction_code << "\n\n" <<endl;
+// End Debug, print stuff////
+//////////////////////////
+				
+				
 				PC += 2;
 				if(check_breakpoint(PC)){ // Check for a breakpoint pointing to this memory location
 					breakpoint_pc = PC;
@@ -78,6 +86,7 @@ int main(int argc, char ** argv)
 				}
 				else
 					at_breakpoint = false;
+				
 
 				// ID
 				err = parseInstruction(instruction_code, current_instruction); 
@@ -94,7 +103,6 @@ int main(int argc, char ** argv)
 
 				// WB
 				// updateTracefile();
-				
 
 				if(current_instruction->opcode == m_HALT)
 					program_execution_control = PRINT_MENU;
@@ -159,7 +167,8 @@ int menu_function() {
 		cout << "P(p) to print all register contents" << endl;
 		cout << "M(m) to print all valid memory contents" << endl;
 		cout << "L(l) to load new application" << endl;
-		cout << "T(t) to clear old trace file" << endl;
+		cout << "T(t) to print current trace file" << endl;
+		cout << "Y(y) to clear old trace file" << endl;
 		cout << "B(b) to set break point" << endl;
 		cout << "C(c) to clear breakpoint" << endl;
 		cout << "V(v) to clear all breakpoints" << endl;
@@ -188,11 +197,21 @@ int menu_function() {
 					cin.get();
 					exit(EXIT_SUCCESS);
 					break;
-					case 't':
+				case 't':
 					cout << "\n\n-------------------------------------------------------------------------" <<endl;
-					cout << "                     Print old trace file, " << trace_file << endl;
+					cout << "                     Print trace file, " << trace_file << endl;
 					cout << "-------------------------------------------------------------------------" <<endl;
 					print_trace();
+					cout << "                          Press ENTER to continue" << endl;
+					cout << "-------------------------------------------------------------------------" <<endl;
+					cin.ignore(numeric_limits<streamsize>::max(), '\n');
+					cin.get();
+					break;
+				case 'y':
+					cout << "\n\n-------------------------------------------------------------------------" <<endl;
+					cout << "                     Delete old trace file, " << trace_file << endl;
+					cout << "-------------------------------------------------------------------------" <<endl;
+					clear_trace();
 					cout << "                          Press ENTER to continue" << endl;
 					cout << "-------------------------------------------------------------------------" <<endl;
 					cin.ignore(numeric_limits<streamsize>::max(), '\n');

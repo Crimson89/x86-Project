@@ -48,7 +48,7 @@ void handle_breakpoint(uint16_t address, uint16_t instruction_code){
 	cout <<"Hit breakpoint @ADDR="; print_octal(address); cout << endl;
 	op_name = get_op_name();
 	cout <<"Operation: \'" << op_name << "\', raw op-code value :" << octal_to_string(instruction_code) << endl;
-	cout <<"Operation: :" << op_formatted(op_name, current_instruction) << endl;
+	cout <<"Operation: :" << op_formatted(current_instruction) << endl;
 	cout << "-------------------------------------------------------------------------\n\n" <<endl;
 	cout << "Print Memory Contents" << endl;
 	print_all_memory();
@@ -66,7 +66,7 @@ for(int i = 0; i < (MEMORY_SPACE/2); i+=1)
 	if(BREAK_POINT[i]) {
 		cout <<"Breakpoint @ADDR="; print_octal(i*2);
 		cout <<", Contents=";
-		print_octal(read_word(i*2, false, false));
+		print_octal(read_word(1, i*2, false, false));
 		cout << endl;
 	}
 }
@@ -174,40 +174,40 @@ string get_op_name(void) {
 string format_arg(uint8_t reg, uint8_t mode, uint16_t immediate) {
 	stringstream temp;
 	if (reg <= 5) {
-		temp << "R" << reg;
+		temp << "R" << to_string(reg);
 		switch(mode){
-				case 0:                                                        break;
-				case 1: temp << "("       << temp.str()      << ")";                 break;
-				case 2: temp << "("       << temp.str()      << ")+";                break;
-				case 3: temp << "@("      << temp.str()      << ")+";                break;
-				case 4: temp << "-("      << temp.str()      << ")";                 break;
-				case 5: temp << "@-("     << temp.str()      << ")";                 break;
-				case 6: temp << immediate << "("       << temp.str() << ")";         break;
-				case 7: temp << "@"       << immediate << "("  << temp.str() << ")"; break;
+				case 0:                                                                          break;
+				case 1: temp << "("       << temp.str()      << ")";                             break;
+				case 2: temp << "("       << temp.str()      << ")+";                            break;
+				case 3: temp << "@("      << temp.str()      << ")+";                            break;
+				case 4: temp << "-("      << temp.str()      << ")";                             break;
+				case 5: temp << "@-("     << temp.str()      << ")";                             break;
+				case 6: temp << immediate << "("             << temp.str() << ")";               break;
+				case 7: temp << "@"       << immediate       << "("        << temp.str() << ")"; break;
 		}
 	}
 	else if(reg == 6) {
 		switch(mode){
-				case 0: temp << "SP";                                          break;
-				case 1: temp << "("       << "SP"      << ")";                 break;
-				case 2: temp << "("       << "SP"      << ")+";                break;
-				case 3: temp << "@("      << "SP"      << ")+";                break;
-				case 4: temp << "-("      << "SP"      << ")";                 break;
-				case 5: temp << "@-("     << "SP"      << ")";                 break;
-				case 6: temp << immediate << "("       << "SP" << ")";         break;
-				case 7: temp << "@"       << immediate << "("  << "SP" << ")"; break;
-		}
-	}
-	else if(reg == 7) {
-		switch(mode){
-				case 0: temp << "PC";                                          break;
-				case 1: temp << "("       << "PC"      << ")";                 break;
-				case 2: temp << "("       << "PC"      << ")+";                break;
-				case 3: temp << "@("      << "PC"      << ")+";                break;
-				case 4: temp << "-("      << "PC"      << ")";                 break;
-				case 5: temp << "@-("     << "PC"      << ")";                 break;
-				case 6: temp << immediate << "("       << "PC" << ")";         break;
-				case 7: temp << "@"       << immediate << "("  << "PC" << ")"; break;
+				case 0: temp << "SP";                                                            break;
+				case 1: temp << "("       << "SP"      << ")";                                   break;
+				case 2: temp << "("       << "SP"      << ")+";                                  break;
+				case 3: temp << "@("      << "SP"      << ")+";                                  break;
+				case 4: temp << "-("      << "SP"      << ")";                                   break;
+				case 5: temp << "@-("     << "SP"      << ")";                                   break;
+				case 6: temp << oct       << immediate << "("       << "SP" << ")";              break;
+				case 7: temp << "@"       << oct       << immediate << "("  << "SP" << ")";      break;
+		}                                                                                        
+	}                                                                                            
+	else if(reg == 7) {                                                                          
+		switch(mode){                                                                            
+				case 0: temp << "PC";                                                            break;
+				case 1: temp << "("       << "PC"      << ")";                                   break;
+				case 2: temp << "("       << "PC"      << ")+";                                  break;
+				case 3: temp << "@("      << "PC"      << ")+";                                  break;
+				case 4: temp << "-("      << "PC"      << ")";                                   break;
+				case 5: temp << "@-("     << "PC"      << ")";                                   break;
+				case 6: temp << oct       << immediate << "("       << "PC" << ")";              break;
+				case 7: temp << "@"       << oct       << immediate << "("  << "PC" << ")";      break;
 		}
 	}
 	else
@@ -215,9 +215,8 @@ string format_arg(uint8_t reg, uint8_t mode, uint16_t immediate) {
 	return temp.str();
 }
 
-string op_formatted(string op_name, instruction * op) {
+string op_formatted(instruction * op) {
 	stringstream temp;
-	string print_string;
 	temp << get_op_name();
 	switch(op->opcode){
 						//Single Operand
@@ -250,7 +249,8 @@ string op_formatted(string op_name, instruction * op) {
 		case m_SXT   :
 		case m_MTPS  :
 		case m_MFPS  :
-		case m_XOR   : 	temp << op_name << " " << 
+		//case m_XOR   : 	temp << temp.str() << " " << 
+		case m_XOR   : 	temp << " " << 
 						format_arg(op->destBase,op->addressingModeDest,op->immediate);
 					break;
 							// Double Operand Group
@@ -263,7 +263,8 @@ string op_formatted(string op_name, instruction * op) {
 		case m_MOV   :
 		case m_MOVB  :
 		case m_ADD   :
-		case m_SUB   :   temp << op_name << " " << 
+		//case m_SUB   :   temp << temp.str() << " " << 
+		case m_SUB   :   temp << " " << 
 						format_arg(op->srcBase,op->addressingModeSrc,op->immediate)
 						<< ", " << 
 						format_arg(op->destBase,op->addressingModeDest,op->immediate); 
@@ -285,10 +286,12 @@ string op_formatted(string op_name, instruction * op) {
 		case m_BGT   :
 		case m_BLE   :
 		case m_BHI   :
-		case m_BLOS  :    temp << op_name << " " << octal_to_string(op->offset); 
+		//case m_BLOS  :    temp << temp.str() << " " << octal_to_string(op->offset); 
+		case m_BLOS  :    temp << " " << octal_to_string(op->offset); 
 					break;
 							// JSR
-		case m_JSR   :	temp << op_name << " " << 
+		//case m_JSR   :	temp << temp.str() << " " << 
+		case m_JSR   :	temp << " " << 
 						format_arg(op->regBase,op->addressingModeReg,op->immediate)
 						<< ", " << 
 						format_arg(op->destBase,op->addressingModeDest,op->immediate); 
@@ -296,16 +299,19 @@ string op_formatted(string op_name, instruction * op) {
 							// RTS
 		case m_RTS   :
 					if     (op->rtsReg <= 5)
-						temp << "R" << op->rtsReg;
+						//temp << "R" << op->rtsReg;
+						temp << to_string(op->rtsReg);
 					else if(op->rtsReg == 6)
-						temp << op_name << " " << "SP"; 
+						//temp << temp.str() << " " << "SP"; 
+						temp << " " << "SP"; 
 					else if(op->rtsReg == 7)
-						temp << op_name << " " << "PC"; 
+						//temp << temp.str() << " " << "PC"; 
+						temp << " " << "PC"; 
 					break;
 							// Mark
-		case m_MARK  :temp << op_name << " " << "VALUE"; break; // Cheating here, we didn't implement this, so I use "value" for the MARK "NM" value
+		case m_MARK  :temp << temp.str() << " " << "VALUE"; break; // Cheating here, we didn't implement this, so I use "value" for the MARK "NM" value
 							// SOB
-		case m_SOB   :temp << op_name << " Rn VALUE"; break; // Cheating here, we didn't implement this, so I use dummy values for the SOB "NM" and R values
+		case m_SOB   :temp << temp.str() << " Rn VALUE"; break; // Cheating here, we didn't implement this, so I use dummy values for the SOB "NM" and R values
 							// Trap, Operate Group, Condition Code Operators, and Other stuff
 		case m_EMT   :
 		case m_TRAP  :
@@ -337,9 +343,8 @@ string op_formatted(string op_name, instruction * op) {
 		case m_ASH   :
 		case m_ASHC  :
 		case m_MUL   :
-		case m_DIV   : temp << op_name << " Rn"; break; // Cheating here, we didn't implement this, so I use dummy value for the FP op R values
-		default      : print_string = "?????";   break;
+		case m_DIV   : temp << temp.str() << " Rn"; break; // Cheating here, we didn't implement this, so I use dummy value for the FP op R values
+		default      : temp << "?????";   break;
 	}
-	print_string = temp.str();
-	return print_string;
+	return temp.str();
 }

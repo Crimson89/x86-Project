@@ -1,12 +1,11 @@
-*000006// added by my (not produced in obj2ascii to indicate my simulator the location of start or first instruction
-@000004
+*000004// added by my (not produced in obj2ascii to indicate my simulator the location of start or first instruction
+@000000
 -077777
 -000001
 -016701
 -177770
 -016702
 -177766
-@000044
 -060102
 -005502
 -000000

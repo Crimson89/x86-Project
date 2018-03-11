@@ -12,8 +12,6 @@ int printInstruction(instruction* newInstruction)
   printf("regBase %u\n", newInstruction->regBase);
   printf("offset %u\n", newInstruction->offset);
   printf("rtsReg %u\n\n", newInstruction->rtsReg);
-  //printf("opcode % u", newInstruction->opcode);
-  //printf("opcode % u", newInstruction->opcode);
   return 0;
 }
 
@@ -110,6 +108,7 @@ int parseInstruction(uint16_t instructionCode, instruction* newInstruction)
   {
 
   } */
+
   
   uint16_t relevantBits = instructionCode & maskRelevantBits;
   uint16_t bitPattern = relevantBits & maskSingleCondBranchCondCheck;
@@ -127,7 +126,7 @@ int parseInstruction(uint16_t instructionCode, instruction* newInstruction)
       current_instruction->regBase = tempLocation;
 //      err = addressDecode(current_instruction->addressingModeReg, current_instruction->regBase, current_instruction->reg);
       current_instruction->byteMode = (instructionCode & maskByteMode) >> 15;
-      cout << "SINGLE " << "\n";
+      //cout << "SINGLE " << "\n";
     }
     else
     {
@@ -143,14 +142,14 @@ int parseInstruction(uint16_t instructionCode, instruction* newInstruction)
         newInstruction->Z = instructionCode & maskCondZ;
         newInstruction->V = instructionCode & maskCondV;
         newInstruction->C = instructionCode & maskCondC;*/
-        cout << "COND " << "\n";
+        //cout << "COND " << "\n";
       }
       else
       {
         //cond branch
         current_instruction->opcode = instructionCode & maskCondBranchOpcode;
         current_instruction->offset = instructionCode & maskCondBranchOffset;
-        cout << "COND BRANCH " << "\n";
+        //cout << "COND BRANCH " << "\n";
       }
     } 
   }
@@ -167,7 +166,7 @@ int parseInstruction(uint16_t instructionCode, instruction* newInstruction)
       current_instruction->destBase = instructionCode & maskDoubleRegisterSourceDest;
       current_instruction->addressingModeSrc = (instructionCode & maskDoubleRegisterSourceDestMode) >> 3;
       current_instruction->addressingModeDest = (instructionCode & maskDoubleRegisterSourceDestMode) >> 3;
-      cout << "DOUBLE REG " << "\n";
+      //cout << "DOUBLE REG " << "\n";
     }
     else
     {
@@ -177,9 +176,17 @@ int parseInstruction(uint16_t instructionCode, instruction* newInstruction)
       current_instruction->addressingModeSrc = (instructionCode & maskDoubleSourceMode) >> 9;
       current_instruction->destBase = instructionCode & maskDoubleDest;
       current_instruction->addressingModeDest = (instructionCode & maskDoubleDestMode) >> 3;
-      cout << "DOUBLE" << "\n";
+      //cout << "DOUBLE" << "\n";
     }
   }
+
+//////////////////////////
+// Debug, print stuff////
+//printInstruction(newInstruction);
+cout << "Pretty-Print Instruction: " << op_formatted(newInstruction) << endl;
+// End Debug, print stuff////
+//////////////////////////
+
 
   return err;
 }
