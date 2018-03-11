@@ -34,18 +34,7 @@ static int ADDTEST(instruction * instr)
   uint16_t destAddress = get_address(instr->addressingModeDest, instr->destBase);
   src = get_value(instr->addressingModeSrc, instr->srcBase);
   dest = get_value(instr->addressingModeDest, instr->destBase);
-
-  //cout << "\nsourceVal: \n" << hex << src << "\n";
-  //cout << "\ndestVal: \n" << hex << dest << "\n";
-  //uint16_t destAddress;
-
-
-  //cout << "\ndestAddress: \n" << destAddress << "\n";
-
   dest = dest + src;
-
-  //cout << "\ndestVal: \n" << hex << dest << "\n";
-  
   write_word(instr->addressingModeDest, destAddress, dest, false);
   
   return 1;
@@ -54,10 +43,7 @@ static int ADDTEST(instruction * instr)
 static int MOVTEST(instruction * instr)
 { 
   uint16_t src;
-  //uint16_t dest;
-
   src = get_value(instr->addressingModeSrc, instr->srcBase);
-  //dest = get_value(instr->addressingModeDest, instr->destBase);
 
   uint16_t destAddress;
 
@@ -74,30 +60,19 @@ static int CLRTEST(instruction * instr)
   uint16_t regAddress;
   regAddress = get_address(instr->addressingModeReg, instr->regBase);
   regDummyVal = get_value(instr->addressingModeReg, instr->regBase);
-
-  //cout << "\nregAddress: \n" << regAddress;
-  //cout << "\nregAddressMode: \n" << instr->addressingModeReg;
-  //cout << "\nregBase: \n" << instr->regBase << "\n";
-
   write_word(instr->addressingModeReg, regAddress, 0, false);
 }
 
 static int BRTEST(instruction * instr)
 {
-  //cout << "\nPC: \n" << PC;
   uint16_t offset;
   offset = instr->offset;
-
-  //cout << "\noffset: \n" << offset;
-
   PC = PC + offset;
- 
-  //cout << "\nPC: \n" << PC;
 }
 
 static void printMemReg()
 {
-  //cout << "\n";
+
   for (int i = 0; i < 20; i+=2)
   {
     printf("address: %u,%u   val: %04x\n", i, i+1, (MEM[i]) | (MEM[i+1] << 8) );
@@ -107,13 +82,55 @@ static void printMemReg()
   {
     printf("Reg: %u   val: %u\n", i, REGS[i]);
   }
-  //cout << "\n";
 }
 
 static void clearReg()
 {
   for (int i = 0; i <= 7; i++)
     REGS[i] = 0;
+}
+
+static void br_wrapper(uint16_t inst_in, instruction * current_instruction, string test_string)
+{
+  cout << "_________________\n";
+  cout << test_string << endl; 
+  int res;
+  int test;
+  
+  clearReg();
+  res = clearInstruction(current_instruction);
+  res = parseInstruction(inst_in, current_instruction);
+  test = BRTEST(current_instruction);
+  cout << "Instruction: " << op_formatted(current_instruction) << endl;
+}
+
+
+static void add_wrapper(uint16_t inst_in, instruction * current_instruction, string test_string)
+{
+  cout << "_________________\n";
+  cout << test_string << endl; 
+  int res;
+  int test;
+  
+  clearReg();
+  res = clearInstruction(current_instruction);
+  res = parseInstruction(inst_in, current_instruction);
+  test = ADDTEST(current_instruction);
+  cout << "Instruction: " << op_formatted(current_instruction) << endl;
+}
+
+static void clr_wrapper(uint16_t inst_in, instruction * current_instruction, string test_string)
+{
+  cout << "_________________\n";
+  cout << test_string << endl; 
+  int res;
+  int test;
+  
+  clearReg();
+  res = clearInstruction(current_instruction);
+  res = parseInstruction(inst_in, current_instruction);
+  test = CLRTEST(current_instruction);
+  cout << "Instruction: " << op_formatted(current_instruction) << endl;
 }
 
 static int decodeTest()
@@ -128,387 +145,59 @@ static int decodeTest()
   uint16_t movbInstruction = 0;
   uint16_t clrbInstruction = 0;
   
-  // DOUBLE          ADD  R2,R1     (R2),(R1) (R2)+,(R1)+  @(R2)+,@(R1)+  -(R2),-(R1)  @-(R2),@-(R1)  X(R2),X(R1)    @X(R2),@X(R1)
-  uint16_t addArray[8] = {00060102, 00061112, 00062122,    00063132,      00064142,    00065152};//,      00066162,      00067172};
-  // SINGLE          CLR  R5        (R5)      (R5)+     @(R5)+    -(R5)     @-(R5)    X(R5)     @X(R5)
-  uint16_t clrArray[8] = {00005005, 00005015, 00005025, 00005035, 00005045, 00005055};//, 00005061, 00005071};
+  // DOUBLE
+  string addStringArray[8] = {"Testing: ADD R1,R2", 
+									"Testing: ADD (R1),(R2)", 
+									"Testing: ADD (R1)+,(R2)+", 
+									"Testing: ADD @(R1)+,@(R2)+", 
+									"Testing: ADD -(R1),-(R2)", 
+									"Testing: ADD @-(R1),@-(R2)", 
+									"Testing: ADD X(R1),X(R2)", 
+									"Testing: ADD @X(R1),@X(R2)"};
+  uint16_t addArray[8] = {00060102, 00061112, 00062122,    00063132,      00064142,    00065152,      00066162,      00067172};
+  string addPCStringArray[8] = {"Testing: ADD PC,R2", 
+									"Testing: ADD (PC),(R2)", 
+									"Testing: ADD (PC)+,(R2)+", 
+									"Testing: ADD @(PC)+,@(R2)+", 
+									"Testing: ADD -(PC),-(R2)", 
+									"Testing: ADD @-(PC),@-(R2)", 
+									"Testing: ADD X(PC),X(R2)", 
+									"Testing: ADD @X(PC),@X(R2)"};
+  uint16_t addPCArray[8] = {00060702, 00061712, 00062722,    00063732,      00064742,    00065752,      00066762,      00067772};
+  string addSPStringArray[8] = {"Testing: ADD SP,R2", 
+								"Testing: ADD (SP),(R2)", 
+								"Testing: ADD (SP)+,(R2)+", 
+								"Testing: ADD @(SP)+,@(R2)+", 
+								"Testing: ADD -(SP),-(R2)", 
+								"Testing: ADD @-(SP),@-(R2)", 
+								"Testing: ADD X(SP),X(R2)", 
+								"Testing: ADD @X(SP),@X(R2)"};
+  uint16_t addSPArray[8] = {00060602, 00061612, 00062622,    00063632,      00064642,    00065652,      00066662,      00067672};
+  // SINGLE
+   string clrStringArray[8] = {"Testing: CLR,R2", 
+									"Testing: CLR (R2)", 
+									"Testing: CLR (R2)+", 
+									"Testing: CLR @(R2)+", 
+									"Testing: CLR ,-(R2)", 
+									"Testing: CLR @-(R2)", 
+									"Testing: CLR X(R2)", 
+									"Testing: CLR @X(R2)"};
+  uint16_t clrArray[8] = {00005002, 00005012, 00005022, 00005032, 00005042, 00005052, 00005062, 00005072};
   // BRANCH
-  uint16_t brArray[8] = {};
-  uint16_t branch = 00000477;
+  string brStringArray[1] = {"Testing: BR R1"};
+  uint16_t brArray[1] = {00000401};
+  uint16_t branch;
 
-
-  cout << "_________________\n";
-  cout << "Testing: ADD R2,R1\n"; 
-  int res;
-  int val;
-  int test;
-
-  val = 0;
-  for (int i = 0; i < size; i++)
-  {
-    MEM[i] = val;
-    val++;
-  }
-  res = clearInstruction(current_instruction);
-  res = parseInstruction(addArray[0], current_instruction);
-  //res = printInstruction(current_instruction); 
-    
-  R2 = 10;
-  R1 = 14;
-  
-  //MEM[10] = 4;
-  //MEM[14] = 3;
-
-  //printMemReg(); 
-
-  test = ADDTEST(current_instruction);
-  cout << "Instruction: " << op_formatted(current_instruction) << endl;
-  
-  //printMemReg();
-  clearReg();
-    
-
-  cout << "_________________\n";
-  cout << "Testing: ADD (R2),(R1)\n"; 
-  val = 0;
-  for (int i = 0; i < size; i++)
-  {
-    MEM[i] = val;
-    val++;
-  }
-  res = clearInstruction(current_instruction);
-  res = parseInstruction(addArray[1], current_instruction);
-  //res = printInstruction(current_instruction); 
-    
-  R2 = 10;
-  R1 = 14;
-  
-  MEM[10] = 4;
-  MEM[14] = 3;
-  //MEM[4] = ;
-  //MEM[3] = ;
-
-  //printMemReg(); 
-
-  test = ADDTEST(current_instruction);
-  cout << "Instruction: " << op_formatted(current_instruction) << endl;
-  
-  //printMemReg();
-  clearReg(); 
- 
-  cout << "_________________\n"; 
-  cout << "Testing: ADD (R2)+,(R1)+\n"; 
-  val = 0;
-  for (int i = 0; i < size; i++)
-  {
-    MEM[i] = val;
-    val++;
-  }
-  res = clearInstruction(current_instruction);
-  res = parseInstruction(addArray[2], current_instruction);
-  //res = printInstruction(current_instruction); 
-    
-  R2 = 10;
-  R1 = 14;
-  
-  MEM[10] = 4;
-  MEM[14] = 3;
-  //MEM[4] = ;
-  //MEM[3] = ;
-
-  //printMemReg(); 
-
-  test = ADDTEST(current_instruction);
-  cout << "Instruction: " << op_formatted(current_instruction) << endl;
-  
-  //printMemReg();
-  clearReg(); 
-  
-
-    cout << "_________________\n"; 
-  cout << "Testing: ADD @(R2)+,@(R1)+\n"; 
-  val = 0;
-  for (int i = 0; i < size; i++)
-  {
-    MEM[i] = val;
-    val++;
-  }
-  res = clearInstruction(current_instruction);
-  res = parseInstruction(addArray[3], current_instruction);
-  //res = printInstruction(current_instruction); 
-    
-  R2 = 10;
-  R1 = 14;
-  
-  MEM[10] = 2;
-  MEM[11] = 0;
-  MEM[14] = 4;
-  MEM[15] = 0;
-  MEM[4] = 12;
-  MEM[2] = 12;
-
-  //printMemReg(); 
-
-  test = ADDTEST(current_instruction);
-  cout << "Instruction: " << op_formatted(current_instruction) << endl;
-  
-  //printMemReg();
-  clearReg(); 
-  
-      cout << "_________________\n"; 
-  cout << "Testing: ADD -(R2),-(R1)\n"; 
-  val = 0;
-  for (int i = 0; i < size; i++)
-  {
-    MEM[i] = val;
-    val++;
-  }
-  res = clearInstruction(current_instruction);
-  res = parseInstruction(addArray[4], current_instruction);
-  //res = printInstruction(current_instruction); 
-    
-  R2 = 10;
-  R1 = 14;
-  
-  MEM[10] = 4;
-  MEM[14] = 3;
-  //MEM[4] = 12;
-  //MEM[3] = 12;
-
-  //printMemReg();
-
-  test = ADDTEST(current_instruction);
-  cout << "Instruction: " << op_formatted(current_instruction) << endl;
-  
-  //printMemReg();
-  clearReg();
-
-      cout << "_________________\n"; 
-  cout << "Testing: ADD @-(R2),@-(R1)\n"; 
-  val = 0;
-  for (int i = 0; i < size; i++)
-  {
-    MEM[i] = val;
-    val++;
-  }
-  res = clearInstruction(current_instruction);
-  res = parseInstruction(addArray[5], current_instruction);
-  //res = printInstruction(current_instruction); 
-    
-  R2 = 10;
-  R1 = 14;
-  
-  MEM[8] = 4;
-  MEM[9] = 0;
-  MEM[12] = 6;
-  MEM[13] = 0;
-  MEM[4] = 12;
-  MEM[6] = 12;
-
- // printMemReg(); 
-
-  test = ADDTEST(current_instruction);
-  cout << "Instruction: " << op_formatted(current_instruction) << endl;
-  
-  //printMemReg();
-  clearReg();
-
-
-
-
- 
-  cout << "_________________\n";
-  cout << "Testing: MOV R1,R2\n";
-  val = 0;
-  for (int i = 0; i < size; i++)
-  {
-    MEM[i] = val;
-    val++;
-  }
-
-  R2 = 10;
-  R1 = 14;
-  
-  MEM[10] = 4;
-  MEM[14] = 3;
-
-  //printMemReg();
-  res = clearInstruction(current_instruction);
-  res = parseInstruction(movInstruction, current_instruction);
-  //res = printInstruction(current_instruction);
-  
-  test = MOVTEST(current_instruction);
-  //printMemReg();
-  clearReg(); 
-
-  cout << "_________________\n"; 
-  cout << "Testing: CLR R5\n";
-
-  val = 0;
-  for (int i = 0; i < size; i++)
-  {
-    MEM[i] = val;
-    val++;
-  }
-  
-  R5 = 14;
-
-  MEM[14] = 10;
-  MEM[10] = 55;
-  
-  //printMemReg();
-
-  res = clearInstruction(current_instruction);
-  res = parseInstruction(clrArray[0], current_instruction);
-  //res = printInstruction(current_instruction); 
-
-  test = CLRTEST(current_instruction);
-  cout << "Instruction: " << op_formatted(current_instruction) << endl;
-  //printMemReg();
-  clearReg();
-
-    cout << "_________________\n"; 
-  cout << "Testing: CLR (R5)\n";
-
-  val = 0;
-  for (int i = 0; i < size; i++)
-  {
-    MEM[i] = val;
-    val++;
-  }
-  
-  R5 = 14;
-
-  MEM[14] = 10;
-  MEM[10] = 55;
-  
-  //printMemReg();
-
-  res = clearInstruction(current_instruction);
-  res = parseInstruction(clrArray[1], current_instruction);
-  //res = printInstruction(current_instruction); 
-
-  test = CLRTEST(current_instruction);
-  cout << "Instruction: " << op_formatted(current_instruction) << endl;
-  //printMemReg();
-  clearReg();
-
-  cout << "_________________\n"; 
-  cout << "Testing: CLR (R5)+\n";
-
-  val = 0;
-  for (int i = 0; i < size; i++)
-  {
-    MEM[i] = val;
-    val++;
-  }
-  
-  R5 = 14;
-
-  MEM[14] = 10;
-  MEM[10] = 55;
-  
-  //printMemReg();
-
-  res = clearInstruction(current_instruction);
-  res = parseInstruction(clrArray[2], current_instruction);
-  //res = printInstruction(current_instruction); 
-
-  test = CLRTEST(current_instruction);
-  cout << "Instruction: " << op_formatted(current_instruction) << endl;
-  //printMemReg();
-  clearReg();
-
-  cout << "_________________\n"; 
-  cout << "Testing: CLR @(R5)+\n";
-
-  val = 0;
-  for (int i = 0; i < size; i++)
-  {
-    MEM[i] = val;
-    val++;
-  }
-  
-  R5 = 14;
-
-  MEM[14] = 10;
-  MEM[15] = 0;
-  MEM[10] = 55;
-  
-  //printMemReg();
-
-  res = clearInstruction(current_instruction);
-  res = parseInstruction(clrArray[3], current_instruction);
-  //res = printInstruction(current_instruction); 
-
-  test = CLRTEST(current_instruction);
-  cout << "Instruction: " << op_formatted(current_instruction) << endl;
-  //printMemReg();
-  clearReg();
-
-  cout << "_________________\n"; 
-  cout << "Testing: CLR -(R5)\n";
-
-  val = 0;
-  for (int i = 0; i < size; i++)
-  {
-    MEM[i] = val;
-    val++;
-  }
-  
-  R5 = 14;
-
-  MEM[14] = 10;
-  MEM[10] = 55;
-  
-  //printMemReg();
-
-  res = clearInstruction(current_instruction);
-  res = parseInstruction(clrArray[4], current_instruction);
-  //res = printInstruction(current_instruction); 
-
-  test = CLRTEST(current_instruction);
-  cout << "Instruction: " << op_formatted(current_instruction) << endl;
-  //printMemReg();
-  clearReg();
-
-  cout << "_________________\n"; 
-  cout << "Testing: CLR @-(R5)\n";
-
-  val = 0;
-  for (int i = 0; i < size; i++)
-  {
-    MEM[i] = val;
-    val++;
-  }
-  
-  R5 = 14;
-
-  MEM[12] = 16;
-  MEM[13] = 0;
-  MEM[14] = 10;
-  MEM[10] = 55;
-  
-  //printMemReg();
-
-  res = clearInstruction(current_instruction);
-  res = parseInstruction(clrArray[5], current_instruction);
-  //res = printInstruction(current_instruction); 
-
-  test = CLRTEST(current_instruction);
-  cout << "Instruction: " << op_formatted(current_instruction) << endl;
-  //printMemReg();
-  clearReg();
-
-  PC = 0;
-
-  res = clearInstruction(current_instruction);
-  res = parseInstruction(branch, current_instruction);
-  //res = printInstruction(current_instruction);
-
-  test = BRTEST(current_instruction);
-  //printMemReg();
-  clearReg();
+ 	for (int i = 0; i < 8; i++)
+		add_wrapper(addArray[i], current_instruction, addStringArray[i]);
+ 	for (int i = 0; i < 8; i++)
+		add_wrapper(addSPArray[i], current_instruction, addSPStringArray[i]);
+ 	for (int i = 0; i < 8; i++)
+		add_wrapper(addPCArray[i], current_instruction, addPCStringArray[i]);
+	for (int i = 0; i < 1; i++)
+		clr_wrapper(clrArray[i], current_instruction, clrStringArray[i]);
+	for (int i = 0; i < 1; i++)
+		br_wrapper(brArray[i], current_instruction, brStringArray[i]);
 }
 
 

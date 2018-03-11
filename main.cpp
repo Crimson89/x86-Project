@@ -90,8 +90,17 @@ int main(int argc, char ** argv)
 				
 
 				// ID
-				err = parseInstruction(instruction_code, current_instruction); 
-				// check error code
+				if(parseInstruction(instruction_code, current_instruction)) {
+					cerr << "\n\n-------------------------------------------------------------------------" <<endl;
+					cerr << "-------------------------------------------------------------------------" <<endl;
+					cerr << "\n\nTerminating program!!\n\n" << endl;
+					cerr << "                     Press ENTER to return to menu" << endl;
+					cerr << "-------------------------------------------------------------------------" <<endl;
+					cerr << "-------------------------------------------------------------------------\n\n" <<endl;
+					program_execution_control = PRINT_MENU;
+					cin.get();
+					break;
+				}
 				
 				// Print breakpoint information
 				if(at_breakpoint){
@@ -124,10 +133,10 @@ cout << "Instruction: " << op_formatted(current_instruction) << endl;
 			cin.get();
 		}
 		else {
-			cout << "-------------------------------------------------------------------------" <<endl;
-			cout << "                  Unhandled condition, is PC set to valid address?!" <<endl;
-			cout << "                     Press ENTER to return to menu" << endl;
-			cout << "-------------------------------------------------------------------------" <<endl;
+			cerr << "-------------------------------------------------------------------------" <<endl;
+			cerr << "                  Unhandled condition, is PC set to valid address?!" <<endl;
+			cerr << "                     Press ENTER to return to menu" << endl;
+			cerr << "-------------------------------------------------------------------------" <<endl;
 			cin.get();
 			program_execution_control = PRINT_MENU;
 		}

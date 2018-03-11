@@ -173,17 +173,18 @@ string get_op_name(void) {
 
 string format_arg(uint8_t reg, uint8_t mode, uint16_t immediate) {
 	stringstream temp;
+	stringstream temp_reg;
 	if (reg <= 5) {
-		temp << "R" << to_string(reg);
+		temp_reg << "R" << to_string(reg);
 		switch(mode){
-				case 0:                                                                          break;
-				case 1: temp << "("       << temp.str()      << ")";                             break;
-				case 2: temp << "("       << temp.str()      << ")+";                            break;
-				case 3: temp << "@("      << temp.str()      << ")+";                            break;
-				case 4: temp << "-("      << temp.str()      << ")";                             break;
-				case 5: temp << "@-("     << temp.str()      << ")";                             break;
-				case 6: temp << immediate << "("             << temp.str() << ")";               break;
-				case 7: temp << "@"       << immediate       << "("        << temp.str() << ")"; break;
+				case 0: temp << temp_reg.str();                                                      break;
+				case 1: temp << "("       << temp_reg.str()      << ")";                             break;
+				case 2: temp << "("       << temp_reg.str()      << ")+";                            break;
+				case 3: temp << "@("      << temp_reg.str()      << ")+";                            break;
+				case 4: temp << "-("      << temp_reg.str()      << ")";                             break;
+				case 5: temp << "@-("     << temp_reg.str()      << ")";                             break;
+				case 6: temp << immediate << "("             << temp_reg.str() << ")";               break;
+				case 7: temp << "@"       << immediate       << "("        << temp_reg.str() << ")"; break;
 		}
 	}
 	else if(reg == 6) {

@@ -37,7 +37,7 @@ int clearInstruction(instruction* newInstruction)
 int parseInstruction(uint16_t instructionCode, instruction* newInstruction)
 {
     //instruction newInstruction;
-    int err; // will be error code. 
+    int err = 0; // will be error code. 0 = no error, non-zero = error
 
   /* First thing is first, check against instructions with entirely unique opcodes.
    * Operate Group
@@ -115,6 +115,7 @@ int parseInstruction(uint16_t instructionCode, instruction* newInstruction)
   uint16_t relevantBits = instructionCode & maskRelevantBits;
   uint16_t bitPattern = relevantBits & maskSingleCondBranchCondCheck;
   uint16_t tempLocation;
+  uint16_t bad_mode = 0;
 
   if (bitPattern == 0000000) // Define constans for these maybe.
   {
@@ -181,8 +182,96 @@ int parseInstruction(uint16_t instructionCode, instruction* newInstruction)
       //cout << "DOUBLE" << "\n";
     }
   }
+  
+  if ((current_instruction->regBase == 7) || (current_instruction->regBase == 6)) {
+	if(current_instruction->regBase == 7) { // PC Register Modes
+		if (current_instruction->addressingModeReg == 0){
+			bad_mode = current_instruction->addressingModeReg;
+			goto pc_error;
+		}
+		if (current_instruction->addressingModeReg == 1){
+			bad_mode = current_instruction->addressingModeReg;
+			goto pc_error;
+		}
+		if (current_instruction->addressingModeReg == 4){
+			bad_mode = current_instruction->addressingModeReg;
+			goto pc_error;
+		}
+		if (current_instruction->addressingModeReg == 5){
+			bad_mode = current_instruction->addressingModeReg;
+			goto pc_error;
+		}		
+	}
+	else {
+		if (current_instruction->addressingModeReg == 0){
+			bad_mode = current_instruction->addressingModeReg;
+			goto sp_error;
+		}
+	}
+  }
+  
+  if ((current_instruction->srcBase == 7) || (current_instruction->srcBase == 6)) {
+	if(current_instruction->srcBase == 7) { // PC Register Modes
+		if (current_instruction->addressingModeSrc == 0){
+			bad_mode = current_instruction->addressingModeSrc;
+			goto pc_error;
+		}
+		if (current_instruction->addressingModeSrc == 1){
+			bad_mode = current_instruction->addressingModeSrc;
+			goto pc_error;
+		}
+		if (current_instruction->addressingModeSrc == 4){
+			bad_mode = current_instruction->addressingModeSrc;
+			goto pc_error;
+		}
+		if (current_instruction->addressingModeSrc == 5){
+			bad_mode = current_instruction->addressingModeSrc;
+			goto pc_error;
+		}		
+	}
+	else {
+		if (current_instruction->addressingModeSrc == 0){
+			bad_mode = current_instruction->addressingModeSrc;
+			goto sp_error;
+		}
+	}
+  }
+    
+  if ((current_instruction->destBase == 7) || (current_instruction->destBase == 6)) {
+	if(current_instruction->destBase == 7) { // PC Register Modes
+		if (current_instruction->addressingModeDest == 0){
+			bad_mode = current_instruction->addressingModeDest;
+			goto pc_error;
+		}
+		if (current_instruction->addressingModeDest == 1){
+			bad_mode = current_instruction->addressingModeDest;
+			goto pc_error;
+		}
+		if (current_instruction->addressingModeDest == 4){
+			bad_mode = current_instruction->addressingModeDest;
+			goto pc_error;
+		}
+		if (current_instruction->addressingModeDest == 5){
+			bad_mode = current_instruction->addressingModeDest;
+			goto pc_error;
+		}		
+	}
+	else {
+		if (current_instruction->addressingModeDest == 0){
+			bad_mode = current_instruction->addressingModeDest;
+			goto sp_error;
+		}
+	}
+  }
+  
 
   return err;
+sp_error:
+	cerr << "Invalid SP addressing mode: " << bad_mode <<endl;
+	return 1;
+pc_error:
+	cerr << "Invalid PC addressing mode: " << bad_mode <<endl;
+	return 1;
 }
 
 
