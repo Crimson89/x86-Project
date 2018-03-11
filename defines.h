@@ -31,8 +31,16 @@
 #define AUTO_DEC_DEFR_MODE    5
 #define INDEX_MODE            6
 #define INDEX_DEFR_MODE       7
+
+
 // For use in reading from file
 #define FILE_READ             8
+// Read function parameters
+#define MEMORY_READ           1
+#define READ_TRACE            1
+#define READ_NO_TRACE         0
+#define READ_INSTR_FETCH      1
+#define READ_NOT_INSTR_FETCH  0
 
 // PC Only Modes
 #define PC_IMMEDIATE_MODE     2

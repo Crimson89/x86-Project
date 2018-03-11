@@ -35,8 +35,8 @@ typedef struct {
 	uint16_t dest;// dest post-dereferencing
 	uint16_t reg; // reg post-dereferencing
   */
-	uint16_t offset;
-	uint16_t immediate; //Used for debug pretty-print
+	int16_t offset;   // Signed offset
+	int16_t immediate; //Signed immediate value, used for debug pretty-print
 	// TODO don't think this is needed
   uint16_t registerMode;
   union {

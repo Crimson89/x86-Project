@@ -11,6 +11,7 @@ int printInstruction(instruction* newInstruction)
   printf("destBase %u\n", newInstruction->destBase);
   printf("regBase %u\n", newInstruction->regBase);
   printf("offset %u\n", newInstruction->offset);
+  printf("immediate %u\n", newInstruction->immediate);
   printf("rtsReg %u\n\n", newInstruction->rtsReg);
   return 0;
 }
@@ -26,6 +27,7 @@ int clearInstruction(instruction* newInstruction)
   newInstruction->destBase = 0;
   newInstruction->regBase = 0;
   newInstruction->offset = 0;
+  newInstruction->immediate = 0;
   newInstruction->PSW = 0;
   newInstruction->rtsReg = 0;
 
@@ -180,14 +182,6 @@ int parseInstruction(uint16_t instructionCode, instruction* newInstruction)
     }
   }
 
-//////////////////////////
-// Debug, print stuff////
-//printInstruction(newInstruction);
-cout << "Pretty-Print Instruction: " << op_formatted(newInstruction) << endl;
-// End Debug, print stuff////
-//////////////////////////
-
-
   return err;
 }
 
@@ -197,8 +191,8 @@ cout << "Pretty-Print Instruction: " << op_formatted(newInstruction) << endl;
 // the read_byte and read_word functions honestly.
 uint16_t get_address(uint16_t mode, uint16_t baseAddress)
 {
-  uint16_t X;
-  uint16_t workingAddress;
+  uint16_t X = 0;
+  uint16_t workingAddress = 0;
   bool byte = current_instruction->byteMode;
   uint16_t resultAddress = 0;
 
@@ -421,8 +415,8 @@ uint16_t get_address(uint16_t mode, uint16_t baseAddress)
 
 uint16_t get_value(uint16_t mode, uint16_t baseAddress)
 {
-  uint16_t X;
-  uint16_t workingAddress;
+  uint16_t X = 0;
+  uint16_t workingAddress = 0;
   bool byte = current_instruction->byteMode;
   uint16_t resultValue = 0;
   

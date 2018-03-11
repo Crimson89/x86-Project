@@ -249,7 +249,6 @@ string op_formatted(instruction * op) {
 		case m_SXT   :
 		case m_MTPS  :
 		case m_MFPS  :
-		//case m_XOR   : 	temp << temp.str() << " " << 
 		case m_XOR   : 	temp << " " << 
 						format_arg(op->destBase,op->addressingModeDest,op->immediate);
 					break;
@@ -263,7 +262,6 @@ string op_formatted(instruction * op) {
 		case m_MOV   :
 		case m_MOVB  :
 		case m_ADD   :
-		//case m_SUB   :   temp << temp.str() << " " << 
 		case m_SUB   :   temp << " " << 
 						format_arg(op->srcBase,op->addressingModeSrc,op->immediate)
 						<< ", " << 
@@ -286,11 +284,9 @@ string op_formatted(instruction * op) {
 		case m_BGT   :
 		case m_BLE   :
 		case m_BHI   :
-		//case m_BLOS  :    temp << temp.str() << " " << octal_to_string(op->offset); 
 		case m_BLOS  :    temp << " " << octal_to_string(op->offset); 
 					break;
 							// JSR
-		//case m_JSR   :	temp << temp.str() << " " << 
 		case m_JSR   :	temp << " " << 
 						format_arg(op->regBase,op->addressingModeReg,op->immediate)
 						<< ", " << 
@@ -299,19 +295,16 @@ string op_formatted(instruction * op) {
 							// RTS
 		case m_RTS   :
 					if     (op->rtsReg <= 5)
-						//temp << "R" << op->rtsReg;
 						temp << to_string(op->rtsReg);
 					else if(op->rtsReg == 6)
-						//temp << temp.str() << " " << "SP"; 
 						temp << " " << "SP"; 
 					else if(op->rtsReg == 7)
-						//temp << temp.str() << " " << "PC"; 
 						temp << " " << "PC"; 
 					break;
 							// Mark
-		case m_MARK  :temp << temp.str() << " " << "VALUE"; break; // Cheating here, we didn't implement this, so I use "value" for the MARK "NM" value
+		case m_MARK  :temp << " " << "VALUE"; break; // Cheating here, we didn't implement this, so I use "value" for the MARK "NM" value
 							// SOB
-		case m_SOB   :temp << temp.str() << " Rn VALUE"; break; // Cheating here, we didn't implement this, so I use dummy values for the SOB "NM" and R values
+		case m_SOB   :temp << " Rn VALUE"; break; // Cheating here, we didn't implement this, so I use dummy values for the SOB "NM" and R values
 							// Trap, Operate Group, Condition Code Operators, and Other stuff
 		case m_EMT   :
 		case m_TRAP  :
@@ -343,7 +336,7 @@ string op_formatted(instruction * op) {
 		case m_ASH   :
 		case m_ASHC  :
 		case m_MUL   :
-		case m_DIV   : temp << temp.str() << " Rn"; break; // Cheating here, we didn't implement this, so I use dummy value for the FP op R values
+		case m_DIV   : temp << " Rn"; break; // Cheating here, we didn't implement this, so I use dummy value for the FP op R values
 		default      : temp << "?????";   break;
 	}
 	return temp.str();

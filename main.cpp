@@ -70,7 +70,7 @@ int main(int argc, char ** argv)
 			while(program_execution_control == RUN_PROGRAM) {
 
 				// IF
-				instruction_code = read_word(1, PC, true);
+				instruction_code = read_word(MEMORY_READ, PC, READ_TRACE, READ_INSTR_FETCH);
 				
 //////////////////////////
 // Debug, print stuff////
@@ -101,11 +101,20 @@ int main(int argc, char ** argv)
 				// EX
 				err = dispatch(current_instruction);
 
+//////////////////////////
+// Debug, print stuff////
+//printInstruction(newInstruction);
+cout << "Instruction: " << op_formatted(newInstruction) << endl;
+// End Debug, print stuff////
+//////////////////////////
+
 				// WB
 				// updateTracefile();
 
 				if(current_instruction->opcode == m_HALT)
 					program_execution_control = PRINT_MENU;
+				
+				clearInstruction(current_instruction);
 			}
 			cout << "-------------------------------------------------------------------------" <<endl;
 			cout << "                            Program Completed!" <<endl;
