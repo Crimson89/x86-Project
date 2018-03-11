@@ -184,3 +184,22 @@
 #define m_SEZ   0000264 // Set zero
 #define m_SEN   0000270 // Set negative
 #define m_SCC   0000277 // Set all flags
+
+
+#define SHIFT_WORD_MSB_TO_LSB  15
+#define SHIFT_BYTE_MSB_TO_LSB  7
+#define WORD_MSB_MASK          0x8000
+#define BYTE_MSB_MASK          0x80
+#define WORD_MSB_INDEX         15
+#define BYTE_MSB_INDEX         7
+#define WORD_MAX               0xFFFF
+#define BYTE_MAX               0xFF
+#define IS_NEGATIVE(value, mask, shift_count) ((value & mask) >> shift_count)
+#define IS_NEGATIVE_WORD(value) IS_NEGATIVE(value, WORD_MSB_MASK, SHIFT_WORD_MSB_TO_LSB)
+#define IS_NEGATIVE_BYTE(value) IS_NEGATIVE(value, BYTE_MSB_MASK, SHIFT_BYTE_MSB_TO_LSB)
+#define IS_ZERO(value) (value==0)
+#define IS_NOT_ZERO(value) (value!=0)
+#define CARRY_MSB_WORD(value) (value>WORD_MAX)
+#define CARRY_MSB_BYTE(value) (value>BYTE_MAX)
+#define EXTRACT_BIT(value, shift_count) (value >> shift_count)
+#define IS_OVERFLOW(msb_dest, msb_src, msb_result)( ( (IS_ZERO(msb_dest) && IS_ZERO(msb_src) ) && IS_NOT_ZERO(msb_result) ) ||  ( (IS_NOT_ZERO(msb_dest) && IS_NOT_ZERO(msb_src) ) && IS_ZERO(msb_result) ) )
