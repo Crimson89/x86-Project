@@ -6,11 +6,11 @@ int MOV(instruction *inst) // Move source to destination (B)
   uint16_t temp = get_value(inst->addressingModeSrc, inst->srcBase);
   if(inst->byteMode)
   {
-    write_byte(inst->addressingModeDest, inst->destBase, src);
+    write_byte(inst->addressingModeDest, inst->destBase, temp);
   }
   else
   {
-    write_word(inst->addressingModeDest, inst->destBase, src);
+    write_word(inst->addressingModeDest, inst->destBase, temp);
   }
 
   // Check MSB for sign
