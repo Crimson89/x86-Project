@@ -44,19 +44,7 @@ int main(int argc, char ** argv)
 	
 //////////////////////////
 // Debug, print stuff////
-uint16_t temp1 = 0x0001;
-uint16_t temp2 = 0x8000;
-uint16_t temp3 = 0x8001;
-cerr << "Debug: 0x0001&&0x8000=" << oct << to_string(temp1&&temp2) <<endl;
-cerr << "Debug: 0x8001&&0x8000=" << oct << to_string(temp3&&temp2) <<endl;
-cerr << "Debug: (0x0001&0x8000>>15=" << oct << to_string((temp1&temp2)>>15) <<endl;
-cerr << "Debug: (0x8001&0x8000>>15=" << oct << to_string((temp3&temp2)>>15) <<endl;
-/* Gives: 
-Debug: 0x0001&&0x8000=1
-Debug: 0x8001&&0x8000=1
-Debug: (0x0001&0x8000>>15=0
-Debug: (0x8001&0x8000>>15=1
-*/
+
 
 // End Debug, print stuff////
 //////////////////////////
