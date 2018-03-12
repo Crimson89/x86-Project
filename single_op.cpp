@@ -302,9 +302,9 @@ int ADC(instruction *inst) // Add carry (B)
 int SBC(instruction *inst) // Subtract carry (B)
 {
   if(inst->byteMode)
-    inst->op_text = "SUBB";
+    inst->op_text = "SBCB";
   else
-    inst->op_text = "SUB";
+    inst->op_text = "SBC";
   uint16_t dest = get_value(inst->addressingModeDest, inst->destBase);
   uint16_t temp = dest;
   dest -= inst->C;

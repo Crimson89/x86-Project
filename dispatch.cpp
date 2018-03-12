@@ -140,6 +140,12 @@ int dispatch(instruction * inst)
     case m_BVS:
       return BVS(inst);
       break;
+	case m_BCC:
+      return BCC(inst);
+      break;
+	case m_BCS:
+      return BCS(inst);
+      break;
 
     // Signed Conditional Branch
     case m_BGE:
@@ -236,6 +242,12 @@ int dispatch(instruction * inst)
       break;
     case m_SPL: 
       return SPL(inst);
+      break;
+	 case m_TSTSET:
+      return TSTSET(inst);
+      break;
+	 case m_WRTLCK:
+      return WRTLCK(inst);
       break;
 
 

@@ -242,6 +242,9 @@ int MFPI(instruction *inst);
 int MTPS(instruction *inst);
 int MFPS(instruction *inst);
 int MFPT(instruction *inst);
+int TSTSET(instruction *inst);
+int WRTLCK(instruction *inst);
+
 
 // Parsing functions
 

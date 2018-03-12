@@ -189,7 +189,7 @@ int parseInstruction(uint16_t instructionCode, instruction* newInstruction)
         current_instruction->addressingModeSrc = (instructionCode & maskDoubleSourceMode) >> 9;
         current_instruction->destBase = instructionCode & maskDoubleDest;
         current_instruction->addressingModeDest = (instructionCode & maskDoubleDestMode) >> 3;
-        cout << "DOUBLE" << "\n";
+        if(verbosity_level >= HIGH_VERBOSITY) cout << "DOUBLE" << "\n";
         if(verbosity_level >= HIGH_VERBOSITY) cout << current_instruction->addressingModeSrc << "\n";
         if(verbosity_level >= HIGH_VERBOSITY) cout << current_instruction->addressingModeDest << "\n";
       }
@@ -279,7 +279,7 @@ int parseInstruction(uint16_t instructionCode, instruction* newInstruction)
 	}
   }
   
-  cout << "In parse, opCode=" << oct << current_instruction->opcode << endl;
+  if(verbosity_level >= HIGH_VERBOSITY) cout << "In parse, opCode=" << oct << current_instruction->opcode << endl;
   if((current_instruction->opcode == m_JSR) && (current_instruction->addressingModeDest)) {
 	  cerr << "TRAP!, to Vector Address 4, Invalid JSR addressing mode: " << current_instruction->addressingModeDest << ", not currently implemented" <<endl;
 	  return 2;

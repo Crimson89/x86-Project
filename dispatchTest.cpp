@@ -116,20 +116,279 @@ static int operationTest()
 	uint16_t CMP  =  0020000 + byte_mode + double_mode_src + double_src + double_mode_dest + double_dest; // Compare source to destination
 	uint16_t ADD  =  0060000 + double_mode_src + double_src + double_mode_dest + double_dest; // Add source to destination
 	uint16_t SUB  =  0160000 + double_mode_src + double_src + double_mode_dest + double_dest; // Subtract source from destination
+/*
+	uint16_t CLRB  =  0105000
+	uint16_t COMB  =  0105100
+	uint16_t INCB  =  0105200
+	uint16_t DECB  =  0105300
+	uint16_t NEGB  =  0105400
+	uint16_t TSTB  =  0105700
+	uint16_t ASRB  =  0106200
+	uint16_t ASLB  =  0106300
+	uint16_t RORB  =  0106000
+	uint16_t ROLB  =  0106100
+	uint16_t ADCB  =  0105500
+	uint16_t SBCB  =  0105600
+	uint16_t BITB  =  0130000
+	uint16_t BICB  =  0140000
+	uint16_t BISB  =  0150000
+	uint16_t MOVB  =  0110000
+	uint16_t CMPB  =  0120000
+*/	
+	uint16_t XOR = m_XOR;
+	uint16_t NOP = m_NOP;
+	uint16_t ASH = m_ASH;
+	uint16_t ASHC = m_ASHC;
+	uint16_t MUL = m_MUL;
+	uint16_t DIV = m_DIV;
+	uint16_t BR = m_BR;
+	uint16_t BNE = m_BNE;
+	uint16_t BEQ = m_BEQ;
+	uint16_t BPL = m_BPL;
+	uint16_t BMI = m_BMI;
+	uint16_t BVC = m_BVC;
+	uint16_t BVS = m_BVS;
+	uint16_t BCC = m_BCC;
+	uint16_t BCS = m_BCS;
+	uint16_t BGE = m_BGE;
+	uint16_t BLT = m_BLT;
+	uint16_t BGT = m_BGT;
+	uint16_t BLE = m_BLE;
+	uint16_t SOB = m_SOB;
+	uint16_t BHI = m_BHI;
+	uint16_t BLOS = m_BLOS;
+	uint16_t JMP = m_JMP;
+	uint16_t JSR = m_JSR;
+	uint16_t RTS = m_RTS;
+	uint16_t MARK = m_MARK;
+	uint16_t EMT = m_EMT;
+	uint16_t TRAP = m_TRAP;
+	uint16_t BPT = m_BPT;
+	uint16_t IOT = m_IOT;
+	uint16_t CSM = m_CSM;
+	uint16_t RTI = m_RTI;
+	uint16_t RTT = m_RTT;
+	uint16_t HALT = m_HALT;
+	uint16_t WAIT = m_WAIT;
+	uint16_t RESET = m_RESET;
+	uint16_t MTPD = m_MTPD;
+	uint16_t MTPI = m_MTPI;
+	uint16_t MFPD = m_MFPD;
+	uint16_t MFPI = m_MFPI;
+	uint16_t MTPS = m_MTPS;
+	uint16_t MFPS = m_MFPS;
+	uint16_t MFPT = m_MFPT;
+	uint16_t SPL = m_SPL;
+	uint16_t CLC = m_CLC;
+	uint16_t CLV = m_CLV;
+	uint16_t CLZ = m_CLZ;
+	uint16_t CLN = m_CLN;
+	uint16_t CCC = m_CCC;
+	uint16_t SEC = m_SEC;
+	uint16_t SEV = m_SEV;
+	uint16_t SEZ = m_SEZ;
+	uint16_t SEN = m_SEN;
+	uint16_t SCC = m_SCC;
 	
-	int entries = 35;
+	int entries = 92;
+	int end_byte_opable= 34;
 	int res, test;
 
-	uint16_t ops[entries] = {CLR, COM, INC, DEC, NEG, TST, ASR, ASL, ROR, ROL, SWAB, ADC, SBC, SXT, CLR, COM, INC, DEC, NEG, TST, ASR, ASL, ROR, ROL, SWAB, ADC, SBC, SXT, BIT, BIC, BIS, MOV, CMP, ADD, SUB};
-
-	string ops_string[entries] = {"CLR", "COM", "INC", "DEC", "NEG", "TST", "ASR", "ASL", "ROR", "ROL", "SWAB", "ADC", "SBC", "SXT", "CLR", "COM", "INC", "DEC", "NEG", "TST", "ASR", "ASL", "ROR", "ROL", "SWAB", "ADC", "SBC", "SXT", "BIT", "BIC", "BIS", "MOV", "CMP", "ADD", "SUB"};
-
+	uint16_t ops[entries] = {CLR, //Start of byte-able operations
+							CLR, 
+							COM, 
+							COM, 
+							INC, 
+							INC, 
+							DEC, 
+							DEC, 
+							NEG, 
+							NEG, 
+							TST, 
+							TST, 
+							ASR, 
+							ASR, 
+							ASL, 
+							ASL, 
+							ROR, 
+							ROR, 
+							ROL, 
+							ROL, 
+							ADC, 
+							ADC, 
+							SBC, 
+							SBC, 
+							BIT, 
+							BIT, 
+							BIC, 
+							BIC, 
+							BIS, 
+							BIS, 
+							MOV, 
+							MOV, 
+							CMP, 
+							CMP, //End of byte-able operations 
+							SXT, 
+							XOR, 
+							ADD, 
+							SUB, 
+							SWAB, 
+							NOP, 
+							ASH, 
+							ASHC, 
+							MUL, 
+							DIV, 
+							BR, 
+							BNE, 
+							BEQ, 
+							BPL, 
+							BMI, 
+							BVC, 
+							BVS, 
+							BCC, 
+							BCS, 
+							BGE, 
+							BLT, 
+							BGT, 
+							BLE, 
+							SOB, 
+							BHI, 
+							BLOS, 
+							JMP, 
+							JSR, 
+							RTS, 
+							MARK, 
+							EMT, 
+							TRAP, 
+							BPT, 
+							IOT, 
+							CSM, 
+							RTI, 
+							RTT, 
+							HALT, 
+							WAIT, 
+							RESET, 
+							MTPD, 
+							MTPI, 
+							MFPD, 
+							MFPI, 
+							MTPS, 
+							MFPS, 
+							MFPT, 
+							SPL, 
+							CLC, 
+							CLV, 
+							CLZ, 
+							CLN, 
+							CCC, 
+							SEC, 
+							SEV, 
+							SEZ, 
+							SEN, 
+							SCC};
+	
+	string ops_string[entries] = {"CLR", 
+									"CLRB", 
+									"COM", 
+									"COMB", 
+									"INC", 
+									"INCB", 
+									"DEC", 
+									"DECB", 
+									"NEG", 
+									"NEGB", 
+									"TST", 
+									"TSTB", 
+									"ASR", 
+									"ASRB", 
+									"ASL", 
+									"ASLB", 
+									"ROR", 
+									"RORB", 
+									"ROL", 
+									"ROLB", 
+									"ADC", 
+									"ADCB", 
+									"SBC", 
+									"SBCB", 
+									"BIT", 
+									"BITB", 
+									"BIC", 
+									"BICB", 
+									"BIS", 
+									"BISB", 
+									"MOV", 
+									"MOVB", 
+									"CMP", 
+									"CMPB", 
+									"SXT", 
+									"XOR", 
+									"ADD", 
+									"SUB", 
+									"SWAB", 
+									"NOP", 
+									"ASH", 
+									"ASHC", 
+									"MUL", 
+									"DIV", 
+									"BR", 
+									"BNE", 
+									"BEQ", 
+									"BPL", 
+									"BMI", 
+									"BVC", 
+									"BVS", 
+									"BCC", 
+									"BCS", 
+									"BGE", 
+									"BLT", 
+									"BGT", 
+									"BLE", 
+									"SOB", 
+									"BHI", 
+									"BLOS", 
+									"JMP", 
+									"JSR", 
+									"RTS", 
+									"MARK", 
+									"EMT", 
+									"TRAP", 
+									"BPT", 
+									"IOT", 
+									"CSM", 
+									"RTI", 
+									"RTT", 
+									"HALT", 
+									"WAIT", 
+									"RESET", 
+									"MTPD", 
+									"MTPI", 
+									"MFPD", 
+									"MFPI", 
+									"MTPS", 
+									"MFPS", 
+									"MFPT", 
+									"SPL", 
+									"CLC", 
+									"CLV", 
+									"CLZ", 
+									"CLN", 
+									"CCC", 
+									"SEC", 
+									"SEV", 
+									"SEZ", 
+									"SEN", 
+									"SCC"};
 	int runs = entries;
+	uint16_t temp_op;
 	for (int i = 0; i < runs; i++)
 	{
 		cout << "_________________\n";
 		cout << ops_string[i] << endl;
-		res = parseInstruction(ops[i], current_instruction);
+		temp_op = ops[i];
+		if((i <=end_byte_opable) && ((i%2) == 1)) // If this is a byte instruction
+			temp_op|=0x8000;
+		res = parseInstruction(temp_op, current_instruction);
 		test = dispatch(current_instruction);
 		clearReg();
 		cout << "\n_________________";
