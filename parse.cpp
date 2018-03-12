@@ -74,6 +74,7 @@ int parseInstruction(uint16_t instructionCode, instruction* newInstruction)
 
   }
 
+
   // TRAP?
   //if ((instructionCode & ) == 0104440)
   //{
@@ -93,23 +94,28 @@ int parseInstruction(uint16_t instructionCode, instruction* newInstruction)
   }*/
   
   // Check RTS (0 0 0 2 0)
-  if ((instructionCode && 0xFFF8) == 0x0080)
+  if ((instructionCode && 0177770) == 0000200)
   {
-    newInstruction->opcode = instructionCode & 0xFF80;
-    newInstruction->rtsReg = instructionCode & 0x0007;
+    newInstruction->opcode = instructionCode & 0177770;
+    newInstruction->rtsReg = instructionCode & 0000007;
   }
   
-  // Check JSR (0 0 4) (maybe taken care of by single operand)
-  /*if ((instructionCode && 0xFE00) == 0x0800)
+  // Check JSR (0 0 4)
+  if ((instructionCode && 0177000) == 0004000)
   {
-
-  }*/
+    current_instruction->opcode = instructionCode & 0177000;
+    current_instruction->regBase = (instructionCode & 0000700) >> 6;
+    current_instruction->destBase = (instructionCode & 000070) >> 3;
+    current_instruction->addressingModeDest = (instructionCode & 0000007);
+  }
   
-  /*// Check JMP (Branches?)
-  if ((instructionCode && 0x0E00) == 0x0E00)
+  // Check JMP ()
+  if ((instructionCode && 0177700) == 0004000)
   {
-
-  } */
+    current_instruction->opcode = instructionCode & 0177700;
+    current_instruction->destBase = (instructionCode & 000070) >> 3;
+    current_instruction->addressingModeDest = (instructionCode & 0000007);
+  }
 
   
   uint16_t relevantBits = instructionCode & maskRelevantBits;

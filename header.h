@@ -30,15 +30,8 @@ typedef struct {
 	uint16_t destBase;	// dest register
 	uint16_t regBase;	// reg register (lol)
 
-	/* TODO make sure these aren't needed
-  uint16_t src; // src post-dereferencing
-	uint16_t dest;// dest post-dereferencing
-	uint16_t reg; // reg post-dereferencing
-  */
 	int16_t offset;   // Signed offset
 	int16_t immediate; //Signed immediate value, used for debug pretty-print
-	// TODO don't think this is needed
-  uint16_t registerMode;
   union {
 		struct {
 			int SC: 1;
