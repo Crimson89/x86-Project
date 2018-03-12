@@ -118,7 +118,6 @@ int parseInstruction(uint16_t instructionCode, instruction* newInstruction)
   uint16_t relevantBits = instructionCode & maskRelevantBits;
   uint16_t bitPattern = relevantBits & maskSingleCondBranchCondCheck;
   uint16_t tempLocation;
-  uint16_t bad_mode = 0;
 
   if (bitPattern == 0000000) // Define constans for these maybe.
   {
@@ -184,7 +183,9 @@ int parseInstruction(uint16_t instructionCode, instruction* newInstruction)
     }
   }
   }
+ 
   
+  uint16_t bad_mode = 0; 
   if ((current_instruction->regBase == 7) || (current_instruction->regBase == 6)) {
 	if(current_instruction->regBase == 7) { // PC Register Modes
 		if (current_instruction->addressingModeReg == 0){
