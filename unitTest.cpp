@@ -190,8 +190,8 @@ static int decodeTest()
   R2 = 10;
   R1 = 14;
   
-  MEM[10] = 4;
-  MEM[14] = 3;
+  MEM[8] = 4;
+  MEM[12] = 3;
   //MEM[4] = 12;
   //MEM[3] = 12;
 
@@ -241,6 +241,7 @@ static int decodeTest()
   
   MEM[14] = 2;
   MEM[8] = 8; 
+  MEM[12] = 6;
   MEM[16] = 5;
   MEM[18] = 4;
 
@@ -264,6 +265,7 @@ static int decodeTest()
   R2 = 10;
   R1 = 14;
   
+  MEM[18] = 2;
   MEM[16] = 4;
   MEM[14] = 2;
   MEM[2] = 4;

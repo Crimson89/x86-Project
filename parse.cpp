@@ -107,16 +107,16 @@ int parseInstruction(uint16_t instructionCode, instruction* newInstruction)
     current_instruction->opcode = (instructionCode & 0177000);
     current_instruction->regBase = (instructionCode & 0000700) >> 6;
     current_instruction->addressingModeReg = (instructionCode & 0007000) >> 9;
-    current_instruction->destBase = (instructionCode & 000070) >> 3;
-    current_instruction->addressingModeDest = (instructionCode & 0000007);
+    current_instruction->addressingModeDest = (instructionCode & 000070) >> 3;
+    current_instruction->destBase = (instructionCode & 0000007);
     cout << "JSR" << "\n";
     special = true;
   }// Check JMP ()
   if ((instructionCode & 0177700) == 0000100)
   {
-    current_instruction->opcode = (instructionCode & 0177700);
-    current_instruction->destBase = (instructionCode & 000070) >> 3;
-    current_instruction->addressingModeDest = (instructionCode & 0000007);
+    current_instruction->opcode = instructionCode & 0177700;
+    current_instruction->addressingModeDest = (instructionCode & 000070) >> 3;
+    current_instruction->destBase = (instructionCode & 0000007);
     cout << "JMP" << "\n";
     special = true;
   }
