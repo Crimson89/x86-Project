@@ -32,9 +32,6 @@ int dispatch(instruction * inst)
     case m_NEGB:
       return NEG(inst);
       break;
-    case m_NOP:
-      return NOP(inst);
-      break;
     case m_TST:
     case m_TSTB:
       return TST(inst);
@@ -99,7 +96,7 @@ int dispatch(instruction * inst)
     case m_ADD:
     case m_SUB:
       if(inst->byteMode) return SUB(inst);
-	  return ADD(inst);
+	  else return ADD(inst);
       break;
     case m_CMP:
     case m_CMPB:
@@ -218,6 +215,9 @@ int dispatch(instruction * inst)
       break;
     case m_RESET: 
       return RESET(inst);
+      break;
+    case m_NOP:
+      return NOP(inst);
       break;
     case m_MTPD:
       return MTPD(inst);

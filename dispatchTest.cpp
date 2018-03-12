@@ -383,15 +383,17 @@ static int operationTest()
 	uint16_t temp_op;
 	for (int i = 0; i < runs; i++)
 	{
-		cout << "_________________\n";
-		cout << ops_string[i] << endl;
+		cout << "_________________\n" <<endl;
+		cout << "Testing " <<ops_string[i] << endl;
 		temp_op = ops[i];
 		if((i <=end_byte_opable) && ((i%2) == 1)) // If this is a byte instruction
 			temp_op|=0x8000;
 		res = parseInstruction(temp_op, current_instruction);
+		cout << "Pretty-Print function generated: "<< op_formatted(current_instruction) << endl;
 		test = dispatch(current_instruction);
+		cout << "Actually Ran : "<< current_instruction->op_text << endl;
 		clearReg();
-		cout << "\n_________________";
+		cout << "\n_________________" << endl;
 	}
 }
 

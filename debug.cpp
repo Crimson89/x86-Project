@@ -218,7 +218,10 @@ string format_arg(uint8_t reg, uint8_t mode, uint16_t immediate) {
 
 string op_formatted(instruction * op) {
 	stringstream temp;
+	string byteMode = " ";
 	temp << get_op_name();
+	if(op->byteMode) // If this isn't a byteMode operation then append " ", if it is, append "B "
+		byteMode = "B ";
 	switch(op->opcode){
 						//Single Operand
 		case m_CLR   :
@@ -250,7 +253,7 @@ string op_formatted(instruction * op) {
 		case m_SXT   :
 		case m_MTPS  :
 		case m_MFPS  :
-		case m_XOR   : 	temp << " " << 
+		case m_XOR   : 	temp << byteMode << 
 						format_arg(op->regBase,op->addressingModeReg,op->immediate);
 					break;
 							// Double Operand Group
@@ -265,7 +268,7 @@ string op_formatted(instruction * op) {
 		case m_ADD   :
 		case m_SUB   :
 		case m_CMP   :
-		case m_CMPB  :	temp << " " << 
+		case m_CMPB  :	temp << byteMode << 
 						format_arg(op->srcBase,op->addressingModeSrc,op->immediate)
 						<< ", " << 
 						format_arg(op->destBase,op->addressingModeDest,op->immediate); 

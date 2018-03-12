@@ -191,7 +191,7 @@ int BLOS(instruction *inst) // Branch if lower or same
 // Duplicate of BCC
 int BHIS(instruction *inst) // Branch if higher or same
 {
-  inst->op_text = "BHIS";
+  inst->op_text = "BHIS/BCC";
   if(!(inst->C)) {
     int16_t signed_offset;
 		memcpy(&signed_offset, &(inst->offset), 2);
@@ -204,7 +204,7 @@ int BHIS(instruction *inst) // Branch if higher or same
 // Duplicate of BCS
 int BLO(instruction *inst) // Branch if lower
 {
-  inst->op_text = "BLO";
+  inst->op_text = "BLO/BCS";
   if(inst->C) {
     int16_t signed_offset;
 		memcpy(&signed_offset, &(inst->offset), 2);

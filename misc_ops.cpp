@@ -6,6 +6,12 @@ int HALT(instruction *inst) //HALT
   return 0;
 }
 
+
+int NOP(instruction *inst){ // No Operation
+  inst->op_text = "NOP";
+  return 0;
+}
+
 int SPL(instruction *inst) // Set priority level
 {
   inst->op_text = "SPL";
@@ -30,16 +36,6 @@ int WRTLCK(instruction *inst) // WRTLCK
 {
   inst->op_text = "WRTLCK";
   cerr << inst->op_text << " not implemented in PDP-11/60" << endl;
-  if(BAD_INST_ABORT) {
-	  return 1;
-  }
-  return 0;
-}
-
-
-int NOP(instruction *inst){ // No Operation
-  inst->op_text = "NOP";
-  cerr << "Instruction \'" << inst->op_text << "\' not implemented" << endl;
   if(BAD_INST_ABORT) {
 	  return 1;
   }

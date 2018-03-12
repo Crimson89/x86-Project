@@ -3,7 +3,10 @@
 // General Instructions
 int MOV(instruction *inst) // Move source to destination (B)
 {
-  inst->op_text = "MOV";
+  if(inst->byteMode)
+    inst->op_text = "MOVB";
+  else
+    inst->op_text = "MOV";
   uint16_t dest = get_address(inst->addressingModeDest, inst->destBase);
   uint16_t src = get_value(inst->addressingModeSrc, inst->srcBase);
   if(inst->byteMode)
@@ -80,7 +83,10 @@ int SUB(instruction *inst) // Subtract source from destination
 
 int CMP(instruction *inst) // Compare source to destination (B)
 {
-  inst->op_text = "CMP";
+  if(inst->byteMode)
+    inst->op_text = "CMPB";
+  else
+    inst->op_text = "CMP";
   uint16_t dest = get_value(inst->addressingModeDest, inst->destBase);
   uint16_t src = get_value(inst->addressingModeSrc, inst->srcBase);
 
@@ -120,7 +126,10 @@ int CMP(instruction *inst) // Compare source to destination (B)
 // Logical
 int BIT(instruction *inst) // Bit test (B)
 {
-  inst->op_text = "BIT";
+  if(inst->byteMode)
+    inst->op_text = "BITB";
+  else
+    inst->op_text = "BIT";
   uint16_t dest = get_value(inst->addressingModeDest, inst->destBase);
   uint16_t src = get_value(inst->addressingModeSrc, inst->srcBase);
 
@@ -139,7 +148,10 @@ int BIT(instruction *inst) // Bit test (B)
 
 int BIC(instruction *inst) // Bit clear (B)
 {
-  inst->op_text = "BIC";
+  if(inst->byteMode)
+    inst->op_text = "BICB";
+  else
+    inst->op_text = "BIC";
   uint16_t dest = get_value(inst->addressingModeDest, inst->destBase);
   uint16_t src = get_value(inst->addressingModeSrc, inst->srcBase);
 
@@ -162,7 +174,10 @@ int BIC(instruction *inst) // Bit clear (B)
 
 int BIS(instruction *inst) // Bit set (B)
 {
-  inst->op_text = "BIS";
+  if(inst->byteMode)
+    inst->op_text = "BISB";
+  else
+    inst->op_text = "BIS";
   uint16_t dest = get_value(inst->addressingModeDest, inst->destBase);
   uint16_t src = get_value(inst->addressingModeSrc, inst->srcBase);
 
