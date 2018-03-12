@@ -3,19 +3,17 @@
 // General Instructions
 int MOV(instruction *inst) // Move source to destination (B)
 {
-  if(inst->byteMode)
-    inst->op_text = "MOVB";
-  else
-    inst->op_text = "MOV";
-  uint16_t dest = get_address(inst->addressingModeDest, inst->destBase);
+  uint16_t destAddress = get_address(inst->addressingModeDest, inst->destBase, inst->addressingModeSrc);
   uint16_t src = get_value(inst->addressingModeSrc, inst->srcBase);
   if(inst->byteMode)
   {
-    write_byte(inst->addressingModeDest, dest, src);
+    inst->op_text = "MOVB";
+    write_byte(inst->addressingModeDest, destAddress, src);
   }
   else
   {
-    write_word(inst->addressingModeDest, dest, src);
+    inst->op_text = "MOV";
+    write_word(inst->addressingModeDest, destAddress, src);
   }
 
   // Check MSB for sign
@@ -60,14 +58,15 @@ int ADD(instruction *inst) // Add source to destination
 int SUB(instruction *inst) // Subtract source from destination
 {
   inst->op_text = "SUB";
-  uint16_t dest = get_value(inst->addressingModeDest, inst->destBase);
+  uint16_t destAddress = get_address(inst->addressingModeDest, inst->destBase, inst->addressingModeSrc);
   uint16_t src = get_value(inst->addressingModeSrc, inst->srcBase);
+  uint16_t dest = get_value(inst->addressingModeDest, inst->destBase);
   bool msb_dest = EXTRACT_BIT(dest,WORD_MSB_INDEX);
   bool msb_src = EXTRACT_BIT(src,WORD_MSB_INDEX);
   uint32_t temp = dest - src;
 
   bool msb_result = EXTRACT_BIT(temp,WORD_MSB_INDEX);
-  write_word(inst->addressingModeDest, inst->destBase, temp);
+  write_word(inst->addressingModeDest, destAddress, temp);
 
   // Set NZVC flags
   inst->N = IS_NEGATIVE_WORD(temp)? 1:0;
@@ -83,12 +82,9 @@ int SUB(instruction *inst) // Subtract source from destination
 
 int CMP(instruction *inst) // Compare source to destination (B)
 {
-  if(inst->byteMode)
-    inst->op_text = "CMPB";
-  else
-    inst->op_text = "CMP";
-  uint16_t dest = get_value(inst->addressingModeDest, inst->destBase);
+  uint16_t destAddress = get_address(inst->addressingModeDest, inst->destBase, inst->addressingModeSrc);
   uint16_t src = get_value(inst->addressingModeSrc, inst->srcBase);
+  uint16_t dest = get_value(inst->addressingModeDest, inst->destBase);
 
   uint32_t temp = src - dest;
 
@@ -96,8 +92,9 @@ int CMP(instruction *inst) // Compare source to destination (B)
 
   if(inst->byteMode)
   {
-	bool msb_dest   = EXTRACT_BIT(dest,BYTE_MSB_INDEX);
-	bool msb_src    = EXTRACT_BIT(src,BYTE_MSB_INDEX);
+    inst->op_text = "CMPB";
+	  bool msb_src    = EXTRACT_BIT(src,BYTE_MSB_INDEX);
+	  bool msb_dest   = EXTRACT_BIT(dest,BYTE_MSB_INDEX);
     bool msb_result = EXTRACT_BIT(temp,BYTE_MSB_INDEX);
 
     inst->C = CARRY_MSB_BYTE(temp) ? 1:0;
@@ -109,8 +106,9 @@ int CMP(instruction *inst) // Compare source to destination (B)
  }
   else
   {
-	bool msb_dest   = EXTRACT_BIT(dest,WORD_MSB_INDEX);
-	bool msb_src    = EXTRACT_BIT(src,WORD_MSB_INDEX);
+    inst->op_text = "CMP";
+	  bool msb_src    = EXTRACT_BIT(src,WORD_MSB_INDEX);
+	  bool msb_dest   = EXTRACT_BIT(dest,WORD_MSB_INDEX);
     bool msb_result = EXTRACT_BIT(temp,WORD_MSB_INDEX);
 
     inst->C = CARRY_MSB_WORD(temp) ? 1:0;
@@ -126,21 +124,23 @@ int CMP(instruction *inst) // Compare source to destination (B)
 // Logical
 int BIT(instruction *inst) // Bit test (B)
 {
-  if(inst->byteMode)
-    inst->op_text = "BITB";
-  else
-    inst->op_text = "BIT";
-  uint16_t dest = get_value(inst->addressingModeDest, inst->destBase);
+  uint16_t destAddress = get_address(inst->addressingModeDest, inst->destBase, inst->addressingModeSrc);
   uint16_t src = get_value(inst->addressingModeSrc, inst->srcBase);
+  uint16_t dest = get_value(inst->addressingModeDest, inst->destBase);
 
   uint16_t temp = dest & src;
 
   // Check MSB for sign
   if (inst->byteMode)
+  {
+    inst->op_text = "BITB";
     inst->N = IS_NEGATIVE_BYTE(temp) ? 1:0;
+  }
   else
+  {
+    inst->op_text = "BIT";
     inst->N = IS_NEGATIVE_WORD(temp)? 1:0;
-
+  }
   inst->Z = IS_ZERO(temp) ? 1:0;
   inst->V = 0;
   return 0;
@@ -148,22 +148,21 @@ int BIT(instruction *inst) // Bit test (B)
 
 int BIC(instruction *inst) // Bit clear (B)
 {
-  if(inst->byteMode)
-    inst->op_text = "BICB";
-  else
-    inst->op_text = "BIC";
-  uint16_t dest = get_value(inst->addressingModeDest, inst->destBase);
+  uint16_t destAddress = get_address(inst->addressingModeDest, inst->destBase, inst->addressingModeSrc);
   uint16_t src = get_value(inst->addressingModeSrc, inst->srcBase);
+  uint16_t dest = get_value(inst->addressingModeDest, inst->destBase);
 
   dest = (~src) & dest;
   if(inst->byteMode)
   {
-    write_byte(inst->addressingModeDest, inst->destBase, dest);
+    inst->op_text = "BICB";
+    write_byte(inst->addressingModeDest, destAddress, dest);
     inst->N = IS_NEGATIVE_BYTE(dest) ? 1:0;
   }
   else
   {
-    write_word(inst->addressingModeDest, inst->destBase, dest);
+    inst->op_text = "BIC";
+    write_word(inst->addressingModeDest, destAddress, dest);
     inst->N = IS_NEGATIVE_WORD(dest) ? 1:0;
   }
 
@@ -174,22 +173,21 @@ int BIC(instruction *inst) // Bit clear (B)
 
 int BIS(instruction *inst) // Bit set (B)
 {
-  if(inst->byteMode)
-    inst->op_text = "BISB";
-  else
-    inst->op_text = "BIS";
-  uint16_t dest = get_value(inst->addressingModeDest, inst->destBase);
+  uint16_t destAddress = get_address(inst->addressingModeDest, inst->destBase, inst->addressingModeSrc);
   uint16_t src = get_value(inst->addressingModeSrc, inst->srcBase);
+  uint16_t dest = get_value(inst->addressingModeDest, inst->destBase);
 
   dest |= src;
   if(inst->byteMode)
   {
-    write_byte(inst->addressingModeDest, inst->destBase, dest);
+    inst->op_text = "BISB";
+    write_byte(inst->addressingModeDest, destAddress, dest);
     inst->N = IS_NEGATIVE_BYTE(dest) ? 1:0;
   }
   else
   {
-    write_word(inst->addressingModeDest, inst->destBase, dest);
+    inst->op_text = "BIS";
+    write_word(inst->addressingModeDest, destAddress, dest);
     inst->N = IS_NEGATIVE_WORD(dest) ? 1:0;
   }
 
