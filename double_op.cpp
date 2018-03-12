@@ -82,7 +82,6 @@ int SUB(instruction *inst) // Subtract source from destination
 
 int CMP(instruction *inst) // Compare source to destination (B)
 {
-  uint16_t destAddress = get_address(inst->addressingModeDest, inst->destBase, inst->addressingModeSrc);
   uint16_t src = get_value(inst->addressingModeSrc, inst->srcBase);
   uint16_t dest = get_value(inst->addressingModeDest, inst->destBase);
 
@@ -124,7 +123,6 @@ int CMP(instruction *inst) // Compare source to destination (B)
 // Logical
 int BIT(instruction *inst) // Bit test (B)
 {
-  uint16_t destAddress = get_address(inst->addressingModeDest, inst->destBase, inst->addressingModeSrc);
   uint16_t src = get_value(inst->addressingModeSrc, inst->srcBase);
   uint16_t dest = get_value(inst->addressingModeDest, inst->destBase);
 
