@@ -73,13 +73,13 @@ static int operationTest()
   uint16_t single_reg  =      0000001;
 
   // Addr mode 1               00x000
-  uint16_t double_mode_src =  0001000;
+  uint16_t double_mode_src =  0000000;
 
   // Register 1                000x00
   uint16_t double_src =       0000100;
 
   // Addr mode 2               0000x0
-  uint16_t double_mode_dest = 0000010;
+  uint16_t double_mode_dest = 0000000;
 
   // Register 2                00000x
   uint16_t double_dest =      0000002;
@@ -133,12 +133,12 @@ static int operationTest()
 
   int runs = 1; // Number of runs for the loop
 
-// Change the number of runs, the string output, and value outputs for the loop
+// Change the number of runs(above), the string output, and value outputs for the loop
 ///////////////////////////////////////////////////////////
   for (int i = 0; i < runs; i++)
   {
     cout << "_________________\n";
-    cout << MOV  << " R1,R2\n"; // Change here
+    cout << "MOV"  << " R1,R2\n"; // CHANGE HERE
     int res;
     int val;
     int test;
@@ -147,7 +147,7 @@ static int operationTest()
 
     val = 0;
     res = clearInstruction(current_instruction);
-    res = parseInstruction(MOV, current_instruction); // Change here
+    res = parseInstruction(MOV, current_instruction); // CHANGE HERE
     res = printInstruction(current_instruction);
 
     R1 = 10;
