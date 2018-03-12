@@ -136,7 +136,6 @@ int parseInstruction(uint16_t instructionCode, instruction* newInstruction)
         current_instruction->addressingModeReg = (instructionCode & maskSingleMode) >> 3;
         tempLocation = instructionCode & maskSingleRegister;
         current_instruction->regBase = tempLocation;
-//      err = addressDecode(current_instruction->addressingModeReg, current_instruction->regBase, current_instruction->reg);
         current_instruction->byteMode = (instructionCode & maskByteMode) >> 15;
         cout << "SINGLE " << "\n";
       }
@@ -177,7 +176,7 @@ int parseInstruction(uint16_t instructionCode, instruction* newInstruction)
         current_instruction->destBase = instructionCode & maskDoubleRegisterSourceDest;
         current_instruction->addressingModeSrc = (instructionCode & maskDoubleRegisterSourceDestMode) >> 3;
         current_instruction->addressingModeDest = (instructionCode & maskDoubleRegisterSourceDestMode) >> 3;
-        //cout << "DOUBLE REG " << "\n";
+        cout << "DOUBLE REG " << "\n";
       }
       else
       {
@@ -188,6 +187,8 @@ int parseInstruction(uint16_t instructionCode, instruction* newInstruction)
         current_instruction->destBase = instructionCode & maskDoubleDest;
         current_instruction->addressingModeDest = (instructionCode & maskDoubleDestMode) >> 3;
         cout << "DOUBLE" << "\n";
+        cout << current_instruction->addressingModeSrc << "\n";
+        cout << current_instruction->addressingModeDest << "\n";
       }
     }
   }
@@ -492,8 +493,8 @@ uint16_t get_address(uint16_t mode, uint16_t baseAddress)
     // Index
     case 0000006: // READ TRACE
                   X = read_word(mode, PC, true);
-				  current_instruction->immediate = X;
-                  PC += 2;
+				          current_instruction->immediate = X;
+                  //PC += 2;
                   resultAddress = REGS[baseAddress] + X;
                   break;
     // Index deferred
@@ -502,7 +503,7 @@ uint16_t get_address(uint16_t mode, uint16_t baseAddress)
                   // READ TRACE
                   X = read_word(mode, PC, true);
 				  current_instruction->immediate = X;
-                  PC += 2;
+                  //PC += 2;
                   // READ TRACE
                   if (byte)
                   {

@@ -66,8 +66,8 @@ static int decodeTest()
   uint16_t movbInstruction = 0;
   uint16_t clrbInstruction = 0;
   
-  // DOUBLE          ADD  R1,R2     (R1),(R2) (R1)+,(R2)+  @(R1)+,@(R2)+  -(R1),-(R2)  @-(R1),@-(R2)  X(R1),R2       @X(R1),R2
-  uint16_t addArray[8] = {00060102, 00061112, 00062122,    00063132,      00064142,    00065152,      00060162,      00060172};
+  // DOUBLE          ADD  R1,R2     (R1),(R2) (R1)+,(R2)+  @(R1)+,@(R2)+  -(R1),-(R2)  @-(R1),@-(R2)  X(R1),R2       @X(R1),R2   R1,X(R2)       R1,@X(R2)
+  uint16_t addArray[10] = {00060102, 00061112, 00062122,    00063132,      00064142,    00065152,      00066102,      00067102,   00060162,      00060172};
   // SINGLE          CLR  R5        (R5)      (R5)+     @(R5)+    -(R5)     @-(R5)    X(R5)     @X(R5)
   uint16_t clrArray[8] = {00005005, 00005015, 00005025, 00005035, 00005045, 00005055};//, 00005061, 00005071};
   // BRANCH
@@ -234,7 +234,8 @@ static int decodeTest()
   res = clearInstruction(current_instruction);
   res = parseInstruction(addArray[6], current_instruction);
   res = printInstruction(current_instruction); 
-    
+  cout << current_instruction->addressingModeSrc << "\n";
+  cout << current_instruction->addressingModeDest << "\n";   
   PC = 18;
   R2 = 10;
   R1 = 8;
@@ -277,6 +278,56 @@ static int decodeTest()
   printMemReg();
   clearReg();
 
+  cout << "_________________\n"; 
+  cout << "ADD R1,4(R2)\n"; 
+  val = 0;
+  fillMem(0);
+  res = clearInstruction(current_instruction);
+  res = parseInstruction(addArray[8], current_instruction);
+  res = printInstruction(current_instruction); 
+  cout << current_instruction->addressingModeSrc << "\n";
+  cout << current_instruction->addressingModeDest << "\n";   
+  PC = 18;
+  R2 = 10;
+  R1 = 8;
+  
+  MEM[14] = 2;
+  MEM[8] = 8; 
+  MEM[12] = 6;
+  MEM[16] = 5;
+  MEM[18] = 4;
+
+  printMemReg(); 
+
+  test = dispatch(current_instruction);
+  
+  printMemReg();
+  clearReg();
+  
+
+  cout << "_________________\n"; 
+  cout << "ADD R1,@4(R2)\n"; 
+  val = 0;
+  fillMem(0);
+  res = clearInstruction(current_instruction);
+  res = parseInstruction(addArray[9], current_instruction);
+  res = printInstruction(current_instruction); 
+    
+  PC = 16;
+  R2 = 10;
+  R1 = 14;
+  
+  MEM[18] = 2;
+  MEM[16] = 4;
+  MEM[14] = 2;
+  MEM[2] = 4;
+
+  printMemReg(); 
+
+  test = dispatch(current_instruction);
+  
+  printMemReg();
+  clearReg();
   /*
   cout << "_________________\n";
   cout << "MOV R1,R2\n";
