@@ -135,6 +135,8 @@ static int operationTest()
 	uint16_t MOVB  =  0110000
 	uint16_t CMPB  =  0120000
 */	
+	uint16_t WRTLCK = m_WRTLCK;
+	uint16_t TSTSET = m_TSTSET;
 	uint16_t XOR = m_XOR;
 	uint16_t NOP = m_NOP;
 	uint16_t ASH = m_ASH;
@@ -190,7 +192,7 @@ static int operationTest()
 	uint16_t SEN = m_SEN;
 	uint16_t SCC = m_SCC;
 	
-	int entries = 92;
+	int entries = 94;
 	int end_byte_opable= 34;
 	int res, test;
 
@@ -233,6 +235,8 @@ static int operationTest()
 							ADD, 
 							SUB, 
 							SWAB, 
+							TSTSET,
+							WRTLCK,
 							NOP, 
 							ASH, 
 							ASHC, 
@@ -326,6 +330,8 @@ static int operationTest()
 									"ADD", 
 									"SUB", 
 									"SWAB", 
+									"TSTSET",
+									"WRTLCK",
 									"NOP", 
 									"ASH", 
 									"ASHC", 
@@ -386,8 +392,10 @@ static int operationTest()
 		cout << "_________________\n" <<endl;
 		cout << "Testing " <<ops_string[i] << endl;
 		temp_op = ops[i];
-		if((i <=end_byte_opable) && ((i%2) == 1)) // If this is a byte instruction
+		if((i <= end_byte_opable) && ((i%2) == 1)) { // If this is a byte instruction
+			cout << "Byte Instruction" << endl;
 			temp_op|=0x8000;
+		}
 		res = parseInstruction(temp_op, current_instruction);
 		cout << "Pretty-Print function generated: "<< op_formatted(current_instruction) << endl;
 		test = dispatch(current_instruction);

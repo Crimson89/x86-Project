@@ -251,8 +251,6 @@ string op_formatted(instruction * op) {
 		case m_SBC   :
 		case m_SBCB  :
 		case m_SXT   :
-		case m_MTPS  :
-		case m_MFPS  :
 		case m_XOR   : 	temp << byteMode << 
 						format_arg(op->regBase,op->addressingModeReg,op->immediate);
 					break;
@@ -324,6 +322,9 @@ string op_formatted(instruction * op) {
 		case m_MTPI  :
 		case m_MFPD  :
 		case m_MFPI  :
+		case m_MTPS  :
+		case m_MFPS  :
+		case m_MFPT  :
 		case m_SPL   :
 		case m_CSM   :
 		case m_CLC   :
