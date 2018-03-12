@@ -269,7 +269,7 @@ sp_error:
 	return 1;
 pc_error:
 	cerr << "Invalid PC addressing mode: " << bad_mode <<endl;
-	return 1;
+	return 2;
 }
 
 

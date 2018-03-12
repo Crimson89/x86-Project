@@ -146,56 +146,116 @@ static int decodeTest()
   uint16_t clrbInstruction = 0;
   
   // DOUBLE
-  string addStringArray[8] = {"Testing: ADD R1,R2", 
-									"Testing: ADD (R1),(R2)", 
-									"Testing: ADD (R1)+,(R2)+", 
-									"Testing: ADD @(R1)+,@(R2)+", 
-									"Testing: ADD -(R1),-(R2)", 
-									"Testing: ADD @-(R1),@-(R2)", 
-									"Testing: ADD X(R1),X(R2)", 
-									"Testing: ADD @X(R1),@X(R2)"};
+  string addStringArray[8] = {"Testing:     ADD R1,R2", 
+									"Testing:     ADD (R1),(R2)", 
+									"Testing:     ADD (R1)+,(R2)+", 
+									"Testing:     ADD @(R1)+,@(R2)+", 
+									"Testing:     ADD -(R1),-(R2)", 
+									"Testing:     ADD @-(R1),@-(R2)", 
+									"Testing:     ADD X(R1),X(R2)", 
+									"Testing:     ADD @X(R1),@X(R2)"};
   uint16_t addArray[8] = {00060102, 00061112, 00062122,    00063132,      00064142,    00065152,      00066162,      00067172};
-  string addPCStringArray[8] = {"Testing: ADD PC,R2", 
-									"Testing: ADD (PC),(R2)", 
-									"Testing: ADD (PC)+,(R2)+", 
-									"Testing: ADD @(PC)+,@(R2)+", 
-									"Testing: ADD -(PC),-(R2)", 
-									"Testing: ADD @-(PC),@-(R2)", 
-									"Testing: ADD X(PC),X(R2)", 
-									"Testing: ADD @X(PC),@X(R2)"};
+  string addPCStringArray[8] = {"Testing:     ADD PC,R2", 
+									"Testing:     ADD (PC),(R2)", 
+									"Testing:     ADD (PC)+,(R2)+", 
+									"Testing:     ADD @(PC)+,@(R2)+", 
+									"Testing:     ADD -(PC),-(R2)", 
+									"Testing:     ADD @-(PC),@-(R2)", 
+									"Testing:     ADD X(PC),X(R2)", 
+									"Testing:     ADD @X(PC),@X(R2)"};
   uint16_t addPCArray[8] = {00060702, 00061712, 00062722,    00063732,      00064742,    00065752,      00066762,      00067772};
-  string addSPStringArray[8] = {"Testing: ADD SP,R2", 
-								"Testing: ADD (SP),(R2)", 
-								"Testing: ADD (SP)+,(R2)+", 
-								"Testing: ADD @(SP)+,@(R2)+", 
-								"Testing: ADD -(SP),-(R2)", 
-								"Testing: ADD @-(SP),@-(R2)", 
-								"Testing: ADD X(SP),X(R2)", 
-								"Testing: ADD @X(SP),@X(R2)"};
+  string addSPStringArray[8] = {"Testing:     ADD SP,R2", 
+								"Testing:     ADD (SP),(R2)", 
+								"Testing:     ADD (SP)+,(R2)+", 
+								"Testing:     ADD @(SP)+,@(R2)+", 
+								"Testing:     ADD -(SP),-(R2)", 
+								"Testing:     ADD @-(SP),@-(R2)", 
+								"Testing:     ADD X(SP),X(R2)", 
+								"Testing:     ADD @X(SP),@X(R2)"};
   uint16_t addSPArray[8] = {00060602, 00061612, 00062622,    00063632,      00064642,    00065652,      00066662,      00067672};
+  
+  string addPCStringArray2[8] = {"Testing:     ADD R2,PC", 
+									"Testing:     ADD (R2),(PC)", 
+									"Testing:     ADD (R2)+,(PC)+", 
+									"Testing:     ADD @(R2)+,@(PC)+", 
+									"Testing:     ADD -(R2),-(PC)", 
+									"Testing:     ADD @-(R2),@-(PC)", 
+									"Testing:     ADD X(R2),X(PC)", 
+									"Testing:     ADD @X(R2),@X(PC)"};
+  uint16_t addPCArray2[8] = {00060207, 00061217, 00062227,    00063237,      00064247,    00065257,      00066267,      00067277};
+  string addSPStringArray2[8] = {"Testing:     ADD R2,SP", 
+								"Testing:     ADD (R2),(SP)", 
+								"Testing:     ADD (R2)+,(SP)+", 
+								"Testing:     ADD @(R2)+,@(SP)+", 
+								"Testing:     ADD -(R2),-(SP)", 
+								"Testing:     ADD @-(R2),@-(SP)", 
+								"Testing:     ADD X(R2),X(SP)", 
+								"Testing:     ADD @X(R2),@X(SP)"};
+  uint16_t addSPArray2[8] = {00060206, 00061216, 00062226,    00063236,      00064246,    00065256,      00066266,      00067276};
+  
   // SINGLE
-   string clrStringArray[8] = {"Testing: CLR,R2", 
-									"Testing: CLR (R2)", 
-									"Testing: CLR (R2)+", 
-									"Testing: CLR @(R2)+", 
-									"Testing: CLR ,-(R2)", 
-									"Testing: CLR @-(R2)", 
-									"Testing: CLR X(R2)", 
-									"Testing: CLR @X(R2)"};
+   string clrStringArray[8] = {"Testing:     CLR,R2", 
+									"Testing:     CLR (R2)", 
+									"Testing:     CLR (R2)+", 
+									"Testing:     CLR @(R2)+", 
+									"Testing:     CLR -(R2)", 
+									"Testing:     CLR @-(R2)", 
+									"Testing:     CLR X(R2)", 
+									"Testing:     CLR @X(R2)"};
   uint16_t clrArray[8] = {00005002, 00005012, 00005022, 00005032, 00005042, 00005052, 00005062, 00005072};
+   string clrSPStringArray[8] = {"Testing:     CLR,SP", 
+									"Testing:     CLR (SP)", 
+									"Testing:     CLR (SP)+", 
+									"Testing:     CLR @(SP)+", 
+									"Testing:     CLR -(SP)", 
+									"Testing:     CLR @-(SP)", 
+									"Testing:     CLR X(SP)", 
+									"Testing:     CLR @X(SP)"};
+  uint16_t clrSPArray[8] = {00005006, 00005016, 00005026, 00005036, 00005046, 00005056, 00005066, 00005076};
+   string clrPCStringArray[8] = {"Testing:     CLR,PC", 
+									"Testing:     CLR (PC)", 
+									"Testing:     CLR (PC)+", 
+									"Testing:     CLR @(PC)+", 
+									"Testing:     CLR -(PC)", 
+									"Testing:     CLR @-(PC)", 
+									"Testing:     CLR X(PC)", 
+									"Testing:     CLR @X(PC)"};
+  uint16_t clrPCArray[8] = {00005007, 00005017, 00005027, 00005037, 00005047, 00005057, 00005067, 00005077};
+  
   // BRANCH
-  string brStringArray[1] = {"Testing: BR R1"};
+  string brStringArray[1] = {"Testing:     BR R1"};
   uint16_t brArray[1] = {00000401};
   uint16_t branch;
+  
+  // Jump
+  
+  
+  // RTS
+  
+  
+  // JSR
 
+	//Test double ops
  	for (int i = 0; i < 8; i++)
 		add_wrapper(addArray[i], current_instruction, addStringArray[i]);
  	for (int i = 0; i < 8; i++)
 		add_wrapper(addSPArray[i], current_instruction, addSPStringArray[i]);
  	for (int i = 0; i < 8; i++)
 		add_wrapper(addPCArray[i], current_instruction, addPCStringArray[i]);
-	for (int i = 0; i < 1; i++)
+ 	for (int i = 0; i < 8; i++)
+		add_wrapper(addSPArray2[i], current_instruction, addSPStringArray2[i]);
+ 	for (int i = 0; i < 8; i++)
+		add_wrapper(addPCArray2[i], current_instruction, addPCStringArray2[i]);
+	
+	//Test single ops
+	for (int i = 0; i < 8; i++)
 		clr_wrapper(clrArray[i], current_instruction, clrStringArray[i]);
+	for (int i = 0; i < 8; i++)
+		clr_wrapper(clrSPArray[i], current_instruction, clrSPStringArray[i]);
+	for (int i = 0; i < 8; i++)
+		clr_wrapper(clrPCArray[i], current_instruction, clrPCStringArray[i]);
+	
+	//Test Branch
 	for (int i = 0; i < 1; i++)
 		br_wrapper(brArray[i], current_instruction, brStringArray[i]);
 }

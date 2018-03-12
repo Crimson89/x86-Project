@@ -263,14 +263,14 @@ string op_formatted(instruction * op) {
 		case m_MOV   :
 		case m_MOVB  :
 		case m_ADD   :
-		case m_SUB   :   temp << " " << 
+		case m_SUB   :
+		case m_CMP   :
+		case m_CMPB  :	temp << " " << 
 						format_arg(op->srcBase,op->addressingModeSrc,op->immediate)
 						<< ", " << 
 						format_arg(op->destBase,op->addressingModeDest,op->immediate); 
 					break;
 							//Program Control Group
-		case m_CMP   :
-		case m_CMPB  :
 		case m_BR    :
 		case m_BNE   :
 		case m_BEQ   :
