@@ -3,23 +3,24 @@
 // General Instructions
 int MOV(instruction *inst) // Move source to destination (B)
 {
-  uint16_t temp = get_value(inst->addressingModeSrc, inst->srcBase);
+  uint16_t dest = get_address(inst->addressingModeDest, inst->destBase);
+  uint16_t src = get_value(inst->addressingModeSrc, inst->srcBase);
   if(inst->byteMode)
   {
-    write_byte(inst->addressingModeDest, inst->destBase, temp);
+    write_byte(inst->addressingModeDest, dest, src);
   }
   else
   {
-    write_word(inst->addressingModeDest, inst->destBase, temp);
+    write_word(inst->addressingModeDest, dest, src);
   }
 
   // Check MSB for sign
   if (inst->byteMode)
-    inst->N = IS_NEGATIVE_BYTE(temp) ? 1:0;
+    inst->N = IS_NEGATIVE_BYTE(src) ? 1:0;
   else
-    inst->N = IS_NEGATIVE_WORD(temp)? 1:0;
+    inst->N = IS_NEGATIVE_WORD(src)? 1:0;
 
-  inst->Z = IS_ZERO(temp)? 1:0; // Set Zero flag if zero
+  inst->Z = IS_ZERO(src)? 1:0; // Set Zero flag if zero
   inst->V = 0; // Clear
   return 0;
 }
