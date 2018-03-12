@@ -34,7 +34,8 @@ typedef struct {
 	int16_t immediate; //Signed immediate value, used for debug pretty-print
   union {
 		struct {
-			int SC: 1;
+			int SPL: 3;
+      int T: 1;
 			int N: 1;
 			int Z: 1;
 			int V: 1;
@@ -253,7 +254,7 @@ const uint16_t maskCondC = 0000001;//0x0001;
 
 int parseInstruction(uint16_t instructionCode, instruction* newInstruction);
 //int addressDecode(uint16_t mode, uint16_t baseAddress, uint16_t resultAddress);
-uint16_t get_address(uint16_t mode, uint16_t baseAddress);
+uint16_t get_address(uint16_t mode, uint16_t baseAddress, uint16_t modeTest = 0);
 uint16_t get_value(uint16_t mode, uint16_t baseAddress);
 
 int printInstruction(instruction* newInstruction);

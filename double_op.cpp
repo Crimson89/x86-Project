@@ -27,9 +27,12 @@ int MOV(instruction *inst) // Move source to destination (B)
 int ADD(instruction *inst) // Add source to destination
 {
   // Read values from memory
-  uint16_t destAddress = get_address(inst->addressingModeDest, inst->destBase);
-  uint16_t dest = get_value(inst->addressingModeDest, inst->destBase);
+  uint16_t destAddress = get_address(inst->addressingModeDest, inst->destBase, inst->addressingModeSrc);
+  cout << "destAddr" << destAddress << "\n";
   uint16_t src = get_value(inst->addressingModeSrc, inst->srcBase);
+  cout << "src" << src << "\n";
+  uint16_t dest = get_value(inst->addressingModeDest, inst->destBase);
+  cout << "dest" << dest << "\n";
   bool msb_dest = EXTRACT_BIT(dest,WORD_MSB_INDEX);
   bool msb_src = EXTRACT_BIT(src,WORD_MSB_INDEX);
   uint32_t temp = dest + src;

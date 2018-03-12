@@ -147,7 +147,8 @@ int parseInstruction(uint16_t instructionCode, instruction* newInstruction)
           // cond check
         
           newInstruction->opcode = instructionCode & maskCondCodeOpcode;
-          newInstruction->SC = instructionCode & maskCondSC;
+          //TODO fix this
+          //newInstruction->SC = instructionCode & maskCondSC;
           newInstruction->N = instructionCode & maskCondN;
           newInstruction->Z = instructionCode & maskCondZ;
           newInstruction->V = instructionCode & maskCondV;
@@ -296,7 +297,7 @@ pc_error:
 // TODO, test PC and SP?
 // This returns the address, doing N-1 trace statements. We could probably have the trace statements in
 // the read_byte and read_word functions honestly.
-uint16_t get_address(uint16_t mode, uint16_t baseAddress)
+uint16_t get_address(uint16_t mode, uint16_t baseAddress, uint16_t modeTest)
 {
   uint16_t X = 0;
   uint16_t workingAddress = 0;
@@ -433,6 +434,7 @@ uint16_t get_address(uint16_t mode, uint16_t baseAddress)
   }
   else
   {
+    uint16_t offset = 0;
     switch (mode)
     {
     // Register
@@ -492,7 +494,13 @@ uint16_t get_address(uint16_t mode, uint16_t baseAddress)
                   break;
     // Index
     case 0000006: // READ TRACE
-                  X = read_word(mode, PC, true);
+                  cout << "modeTest \n" << modeTest << "\n";
+                  if ((modeTest == 6) || (modeTest == 7))
+                    offset = 2;
+                  else
+                    offset = 0;
+                  X = read_word(mode, PC + offset, true);
+                  cout << "offset \n" << X << "\n";
 				          current_instruction->immediate = X;
                   //PC += 2;
                   resultAddress = REGS[baseAddress] + X;
@@ -501,7 +509,11 @@ uint16_t get_address(uint16_t mode, uint16_t baseAddress)
     case 0000007: workingAddress = REGS[baseAddress];
                   //TODO only read word?
                   // READ TRACE
-                  X = read_word(mode, PC, true);
+                  if ((modeTest == 6) | (modeTest == 7))
+                    offset = 2;
+                  else
+                    offset = 0;
+                  X = read_word(mode, PC + offset, true);
 				  current_instruction->immediate = X;
                   //PC += 2;
                   // READ TRACE

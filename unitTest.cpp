@@ -66,10 +66,10 @@ static int decodeTest()
   uint16_t movbInstruction = 0;
   uint16_t clrbInstruction = 0;
   
-  // DOUBLE          ADD  R1,R2     (R1),(R2) (R1)+,(R2)+  @(R1)+,@(R2)+  -(R1),-(R2)  @-(R1),@-(R2)  X(R1),R2       @X(R1),R2   R1,X(R2)       R1,@X(R2)
-  uint16_t addArray[10] = {00060102, 00061112, 00062122,    00063132,      00064142,    00065152,      00066102,      00067102,   00060162,      00060172};
+  // DOUBLE          ADD  R1,R2     (R1),(R2) (R1)+,(R2)+  @(R1)+,@(R2)+  -(R1),-(R2)  @-(R1),@-(R2)  X(R1),R2       @X(R1),R2   R1,X(R2)       R1,@X(R2)    X(R1),X(R2)    @X(R1),@X(R2)
+  uint16_t addArray[12] = {00060102, 00061112, 00062122,    00063132,      00064142,    00065152,      00066102,      00067102,   00060162,      00060172,   00066162,      00067172};
   // SINGLE          CLR  R5        (R5)      (R5)+     @(R5)+    -(R5)     @-(R5)    X(R5)     @X(R5)
-  uint16_t clrArray[8] = {00005005, 00005015, 00005025, 00005035, 00005045, 00005055};//, 00005061, 00005071};
+  uint16_t clrArray[8] = {00005005, 00005015, 00005025, 00005035, 00005045, 00005055, 00005065, 00005075};
   // BRANCH
   uint16_t brArray[8] = {};
   uint16_t branch = 00000477;
@@ -328,6 +328,61 @@ static int decodeTest()
   
   printMemReg();
   clearReg();
+
+    cout << "_________________\n"; 
+  cout << "ADD 2(R1),4(R2)\n"; 
+  val = 0;
+  fillMem(0);
+  res = clearInstruction(current_instruction);
+  res = parseInstruction(addArray[10], current_instruction);
+  res = printInstruction(current_instruction); 
+  cout << current_instruction->addressingModeSrc << "\n";
+  cout << current_instruction->addressingModeDest << "\n";   
+  PC = 16;
+  R2 = 10;
+  R1 = 8;
+  
+  MEM[14] = 8;
+  MEM[8] = 8; 
+  MEM[10] = 2;
+  MEM[12] = 6;
+  MEM[16] = 2;
+  MEM[18] = 4;
+
+  printMemReg(); 
+
+  test = dispatch(current_instruction);
+  
+  printMemReg();
+  clearReg();
+  
+
+  cout << "_________________\n"; 
+  cout << "ADD @2(R1),@4(R2)\n"; 
+  val = 0;
+  fillMem(0);
+  res = clearInstruction(current_instruction);
+  res = parseInstruction(addArray[11], current_instruction);
+  res = printInstruction(current_instruction); 
+    
+  PC = 16;
+  R2 = 10;
+  R1 = 6;
+  
+  MEM[8] = 4;
+  MEM[6] = 4;
+  MEM[18] = 4;
+  MEM[16] = 2;
+  MEM[14] = 2;
+  MEM[2] = 4;
+  MEM[4] = 10;
+
+  printMemReg(); 
+
+  test = dispatch(current_instruction);
+  
+  printMemReg();
+  clearReg();
   /*
   cout << "_________________\n";
   cout << "MOV R1,R2\n";
@@ -354,16 +409,13 @@ static int decodeTest()
   clearReg(); 
 */
 
-  /*
+  
   cout << "_________________\n"; 
   cout << "CLR R5\n";
 
   val = 0;
-  for (int i = 0; i < size; i++)
-  {
-    MEM[i] = val;
-    val++;
-  }
+  
+  fillMem(0);
   
   R5 = 14;
 
@@ -384,11 +436,7 @@ static int decodeTest()
   cout << "CLR (R5)\n";
 
   val = 0;
-  for (int i = 0; i < size; i++)
-  {
-    MEM[i] = val;
-    val++;
-  }
+  fillMem(0);
   
   R5 = 14;
 
@@ -409,11 +457,8 @@ static int decodeTest()
   cout << "CLR (R5)+\n";
 
   val = 0;
-  for (int i = 0; i < size; i++)
-  {
-    MEM[i] = val;
-    val++;
-  }
+  
+  fillMem(0);
   
   R5 = 14;
 
@@ -434,11 +479,8 @@ static int decodeTest()
   cout << "CLR @(R5)+\n";
 
   val = 0;
-  for (int i = 0; i < size; i++)
-  {
-    MEM[i] = val;
-    val++;
-  }
+  
+  fillMem(0);
   
   R5 = 14;
 
@@ -460,11 +502,8 @@ static int decodeTest()
   cout << "CLR -(R5)\n";
 
   val = 0;
-  for (int i = 0; i < size; i++)
-  {
-    MEM[i] = val;
-    val++;
-  }
+  
+  fillMem(0);
   
   R5 = 14;
 
@@ -485,11 +524,8 @@ static int decodeTest()
   cout << "CLR @-(R5)\n";
 
   val = 0;
-  for (int i = 0; i < size; i++)
-  {
-    MEM[i] = val;
-    val++;
-  }
+  
+  fillMem(0);
   
   R5 = 14;
 
@@ -514,9 +550,67 @@ static int decodeTest()
   res = parseInstruction(branch, current_instruction);
   res = printInstruction(current_instruction);
 
-  test = dsipatch(current_instruction);
+  test = dispatch(current_instruction);
   printMemReg();
-  clearReg();*/
+  clearReg();
+  
+  cout << "_________________\n"; 
+  cout << "CLR 6(R5)\n";
+
+  val = 0;
+  
+  fillMem(0);
+  
+  R5 = 10;
+
+  MEM[16] = 9;
+  MEM[14] = 10;
+  MEM[10] = 55;
+  
+  printMemReg();
+
+  res = clearInstruction(current_instruction);
+  res = parseInstruction(clrArray[6], current_instruction);
+  res = printInstruction(current_instruction); 
+
+  test = dispatch(current_instruction);
+  printMemReg();
+  clearReg();
+
+    cout << "_________________\n"; 
+  cout << "CLR @6(R5)\n";
+
+  val = 0;
+  
+  fillMem(0);
+  
+  R5 = 10;
+
+  MEM[12] = 16;
+  MEM[13] = 0;
+  MEM[14] = 10;
+  MEM[10] = 55;
+  MEM[16] = 10;
+  
+  printMemReg();
+
+  res = clearInstruction(current_instruction);
+  res = parseInstruction(clrArray[7], current_instruction);
+  res = printInstruction(current_instruction); 
+
+  test = dispatch(current_instruction);
+  printMemReg();
+  clearReg();
+
+  PC = 0;
+
+  res = clearInstruction(current_instruction);
+  res = parseInstruction(branch, current_instruction);
+  res = printInstruction(current_instruction);
+
+  test = dispatch(current_instruction);
+  printMemReg();
+  clearReg();
 }
 
 static int octalTest()
