@@ -56,7 +56,7 @@ int parseInstruction(uint16_t instructionCode, instruction* newInstruction)
 
   // TODO need to account for EMT, JMP, 
   // EMT should be the only one to implement needed with a full opcode.
-  for (int i = 0; i < 10; i++)
+  /*for (int i = 0; i < 10; i++)
   {
     if (instructionCode == uniqueInstructions[i])
     {
@@ -65,7 +65,7 @@ int parseInstruction(uint16_t instructionCode, instruction* newInstruction)
       break;
     }
       
-  }
+  }*/
 
   // TODO fill these out
   // EMT
@@ -93,95 +93,103 @@ int parseInstruction(uint16_t instructionCode, instruction* newInstruction)
 
   }*/
   
+  bool special = false;
   // Check RTS (0 0 0 2 0)
-  if ((instructionCode && 0177770) == 0000200)
+  if ((instructionCode & 0177770) == 0000200)
   {
     newInstruction->opcode = instructionCode & 0177770;
     newInstruction->rtsReg = instructionCode & 0000007;
+    cout << "RTS" << "\n";
+    special = true;
   }// Check JSR (0 0 4)
-  else if ((instructionCode && 0177000) == 0004000)
+  if ((instructionCode & 0177000) == 0004000)
   {
     current_instruction->opcode = instructionCode & 0177000;
     current_instruction->regBase = (instructionCode & 0000700) >> 6;
     current_instruction->addressingModeReg = (instructionCode & 0007000) >> 9;
     current_instruction->destBase = (instructionCode & 000070) >> 3;
     current_instruction->addressingModeDest = (instructionCode & 0000007);
+    cout << "JSR" << "\n";
+    special = true;
   }// Check JMP ()
-  else if ((instructionCode && 0177700) == 0004000)
+  if ((instructionCode & 0177700) == 0000100)
   {
     current_instruction->opcode = instructionCode & 0177700;
     current_instruction->destBase = (instructionCode & 000070) >> 3;
     current_instruction->addressingModeDest = (instructionCode & 0000007);
+    cout << "JMP" << "\n";
+    special = true;
   }
-
-  else {
-  uint16_t relevantBits = instructionCode & maskRelevantBits;
-  uint16_t bitPattern = relevantBits & maskSingleCondBranchCondCheck;
-  uint16_t tempLocation;
-
-  if (bitPattern == 0000000) // Define constans for these maybe.
+  if (!special) 
   {
-    bitPattern = relevantBits & maskSingle;
-    if (bitPattern == 0004000)
+    uint16_t relevantBits = instructionCode & maskRelevantBits;
+    uint16_t bitPattern = relevantBits & maskSingleCondBranchCondCheck;
+    uint16_t tempLocation;
+
+    if (bitPattern == 0000000) // Define constans for these maybe.
     {
-      // Single operand
-      current_instruction->opcode = instructionCode & maskSingleOpcode;
-      current_instruction->addressingModeReg = (instructionCode & maskSingleMode) >> 3;
-      tempLocation = instructionCode & maskSingleRegister;
-      current_instruction->regBase = tempLocation;
-//      err = addressDecode(current_instruction->addressingModeReg, current_instruction->regBase, current_instruction->reg);
-      current_instruction->byteMode = (instructionCode & maskByteMode) >> 15;
-      //cout << "SINGLE " << "\n";
-    }
-    else
-    {
-      bitPattern = relevantBits & maskCondCheck;
-      if ((bitPattern == 0000240) || (bitPattern == 0000260))
+      bitPattern = relevantBits & maskSingle;
+      if (bitPattern == 0004000)
       {
-        // cond check
-        
-        newInstruction->opcode = instructionCode & maskCondCodeOpcode;
-        newInstruction->SC = instructionCode & maskCondSC;
-        newInstruction->N = instructionCode & maskCondN;
-        newInstruction->Z = instructionCode & maskCondZ;
-        newInstruction->V = instructionCode & maskCondV;
-        newInstruction->C = instructionCode & maskCondC;
+        // Single operand
+        current_instruction->opcode = instructionCode & maskSingleOpcode;
+        current_instruction->addressingModeReg = (instructionCode & maskSingleMode) >> 3;
+        tempLocation = instructionCode & maskSingleRegister;
+        current_instruction->regBase = tempLocation;
+//      err = addressDecode(current_instruction->addressingModeReg, current_instruction->regBase, current_instruction->reg);
+        current_instruction->byteMode = (instructionCode & maskByteMode) >> 15;
+        cout << "SINGLE " << "\n";
       }
       else
       {
-        //cond branch
-        current_instruction->opcode = instructionCode & maskCondBranchOpcode;
-        current_instruction->offset = instructionCode & maskCondBranchOffset;
-        //cout << "COND BRANCH " << "\n";
-      }
-    } 
-  }
-  else
-  {
-    // TODO don't actually need this, I don't think we handle any "double reg" instructions.
-    bitPattern = relevantBits & maskRegSource;
-    if (bitPattern == 0070000)
-    {
-      // register source double operand
-      current_instruction->opcode = instructionCode & maskDoubleRegisterOpcode;
-      current_instruction->regBase = (instructionCode & maskDoubleRegisterReg) >> 6;
-      current_instruction->srcBase = instructionCode & maskDoubleRegisterSourceDest;
-      current_instruction->destBase = instructionCode & maskDoubleRegisterSourceDest;
-      current_instruction->addressingModeSrc = (instructionCode & maskDoubleRegisterSourceDestMode) >> 3;
-      current_instruction->addressingModeDest = (instructionCode & maskDoubleRegisterSourceDestMode) >> 3;
-      //cout << "DOUBLE REG " << "\n";
+        bitPattern = relevantBits & maskCondCheck;
+        if ((bitPattern == 0000240) || (bitPattern == 0000260))
+        {
+          // cond check
+        
+          newInstruction->opcode = instructionCode & maskCondCodeOpcode;
+          newInstruction->SC = instructionCode & maskCondSC;
+          newInstruction->N = instructionCode & maskCondN;
+          newInstruction->Z = instructionCode & maskCondZ;
+          newInstruction->V = instructionCode & maskCondV;
+          newInstruction->C = instructionCode & maskCondC;
+          cout << "COND CHECK" << "\n";
+        }
+        else
+        {
+          //cond branch
+          current_instruction->opcode = instructionCode & maskCondBranchOpcode;
+          current_instruction->offset = instructionCode & maskCondBranchOffset;
+          cout << "COND BRANCH " << "\n";
+        }
+      } 
     }
     else
     {
-      // double operand
-      current_instruction->opcode = instructionCode & maskDoubleOpcode;
-      current_instruction->srcBase = (instructionCode & maskDoubleSource) >> 6;
-      current_instruction->addressingModeSrc = (instructionCode & maskDoubleSourceMode) >> 9;
-      current_instruction->destBase = instructionCode & maskDoubleDest;
-      current_instruction->addressingModeDest = (instructionCode & maskDoubleDestMode) >> 3;
-      //cout << "DOUBLE" << "\n";
+      // TODO don't actually need this, I don't think we handle any "double reg" instructions.
+      bitPattern = relevantBits & maskRegSource;
+      if (bitPattern == 0070000)
+      {
+        // register source double operand
+        current_instruction->opcode = instructionCode & maskDoubleRegisterOpcode;
+        current_instruction->regBase = (instructionCode & maskDoubleRegisterReg) >> 6;
+        current_instruction->srcBase = instructionCode & maskDoubleRegisterSourceDest;
+        current_instruction->destBase = instructionCode & maskDoubleRegisterSourceDest;
+        current_instruction->addressingModeSrc = (instructionCode & maskDoubleRegisterSourceDestMode) >> 3;
+        current_instruction->addressingModeDest = (instructionCode & maskDoubleRegisterSourceDestMode) >> 3;
+        //cout << "DOUBLE REG " << "\n";
+      }
+      else
+      {
+        // double operand
+        current_instruction->opcode = instructionCode & maskDoubleOpcode;
+        current_instruction->srcBase = (instructionCode & maskDoubleSource) >> 6;
+        current_instruction->addressingModeSrc = (instructionCode & maskDoubleSourceMode) >> 9;
+        current_instruction->destBase = instructionCode & maskDoubleDest;
+        current_instruction->addressingModeDest = (instructionCode & maskDoubleDestMode) >> 3;
+        cout << "DOUBLE" << "\n";
+      }
     }
-  }
   }
  
   
