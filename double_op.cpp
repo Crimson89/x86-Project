@@ -27,6 +27,7 @@ int MOV(instruction *inst) // Move source to destination (B)
 int ADD(instruction *inst) // Add source to destination
 {
   // Read values from memory
+  uint16_t destAddress = get_address(inst->addressingModeDest, inst->destBase);
   uint16_t dest = get_value(inst->addressingModeDest, inst->destBase);
   uint16_t src = get_value(inst->addressingModeSrc, inst->srcBase);
   bool msb_dest = EXTRACT_BIT(dest,WORD_MSB_INDEX);
@@ -36,7 +37,7 @@ int ADD(instruction *inst) // Add source to destination
   // Do the add and store
   dest += src;
   bool msb_result = EXTRACT_BIT(dest,WORD_MSB_INDEX);
-  write_word(inst->addressingModeDest, inst->destBase, dest);
+  write_word(inst->addressingModeDest, destAddress, dest);
 
   // Check MSB for sign
   inst->N = IS_NEGATIVE_WORD(dest)? 1:0;

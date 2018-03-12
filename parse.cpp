@@ -98,26 +98,23 @@ int parseInstruction(uint16_t instructionCode, instruction* newInstruction)
   {
     newInstruction->opcode = instructionCode & 0177770;
     newInstruction->rtsReg = instructionCode & 0000007;
-  }
-  
-  // Check JSR (0 0 4)
-  if ((instructionCode && 0177000) == 0004000)
+  }// Check JSR (0 0 4)
+  else if ((instructionCode && 0177000) == 0004000)
   {
     current_instruction->opcode = instructionCode & 0177000;
     current_instruction->regBase = (instructionCode & 0000700) >> 6;
+    current_instruction->addressingModeReg = (instructionCode & 0007000) >> 9;
     current_instruction->destBase = (instructionCode & 000070) >> 3;
     current_instruction->addressingModeDest = (instructionCode & 0000007);
-  }
-  
-  // Check JMP ()
-  if ((instructionCode && 0177700) == 0004000)
+  }// Check JMP ()
+  else if ((instructionCode && 0177700) == 0004000)
   {
     current_instruction->opcode = instructionCode & 0177700;
     current_instruction->destBase = (instructionCode & 000070) >> 3;
     current_instruction->addressingModeDest = (instructionCode & 0000007);
   }
 
-  
+  else {
   uint16_t relevantBits = instructionCode & maskRelevantBits;
   uint16_t bitPattern = relevantBits & maskSingleCondBranchCondCheck;
   uint16_t tempLocation;
@@ -185,6 +182,7 @@ int parseInstruction(uint16_t instructionCode, instruction* newInstruction)
       current_instruction->addressingModeDest = (instructionCode & maskDoubleDestMode) >> 3;
       //cout << "DOUBLE" << "\n";
     }
+  }
   }
   
   if ((current_instruction->regBase == 7) || (current_instruction->regBase == 6)) {

@@ -10,10 +10,10 @@ unitTestDebug.o: unitTestDebug.cpp
 	g++ -g -std=c++11 -c unitTestDebug.cpp
 
 unitTest: unitTest.o
-	g++ -g -std=c++11 unitTest.o parse.o memory.o trace.o dispatch.o single_op.o double_op.o branch.o jump_sub.0 -o RunUnitTest.exe
+	g++ -g -std=c++11 unitTest.o parse.o memory.o trace.o debug.o dispatch.o single_op.o double_op.o branch.o jump_sub.o -o RunUnitTest.exe
 
 unitTest.o: unitTest.cpp
-	g++ -g -std=c++11 -c unitTest.cpp parse.cpp memory.cpp trace.cpp dispatch.cpp single_op.cpp double_op.cpp branch.cpp jump_sub.cpp
+	g++ -g -std=c++11 -c unitTest.cpp parse.cpp memory.cpp trace.cpp debug.cpp dispatch.cpp single_op.cpp double_op.cpp branch.cpp jump_sub.cpp
 
 main: main.o
 	g++ -g -std=c++11 main.o parse.o memory.o trace.o debug.o dispatch.o single_op.o double_op.o branch.o jump_sub.o -o RunMe.exe
