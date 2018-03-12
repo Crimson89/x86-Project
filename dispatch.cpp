@@ -11,7 +11,6 @@ int dispatch(instruction * inst)
   switch (inst->opcode) {
 
     // SINGLE OPERAND
-
     // General
     case m_CLR:
     case m_CLRB:
@@ -33,7 +32,7 @@ int dispatch(instruction * inst)
     case m_NEGB:
       return NEG(inst);
       break;
-    case 0000240: // NOP
+    case m_NOP:
       return NOP(inst);
       break;
     case m_TST:
@@ -76,7 +75,6 @@ int dispatch(instruction * inst)
       break;
 
     // DOUBLE OPERAND
-
     // Logical
     case m_BIT:
     case m_BITB:
@@ -90,9 +88,10 @@ int dispatch(instruction * inst)
     case m_BISB:
       return BIS(inst);
       break;
-    //case m_XOR:
-    //  return XOR(inst);
-    //  break;
+	//Math
+    case m_XOR:
+      return XOR(inst);
+      break;
     case m_MOV:
     case m_MOVB:
       return MOV(inst);
@@ -106,22 +105,20 @@ int dispatch(instruction * inst)
     case m_CMPB:
       return CMP(inst);
       break;
-    //case m_ASH:
-    //  return ASH(inst);
-    //  break;
-    //case m_ASHC:
-    //  return ASHC(inst);  
-    //  break;
-    //case m_MUL:
-    //  return MUL(inst);
-    //  break;
-    //case m_DIV:
-    //  return DIV(inst);
-    //  break;
+    case m_ASH:
+      return ASH(inst);
+      break;
+    case m_ASHC:
+      return ASHC(inst);  
+      break;
+    case m_MUL:
+      return MUL(inst);
+      break;
+    case m_DIV:
+      return DIV(inst);
+      break;
 
     // BRANCH
-
-    // Branch
     case m_BR:
       return BR(inst);
       break;
@@ -157,9 +154,9 @@ int dispatch(instruction * inst)
     case m_BLE:
       return BLE(inst);
       break;
-    //case m_SOB:
-    //  return SOB(inst);
-    //  break;
+    case m_SOB:
+      return SOB(inst);
+      break;
 
     // Unsigned Conditional Branch
     case m_BHI:
@@ -168,15 +165,8 @@ int dispatch(instruction * inst)
     case m_BLOS:
       return BLOS(inst);
       break;
-    //case m_BHIS:
-    //  return BHIS(inst);
-    //  break;
-    //case m_BLO:
-    //  return BLO(inst);
-    //  break;
 
     // JUMP & SUBROUTINE
-
     case m_JMP:
       return JMP(inst);
       break;
@@ -186,75 +176,70 @@ int dispatch(instruction * inst)
     case m_RTS:
       return RTS(inst);
       break;
-    //case m_MARK
-    //  return MARK(inst);
-    //  break;
+    case m_MARK:
+      return MARK(inst);
+      break;
 
     // TRAPS & INTERRUPTS
-    case 0104000: // EMT
+    case m_EMT:
       return EMT(inst);
       break;
-	/*
-    case 0104400: // TRAP
+    case m_TRAP:
       return TRAP(inst);
       break;
-    case 0000003: // BPT
+    case m_BPT: 
       return BPT(inst);
       break;
-    case 0000004: // IOT
+    case m_IOT:
       return IOT(inst);
       break;
-    case 0007000: // CSM
+    case m_CSM: 
       return CSM(inst);
       break;
-    case 0000002: // RTI
+    case m_RTI: 
       return RTI(inst);
       break;
-    case 0000006: // RTT
+    case m_RTT:
       return RTT(inst);
       break;
-    */
 
     // MISC
-
-    //case 0000000: // HALT - Nothing to call, exits program loop
-    //  return HALT(inst);
-    //  break;
-    //case 0000001: // WAIT
-    //  return WAIT(inst);
-    //  break;
-    /*
-    case 0000005: // RESET
+    case m_HALT: 
+      return HALT(inst);
+      break;
+    case m_WAIT:
+      return WAIT(inst);
+      break;
+    case m_RESET: 
       return RESET(inst);
       break;
-    case 0106600: // MTPD
+    case m_MTPD:
       return MTPD(inst);
       break;
-    case 0006600: // MTPI
+    case m_MTPI:
       return MTPI(inst);
       break;
-    case 0106500: // MFPD
+    case m_MFPD: 
       return MFPD(inst);
       break;
-    case 0006500: // MFPI
+    case m_MFPI:
       return MFPI(inst);
       break;
-    case 0106400: // MTPS
+    case m_MTPS:
       return MTPS(inst);
       break;
-    case 0106700: // MFPS
+    case m_MFPS: 
       return MFPS(inst);
       break;
-    case 0000007: // MFPT
+    case m_MFPT: 
       return MFPT(inst);
-      break;*/
-    case 0000230: // SPL
+      break;
+    case m_SPL: 
       return SPL(inst);
       break;
 
 
     // CONDITION CODES
-
     case m_CLC:
       return CLC(inst);
       break;

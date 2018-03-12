@@ -77,8 +77,8 @@
 #define m_NOP    0000240 // No operation
 #define m_TST    0005700 // Test
 #define m_TSTB   0105700 // Test (B)
-#define m_TSTSET // Test, set low bit
-#define m_WRTLCK // Read/Lock destination, write/unlock R0 #defineo destination
+#define m_TSTSET 0007200 // Test, set low bit
+#define m_WRTLCK 0007300 // Read/Lock destination, write/unlock R0 #defineo destination
 
 // Shift & Rotate
 #define m_ASR    0006200 // Arithmetic shift right

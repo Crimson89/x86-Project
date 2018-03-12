@@ -228,6 +228,20 @@ int RTS(instruction *inst);
 int MARK(instruction *inst);
 int HALT(instruction *inst);
 int WAIT(instruction *inst);
+int TRAP(instruction *inst);
+int BPT(instruction *inst);
+int IOT(instruction *inst);
+int CSM(instruction *inst);
+int RTI(instruction *inst);
+int RTT(instruction *inst);
+int RESET(instruction *inst);
+int MTPD(instruction *inst);
+int MTPI(instruction *inst);
+int MFPD(instruction *inst);
+int MFPI(instruction *inst);
+int MTPS(instruction *inst);
+int MFPS(instruction *inst);
+int MFPT(instruction *inst);
 
 // Parsing functions
 
