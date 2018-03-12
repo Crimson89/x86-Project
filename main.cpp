@@ -79,15 +79,13 @@ int main(int argc, char ** argv)
 
 				// IF
 				instruction_code = read_word(MEMORY_READ, PC, READ_TRACE, READ_INSTR_FETCH);				
-				
-				PC += 2;
 				if(check_breakpoint(PC)){ // Check for a breakpoint pointing to this memory location
 					breakpoint_pc = PC;
 					at_breakpoint = true;
 				}
 				else
-					at_breakpoint = false;
-				
+					at_breakpoint = false;				
+				PC += 2;
 
 				// ID
 				if(parseInstruction(instruction_code, current_instruction)) {
