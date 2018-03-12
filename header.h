@@ -18,11 +18,23 @@
 
 using namespace std;
 
-//instructionType instructionFamily {singleOperand, doubleOperand}; // (? Probably not necessary) 
+#pragma pack(push, 1)
+typedef union {
+	struct {
+		// In reverse order so that the bits fall in the correct order for printing the word
+		uint8_t C:1;
+		uint8_t V:1;
+		uint8_t Z:1;
+		uint8_t N:1;
+		uint8_t T:1;
+		uint8_t SPL:3;
+	};
+	uint8_t PSW_BYTE;
+}PSW_t;
 
 typedef struct {
-  uint16_t opcode;  
-  uint16_t byteMode;  
+	uint16_t opcode;  
+	uint16_t byteMode;  
 	uint16_t addressingModeSrc;  
 	uint16_t addressingModeDest;
 	uint16_t addressingModeReg;  
@@ -32,19 +44,30 @@ typedef struct {
 
 	int16_t offset;   // Signed offset
 	int16_t immediate; //Signed immediate value, used for debug pretty-print
-  union {
+	uint16_t rtsReg;
+	uint8_t padding; //Make this struct an even multiple of 64 bits
+	union {
 		struct {
-			int SPL: 3;
-      int T: 1;
-			int N: 1;
-			int Z: 1;
-			int V: 1;
-			int C: 1;
+			/*
+			uint8_t SPL:3;
+			uint8_t T:1;
+			uint8_t N:1;
+			uint8_t Z:1;
+			uint8_t V:1;
+			uint8_t C:1;
+			*/
+			// In reverse order so that the bits fall in the correct order for printing the word
+			uint8_t C:1;
+			uint8_t V:1;
+			uint8_t Z:1;
+			uint8_t N:1;
+			uint8_t T:1;
+			uint8_t SPL:3;
 		};
 		uint8_t PSW; // Processor Status Word
 	};
-  uint16_t rtsReg;
 }instruction;
+#pragma pack(pop)
 
 //Define REGS, MEM, and  globals
 extern uint16_t REGS[7];
@@ -71,6 +94,10 @@ extern string data_file;
 // MAIN functions - main.cpp
 int menu_function(void);
 void get_user_octal(string prompt, string error_text, uint16_t &word);
+int instruction_fetch(bool & at_breakpoint, uint16_t & instruction_code,  uint16_t & breakpoint_pc, uint16_t & PC);
+int write_back(PSW_t & PSW, instruction * inst);
+void clear_psw(PSW_t & PSW);
+void print_psw(PSW_t & PSW);
 
 // Memory functions - memory.cpp
 int get_cmd_options(int argc, char ** argv);

@@ -98,10 +98,9 @@ int dispatch(instruction * inst)
       return MOV(inst);
       break;
     case m_ADD:
-      return ADD(inst);
-      break;
     case m_SUB:
-      return SUB(inst);
+      if(inst->byteMode) return SUB(inst);
+	  return ADD(inst);
       break;
     case m_CMP:
     case m_CMPB:

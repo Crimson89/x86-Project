@@ -1,14 +1,5 @@
 #include "header.h"
 
-
-struct {      // Global Processor Status Word
-  int SC: 3;
-  int N: 1;
-  int Z: 1;
-  int V: 1;
-  int C: 1;
-} PSW;
-
 uint16_t REGS[7];                  //CPU Registers
 uint8_t MEM[MEMORY_SPACE];         //Byte memory array, index is memory address
 bool MEM_USED_FLAGS[MEMORY_SPACE]; //Memory used array, true==memory used/valid, false==invalid
@@ -28,12 +19,11 @@ instruction * current_instruction;	// decoded instruction information
 int verbosity_level;                // Level of verbosity in print statements
 string trace_file;
 string data_file;
+PSW_t PSW;
+
 
 int main(int argc, char ** argv)
 {
-  current_instruction = new instruction;
-	//int test;
-	//test = parseTest();
 	verbosity_level = 0; // Level of verbosity in print statements, default to low 
 	int program_execution_control = 0;
 	int err;							// error checking
@@ -41,15 +31,6 @@ int main(int argc, char ** argv)
 	bool at_breakpoint = false;         // Current PC triggered breakpoint
 	uint16_t breakpoint_pc;             // PC when breakpoint was triggered
 	
-	
-//////////////////////////
-// Debug, print stuff////
-
-
-// End Debug, print stuff////
-//////////////////////////
-
-
 	trace_file = "test_trace.txt";
 	data_file = "FALSE";
 	SP = 0xFFFF; // Assign at start to invalid value, detection of unassigned SP
@@ -57,6 +38,10 @@ int main(int argc, char ** argv)
 	starting_pc = PC;
 	initializeMemory();
 	get_cmd_options(argc, argv); // Read command line options
+	current_instruction = new instruction;
+	clearInstruction(current_instruction);
+	clear_psw(PSW);
+	
 	
 	for(;;){
 		program_execution_control = menu_function();
@@ -77,22 +62,25 @@ int main(int argc, char ** argv)
 			// Main program loop
 			while(program_execution_control == RUN_PROGRAM) {
 
-				// IF
-				instruction_code = read_word(MEMORY_READ, PC, READ_TRACE, READ_INSTR_FETCH);				
-				if(check_breakpoint(PC)){ // Check for a breakpoint pointing to this memory location
-					breakpoint_pc = PC;
-					at_breakpoint = true;
+				// IF and evaluate current PC for matching breakpoint, then increment PC
+				if(instruction_fetch(at_breakpoint, instruction_code, breakpoint_pc, PC)) {
+					cerr << "\n\n-------------------------------------------------------------------------" <<endl;
+					cerr << "-------------------------------------------------------------------------" <<endl;
+					cerr << "\n\n\t\tInstruction Fetch Fault, Terminating Program!!\n\n" << endl;
+					cerr << "\t\t\t\tPress ENTER to return to menu" << endl;
+					cerr << "-------------------------------------------------------------------------" <<endl;
+					cerr << "-------------------------------------------------------------------------\n\n" <<endl;
+					program_execution_control = PRINT_MENU;
+					cin.get();
+					break;
 				}
-				else
-					at_breakpoint = false;				
-				PC += 2;
 
 				// ID
 				if(parseInstruction(instruction_code, current_instruction)) {
 					cerr << "\n\n-------------------------------------------------------------------------" <<endl;
 					cerr << "-------------------------------------------------------------------------" <<endl;
-					cerr << "\n\nTerminating program!!\n\n" << endl;
-					cerr << "                     Press ENTER to return to menu" << endl;
+					cerr << "\n\n\t\tInstruction Decode Fault, Terminating Program!!\n\n" << endl;
+					cerr << "\t\t\t\tPress ENTER to return to menu" << endl;
 					cerr << "-------------------------------------------------------------------------" <<endl;
 					cerr << "-------------------------------------------------------------------------\n\n" <<endl;
 					program_execution_control = PRINT_MENU;
@@ -100,25 +88,51 @@ int main(int argc, char ** argv)
 					break;
 				}
 				
-				// Print breakpoint information
+				// If this is a breakpoint, then print breakpoint information
 				if(at_breakpoint){
 					handle_breakpoint(breakpoint_pc, instruction_code);
 					at_breakpoint = false;
 				}
 
 				// EX
-				err = dispatch(current_instruction);
+				if(dispatch(current_instruction)){
+					cerr << "\n\n-------------------------------------------------------------------------" <<endl;
+					cerr << "-------------------------------------------------------------------------" <<endl;
+					cerr << "\n\n\t\tInstruction Execution/Dispatch Fault\n\n" << endl;
+					cerr << "\t\t\t\tPress ENTER to continue" << endl;
+					cerr << "-------------------------------------------------------------------------" <<endl;
+					cerr << "-------------------------------------------------------------------------\n\n" <<endl;
+					cin.get();
+					break;
+				}
 
 //////////////////////////
 // Debug, print stuff////
 //printInstruction(current_instruction);
 cout << "Instruction: " << op_formatted(current_instruction) << endl;
+//cout << "Current Operation PSW:" << oct << uint8_t(current_instruction->PSW) << endl;
 // End Debug, print stuff////
 //////////////////////////
 
 				// WB
-				// updateTracefile();
-
+				if(write_back(PSW, current_instruction)) {
+					cerr << "\n\n-------------------------------------------------------------------------" <<endl;
+					cerr << "-------------------------------------------------------------------------" <<endl;
+					cerr << "\n\n\t\tPSW Write Back Fault, Terminating Program!!\n\n" << endl;
+					cerr << "\t\t\t\tPress ENTER to return to menu" << endl;
+					cerr << "-------------------------------------------------------------------------" <<endl;
+					cerr << "-------------------------------------------------------------------------\n\n" <<endl;
+					program_execution_control = PRINT_MENU;
+					cin.get();
+				}
+				
+//////////////////////////
+// Debug, print stuff////
+//cout << "PSW written back to processor:" << oct << PSW << endl;
+print_psw(PSW);
+// End Debug, print stuff////
+//////////////////////////
+				
 				if(current_instruction->opcode == m_HALT)
 					program_execution_control = PRINT_MENU;
 				
@@ -139,6 +153,7 @@ cout << "Instruction: " << op_formatted(current_instruction) << endl;
 			program_execution_control = PRINT_MENU;
 		}
 	}
+	delete current_instruction;
 	return 0; // never hit, program exits from menu function
 }
 
@@ -212,6 +227,7 @@ int menu_function() {
 					cout << "-------------------------------------------------------------------------" <<endl;
 					cin.ignore(numeric_limits<streamsize>::max(), '\n');
 					cin.get();
+					delete current_instruction;
 					exit(EXIT_SUCCESS);
 					break;
 				case 't':
@@ -329,6 +345,41 @@ int menu_function() {
 					break;
 			}
 		}
+	}
+	return 0;
+}
+
+int instruction_fetch(bool & at_breakpoint, uint16_t & instruction_code,  uint16_t & breakpoint_pc, uint16_t & PC){
+	instruction_code = read_word(MEMORY_READ, PC, READ_TRACE, READ_INSTR_FETCH);				
+	if(check_breakpoint(PC)){ // Check for a breakpoint pointing to this memory location
+		breakpoint_pc = PC;
+		at_breakpoint = true;
+	}
+	else
+		at_breakpoint = false;				
+	PC += 2;
+	return 0;
+}
+
+void clear_psw(PSW_t & PSW) {
+	PSW.PSW_BYTE = 0;
+}
+
+void print_psw(PSW_t & PSW) {
+	cout << "Global PSW: " << setfill('0') << setw(3) << oct << uint16_t(PSW.PSW_BYTE) << endl;
+	cout << "Global PSW.SPL: " << setfill('0') << setw(1) << uint16_t(PSW.SPL) << endl;
+	cout << "Global PSW.T: " << setfill('0') << setw(1) << uint16_t(PSW.T) << endl;
+	cout << "Global PSW.N: " << setfill('0') << setw(1) << uint16_t(PSW.N) << endl;
+	cout << "Global PSW.Z: " << setfill('0') << setw(1) << uint16_t(PSW.Z) << endl;
+	cout << "Global PSW.V: " << setfill('0') << setw(1) << uint16_t(PSW.V) << endl;
+	cout << "Global PSW.C: " << setfill('0') << setw(1) << uint16_t(PSW.C) << endl;
+}
+
+int write_back(PSW_t & PSW, instruction * inst) {
+	PSW.PSW_BYTE = inst->PSW;
+	if(PSW.PSW_BYTE != inst->PSW) { // I'm not sure how this would happen, but to allow some type of fault return
+		cerr << "Failed to update PSW from current operation!" <<endl;
+		return 1;
 	}
 	return 0;
 }

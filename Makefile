@@ -21,13 +21,19 @@ opTest: opTest.o
 opTest.o: opTest.cpp
 	g++ -g -std=c++11 -c opTest.cpp parse.cpp memory.cpp trace.cpp debug.cpp dispatch.cpp single_op.cpp double_op.cpp branch.cpp jump_sub.cpp
 
+dTest: clean main dispatchTest.o
+	g++ -g -std=c++11 dispatchTest.o parse.o memory.o trace.o debug.o dispatch.o single_op.o double_op.o branch.o jump_sub.o -o dTest.exe
+
+dispatchTest.o: dispatchTest.cpp
+	g++ -g -std=c++11 -c dispatchTest.cpp
+
 main: main.o
 	g++ -g -std=c++11 main.o parse.o memory.o trace.o debug.o dispatch.o single_op.o double_op.o branch.o jump_sub.o -o RunMe.exe
 
 main.o: main.cpp
 	g++ -g -std=c++11 -c main.cpp parse.cpp trace.cpp memory.cpp debug.cpp dispatch.cpp single_op.cpp double_op.cpp branch.cpp jump_sub.cpp
 
-filenames := main.o parse.o memory.o trace.o branch.o unitTest.o debug.o dispatch.o single_op.o double_op.o branch.o jump_sub.o trap_int.o condition.o unitTestDebug.o RunMe.exe RunUnitTest.exe RunUnitTestDebug.exe opTest.o RunOpTest.exe
+filenames := main.o parse.o memory.o trace.o branch.o unitTest.o debug.o dispatch.o single_op.o double_op.o branch.o jump_sub.o trap_int.o condition.o unitTestDebug.o RunMe.exe dTest.exe RunUnitTest.exe RunUnitTestDebug.exe opTest.o RunOpTest.exe
 
 files := $(strip $(foreach f,$(filenames),$(wildcard $(f))))
 

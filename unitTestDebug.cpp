@@ -27,6 +27,96 @@ void get_user_octal(string prompt, string error_text, uint16_t &word)
 }
 
 
+void test_psw(PSW_t & PSW, instruction * inst) {
+	
+	printf("Set PSW_C\n");
+	inst->C = 1;
+	write_back(PSW, inst);
+	print_psw(PSW);
+	
+	printf("Clear PSW_C\n");
+	inst->C = 0;
+	write_back(PSW, inst);
+	print_psw(PSW);
+	
+	printf("Set PSW_V\n");
+	inst->V = 1;
+	write_back(PSW, inst);
+	print_psw(PSW);
+	
+	printf("Clear PSW_V\n");
+	inst->V = 0;
+	write_back(PSW, inst);
+	print_psw(PSW);
+	
+	printf("Set PSW_Z\n");
+	inst->Z = 1;
+	write_back(PSW, inst);
+	print_psw(PSW);
+	
+	printf("Clear PSW_Z\n");
+	inst->Z = 0;
+	write_back(PSW, inst);
+	print_psw(PSW);
+	
+	printf("Set PSW_N\n");
+	inst->N = 1;
+	write_back(PSW, inst);
+	print_psw(PSW);
+	
+	printf("Clear PSW_N\n");
+	inst->N = 0;
+	write_back(PSW, inst);
+	print_psw(PSW);
+	
+	printf("Set PSW_T\n");
+	inst->T = 1;
+	write_back(PSW, inst);
+	print_psw(PSW);
+	
+	printf("Clear PSW_T\n");
+	inst->T = 0;
+	write_back(PSW, inst);
+	print_psw(PSW);
+	
+	printf("Set PSW_SPL\n");
+	inst->SPL = 1;
+	write_back(PSW, inst);
+	print_psw(PSW);
+	
+	printf("Set PSW_SPL = 7\n");
+	inst->SPL = 7;
+	write_back(PSW, inst);
+	print_psw(PSW);
+	
+	printf("Clear PSW_SPL\n");
+	inst->SPL = 0;
+	write_back(PSW, inst);
+	print_psw(PSW);
+}
+
+void clear_psw(PSW_t & PSW) {
+	PSW.PSW_BYTE = 0;
+}
+
+void print_psw(PSW_t & PSW) {
+	cout << "Global PSW: " << setfill('0') << setw(3) << oct << uint16_t(PSW.PSW_BYTE) << endl;
+	cout << "Global PSW.SPL: " << setfill('0') << setw(1) << uint16_t(PSW.SPL) << endl;
+	cout << "Global PSW.T: " << setfill('0') << setw(1) << uint16_t(PSW.T) << endl;
+	cout << "Global PSW.N: " << setfill('0') << setw(1) << uint16_t(PSW.N) << endl;
+	cout << "Global PSW.Z: " << setfill('0') << setw(1) << uint16_t(PSW.Z) << endl;
+	cout << "Global PSW.V: " << setfill('0') << setw(1) << uint16_t(PSW.V) << endl;
+	cout << "Global PSW.C: " << setfill('0') << setw(1) << uint16_t(PSW.C) << endl;
+}
+
+int write_back(PSW_t & PSW, instruction * inst) {
+	PSW.PSW_BYTE = inst->PSW;
+	if(PSW.PSW_BYTE != inst->PSW) { // I'm not sure how this would happen, but to allow some type of fault return
+		cerr << "Failed to update PSW from current operation!" <<endl;
+		return 1;
+	}
+	return 0;
+}
 
 static void printMemReg()
 {
@@ -230,13 +320,20 @@ static int decodeTest()
 
 int main()
 {
+
+	instruction * current_instruction;	// decoded instruction information
+	current_instruction = new instruction;
+	PSW_t PSW;
 	trace_file = "test_trace.txt";
 	data_file = "FALSE";
 	SP = 0xFFFF; // Assign at start to invalid value, detection of unassigned SP
 	PC = 0xFFFF; // Assign at start to invalid value, detection of unassigned PC
 	starting_pc = PC;
 	initializeMemory();
-  int result = 0;
-  result = decodeTest();
-  return 1;
+	clear_psw(PSW);
+	test_psw(PSW,current_instruction);
+	delete current_instruction;
+	int result = 0;
+	result = decodeTest();
+	return 1;
 }
