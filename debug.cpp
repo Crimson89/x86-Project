@@ -296,7 +296,7 @@ string op_formatted(instruction * op) {
 							// RTS
 		case m_RTS   :
 					if     (op->rtsReg <= 5)
-						temp << to_string(op->rtsReg);
+						temp << "R" << to_string(op->rtsReg);
 					else if(op->rtsReg == 6)
 						temp << " " << "SP"; 
 					else if(op->rtsReg == 7)

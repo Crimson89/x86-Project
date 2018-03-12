@@ -267,6 +267,12 @@ int parseInstruction(uint16_t instructionCode, instruction* newInstruction)
 	}
   }
   
+  cout << "In parse, opCode=" << oct << current_instruction->opcode << endl;
+  if((current_instruction->opcode == m_JSR) && (current_instruction->addressingModeDest)) {
+	  cerr << "TRAP!, to Vector Address 4, Invalid JSR addressing mode: " << current_instruction->addressingModeDest << ", not currently implemented" <<endl;
+	  return 2;
+  }
+
 
   return err;
 sp_error:
