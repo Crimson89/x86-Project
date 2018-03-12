@@ -296,11 +296,11 @@ string op_formatted(instruction * op) {
 							// RTS
 		case m_RTS   :
 					if     (op->rtsReg <= 5)
-						temp << "R" << to_string(op->rtsReg);
+						temp << " R" << to_string(op->rtsReg);
 					else if(op->rtsReg == 6)
-						temp << " " << "SP"; 
+						temp << " SP"; 
 					else if(op->rtsReg == 7)
-						temp << " " << "PC"; 
+						temp << " PC"; 
 					break;
 							// Mark
 		case m_MARK  :temp << " " << "VALUE"; break; // Cheating here, we didn't implement this, so I use "value" for the MARK "NM" value

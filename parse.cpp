@@ -82,13 +82,13 @@ int parseInstruction(uint16_t instructionCode, instruction* newInstruction)
   //}
 
   // Check SOB (0 0 7) (TODO maybe double reg?)
-  /*if ((instructionCode && 0xFE00) == 0x0E00)
+  /*if ((instructionCode & 0xFE00) == 0x0E00)
   {
 
   } */
 
   /*// Check MARK (0 0 6 4) (maybe single)
-  if ((instructionCode && 0xFFC0) == 0x0C00)
+  if ((instructionCode & 0xFFC0) == 0x0C00)
   {
 
   }*/
@@ -104,7 +104,7 @@ int parseInstruction(uint16_t instructionCode, instruction* newInstruction)
   }// Check JSR (0 0 4)
   if ((instructionCode & 0177000) == 0004000)
   {
-    current_instruction->opcode = instructionCode & 0177000;
+    current_instruction->opcode = (instructionCode & 0177000);
     current_instruction->regBase = (instructionCode & 0000700) >> 6;
     current_instruction->addressingModeReg = (instructionCode & 0007000) >> 9;
     current_instruction->destBase = (instructionCode & 000070) >> 3;
@@ -114,7 +114,7 @@ int parseInstruction(uint16_t instructionCode, instruction* newInstruction)
   }// Check JMP ()
   if ((instructionCode & 0177700) == 0000100)
   {
-    current_instruction->opcode = instructionCode & 0177700;
+    current_instruction->opcode = (instructionCode & 0177700);
     current_instruction->destBase = (instructionCode & 000070) >> 3;
     current_instruction->addressingModeDest = (instructionCode & 0000007);
     cout << "JMP" << "\n";
