@@ -129,7 +129,7 @@ cout << "Instruction: " << op_formatted(current_instruction) << endl;
 //////////////////////////
 // Debug, print stuff////
 //cout << "PSW written back to processor:" << oct << PSW << endl;
-print_psw(PSW);
+//print_psw(PSW);
 // End Debug, print stuff////
 //////////////////////////
 				

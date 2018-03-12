@@ -5,6 +5,7 @@
 // Jump
 int JMP(instruction *inst)
 {
+  inst->op_text = "JMP";
   uint16_t destination;
 
   // If dest addressing mode = 0, "illegal instruction"
@@ -16,7 +17,7 @@ int JMP(instruction *inst)
 
   destination = get_value(inst->addressingModeReg, inst->regBase);
    
-  // If value is an odd address, "boundar error trap condition"
+  // If value is an odd address, "boundary error trap condition"
   if(destination & 0x0001) {
     cout << oct << "Boundary error @ " << PC-2
       << ". Misaligned jump destination: " << destination << ".\n";
@@ -31,6 +32,7 @@ int JMP(instruction *inst)
 // Jump to subroutine
 int JSR(instruction *inst)
 {
+  inst->op_text = "JSR";
   // (tmp) <- (dest) (dest might be SP, get this value before pushing reg)
   // -(SP) <- reg
   // reg <- PC
@@ -58,6 +60,7 @@ int JSR(instruction *inst)
 // Return from subroutine
 int RTS(instruction *inst)
 {
+  inst->op_text = "RTS";
   uint16_t tmp;
 
   // PC <- reg

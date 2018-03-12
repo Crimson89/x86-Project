@@ -3,6 +3,10 @@
 #define HIGH_VERBOSITY  2
 #define DEBUG_VERBOSITY 3
 
+
+//Handle bad instructions
+#define BAD_INST_ABORT 1 // Set this to 0 to continue execution with bad/unimplemeted instructions, just print a message. Setting to 1 causes program execution to halt
+
 //Size of memory space
 #define MEMORY_SPACE (1<<16)
 

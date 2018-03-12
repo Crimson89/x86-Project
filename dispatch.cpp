@@ -33,9 +33,9 @@ int dispatch(instruction * inst)
     case m_NEGB:
       return NEG(inst);
       break;
-    //case 0000240: // NOP
-    //  return NOP(inst);
-    //  break;
+    case 0000240: // NOP
+      return NOP(inst);
+      break;
     case m_TST:
     case m_TSTB:
       return TST(inst);
@@ -191,10 +191,10 @@ int dispatch(instruction * inst)
     //  break;
 
     // TRAPS & INTERRUPTS
-    /*
     case 0104000: // EMT
       return EMT(inst);
       break;
+	/*
     case 0104400: // TRAP
       return TRAP(inst);
       break;
@@ -217,7 +217,7 @@ int dispatch(instruction * inst)
 
     // MISC
 
-    //case 0000000: // HALT
+    //case 0000000: // HALT - Nothing to call, exits program loop
     //  return HALT(inst);
     //  break;
     //case 0000001: // WAIT
@@ -247,14 +247,14 @@ int dispatch(instruction * inst)
       break;
     case 0000007: // MFPT
       return MFPT(inst);
-      break;
+      break;*/
     case 0000230: // SPL
       return SPL(inst);
       break;
-    */
+
 
     // CONDITION CODES
-/*
+
     case m_CLC:
       return CLC(inst);
       break;
@@ -285,7 +285,7 @@ int dispatch(instruction * inst)
     case m_SCC:
       return SCC(inst);
       break;
-*/
+
   }
 
 }

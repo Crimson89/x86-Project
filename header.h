@@ -45,17 +45,9 @@ typedef struct {
 	int16_t offset;   // Signed offset
 	int16_t immediate; //Signed immediate value, used for debug pretty-print
 	uint16_t rtsReg;
-	uint8_t padding; //Make this struct an even multiple of 64 bits
+	uint8_t padding; //Make this struct an even multiple of 64 bits up to the end of this struct
 	union {
 		struct {
-			/*
-			uint8_t SPL:3;
-			uint8_t T:1;
-			uint8_t N:1;
-			uint8_t Z:1;
-			uint8_t V:1;
-			uint8_t C:1;
-			*/
 			// In reverse order so that the bits fall in the correct order for printing the word
 			uint8_t C:1;
 			uint8_t V:1;
@@ -66,6 +58,7 @@ typedef struct {
 		};
 		uint8_t PSW; // Processor Status Word
 	};
+	string op_text;
 }instruction;
 #pragma pack(pop)
 

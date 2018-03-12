@@ -3,6 +3,10 @@
 // General
 int CLR(instruction *inst) // Clear (B)
 {
+  if(inst->byteMode)
+    inst->op_text = "CLRB";
+  else
+    inst->op_text = "CLR";
   uint16_t dest = 0;
   if(inst->byteMode)
     write_byte(inst->addressingModeDest, inst->destBase, dest);
@@ -17,6 +21,10 @@ int CLR(instruction *inst) // Clear (B)
 
 int COM(instruction *inst) // 1's Compliment (B)
 {
+  if(inst->byteMode)
+    inst->op_text = "COMB";
+  else
+    inst->op_text = "COM";
   uint16_t dest = get_value(inst->addressingModeDest, inst->destBase);
   dest = ~dest;
 
@@ -39,6 +47,10 @@ int COM(instruction *inst) // 1's Compliment (B)
 
 int INC(instruction *inst) // Increment (B)
 {
+  if(inst->byteMode)
+    inst->op_text = "INCB";
+  else
+    inst->op_text = "INC";
   uint16_t dest = get_value(inst->addressingModeDest, inst->destBase);
   uint16_t temp = dest;
   dest++;
@@ -63,6 +75,10 @@ int INC(instruction *inst) // Increment (B)
 
 int DEC(instruction *inst) // Decrement (B)
 {
+  if(inst->byteMode)
+    inst->op_text = "DECB";
+  else
+    inst->op_text = "DEC";
   uint16_t dest = get_value(inst->addressingModeDest, inst->destBase);
   uint16_t temp = dest;
   dest--;
@@ -87,6 +103,10 @@ int DEC(instruction *inst) // Decrement (B)
 
 int NEG(instruction *inst) // 2's Compliment negate (B)
 {
+  if(inst->byteMode)
+    inst->op_text = "NEGB";
+  else
+    inst->op_text = "NEG";
   uint16_t dest = get_value(inst->addressingModeDest, inst->destBase);
   inst->V = (dest == 0x8000) ? 1:0;
   dest = (~dest)+1;
@@ -109,6 +129,10 @@ int NEG(instruction *inst) // 2's Compliment negate (B)
 
 int TST(instruction *inst) // Test (B)
 {
+  if(inst->byteMode)
+    inst->op_text = "TSTB";
+  else
+    inst->op_text = "TST";
   uint16_t dest = get_value(inst->addressingModeDest, inst->destBase);
   if(inst->byteMode)
     inst->N = IS_NEGATIVE_BYTE(dest) ? 1:0;
@@ -123,6 +147,10 @@ int TST(instruction *inst) // Test (B)
 // Shift & Rotate
 int ASR(instruction *inst) // Arithmetic shift right (B)
 {
+  if(inst->byteMode)
+    inst->op_text = "ASRB";
+  else
+    inst->op_text = "ASR";
   uint16_t dest = get_value(inst->addressingModeDest, inst->destBase);
   inst->C = dest & 1; // C = old LSB
   dest >>= 1;
@@ -145,6 +173,10 @@ int ASR(instruction *inst) // Arithmetic shift right (B)
 
 int ASL(instruction *inst) // Arithmetic shift left (B)
 {
+  if(inst->byteMode)
+    inst->op_text = "ASLB";
+  else
+    inst->op_text = "ASL";
   uint16_t dest = get_value(inst->addressingModeDest, inst->destBase);
   inst->C = dest >> (sizeof(dest)*8-1) & 1; // C = old MSB
   dest <<= 1;
@@ -167,6 +199,10 @@ int ASL(instruction *inst) // Arithmetic shift left (B)
 
 int ROR(instruction *inst) // Rotate right (B)
 {
+  if(inst->byteMode)
+    inst->op_text = "RORB";
+  else
+    inst->op_text = "ROR";
   uint16_t dest = get_value(inst->addressingModeDest, inst->destBase);
   uint16_t temp2 = dest;
   uint16_t temp = 0x0001 & dest;
@@ -192,6 +228,10 @@ int ROR(instruction *inst) // Rotate right (B)
 
 int ROL(instruction *inst) // Rotate left (B)
 {
+  if(inst->byteMode)
+    inst->op_text = "ROLB";
+  else
+    inst->op_text = "ROL";
   uint16_t dest = get_value(inst->addressingModeDest, inst->destBase);
   uint16_t temp2 = dest;
   uint16_t temp = 0x8000 & dest;
@@ -217,6 +257,7 @@ int ROL(instruction *inst) // Rotate left (B)
 
 int SWAB(instruction *inst) // Swap bytes
 {
+  inst->op_text = "SWAB";
   uint16_t dest = get_value(inst->addressingModeDest, inst->destBase);
   uint16_t temp = 0x00FF & dest;
   temp <<= 8;
@@ -234,6 +275,10 @@ int SWAB(instruction *inst) // Swap bytes
 // Multiple Precision
 int ADC(instruction *inst) // Add carry (B)
 {
+  if(inst->byteMode)
+    inst->op_text = "ADCB";
+  else
+    inst->op_text = "ADC";
   uint16_t dest = get_value(inst->addressingModeDest, inst->destBase);
   uint16_t temp = dest;
   dest += inst->C;
@@ -256,6 +301,10 @@ int ADC(instruction *inst) // Add carry (B)
 
 int SBC(instruction *inst) // Subtract carry (B)
 {
+  if(inst->byteMode)
+    inst->op_text = "SUBB";
+  else
+    inst->op_text = "SUB";
   uint16_t dest = get_value(inst->addressingModeDest, inst->destBase);
   uint16_t temp = dest;
   dest -= inst->C;
@@ -278,6 +327,7 @@ int SBC(instruction *inst) // Subtract carry (B)
 
 int SXT(instruction *inst) // Sign extend
 {
+  inst->op_text = "SXT";
   if (inst->N == 1)
   {
     uint16_t dest = 0xFFFF;

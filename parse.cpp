@@ -2,6 +2,7 @@
 
 int printInstruction(instruction* newInstruction)
 {
+  cout << "Operation Name:" << newInstruction->op_text << endl;
   printf("\nopcode %u\n", newInstruction->opcode);
   printf("byteMode %u\n", newInstruction->byteMode);
   printf("addressingModeSrc %u\n", newInstruction->addressingModeSrc);
@@ -30,6 +31,7 @@ int clearInstruction(instruction* newInstruction)
   newInstruction->immediate = 0;
   newInstruction->PSW = 0;
   newInstruction->rtsReg = 0;
+  newInstruction->op_text = "";
 
   return 0;
 }
@@ -99,7 +101,7 @@ int parseInstruction(uint16_t instructionCode, instruction* newInstruction)
   {
     newInstruction->opcode = instructionCode & 0177770;
     newInstruction->rtsReg = instructionCode & 0000007;
-    cout << "RTS" << "\n";
+    if(verbosity_level >= HIGH_VERBOSITY) cout << "RTS" << "\n";
     special = true;
   }// Check JSR (0 0 4)
   if ((instructionCode & 0177000) == 0004000)
@@ -109,7 +111,7 @@ int parseInstruction(uint16_t instructionCode, instruction* newInstruction)
     current_instruction->addressingModeReg = (instructionCode & 0007000) >> 9;
     current_instruction->addressingModeDest = (instructionCode & 000070) >> 3;
     current_instruction->destBase = (instructionCode & 0000007);
-    cout << "JSR" << "\n";
+    if(verbosity_level >= HIGH_VERBOSITY) cout << "JSR" << "\n";
     special = true;
   }// Check JMP ()
   if ((instructionCode & 0177700) == 0000100)
@@ -117,7 +119,7 @@ int parseInstruction(uint16_t instructionCode, instruction* newInstruction)
     current_instruction->opcode = instructionCode & 0177700;
     current_instruction->addressingModeDest = (instructionCode & 000070) >> 3;
     current_instruction->destBase = (instructionCode & 0000007);
-    cout << "JMP" << "\n";
+    if(verbosity_level >= HIGH_VERBOSITY) cout << "JMP" << "\n";
     special = true;
   }
   if (!special) 
@@ -137,7 +139,7 @@ int parseInstruction(uint16_t instructionCode, instruction* newInstruction)
         tempLocation = instructionCode & maskSingleRegister;
         current_instruction->regBase = tempLocation;
         current_instruction->byteMode = (instructionCode & maskByteMode) >> 15;
-        cout << "SINGLE " << "\n";
+        if(verbosity_level >= HIGH_VERBOSITY) cout << "SINGLE " << "\n";
       }
       else
       {
@@ -153,14 +155,14 @@ int parseInstruction(uint16_t instructionCode, instruction* newInstruction)
           newInstruction->Z = instructionCode & maskCondZ;
           newInstruction->V = instructionCode & maskCondV;
           newInstruction->C = instructionCode & maskCondC;
-          cout << "COND CHECK" << "\n";
+          if(verbosity_level >= HIGH_VERBOSITY) cout << "COND CHECK" << "\n";
         }
         else
         {
           //cond branch
           current_instruction->opcode = instructionCode & maskCondBranchOpcode;
           current_instruction->offset = instructionCode & maskCondBranchOffset;
-          cout << "COND BRANCH " << "\n";
+          if(verbosity_level >= HIGH_VERBOSITY) cout << "COND BRANCH " << "\n";
         }
       } 
     }
@@ -177,7 +179,7 @@ int parseInstruction(uint16_t instructionCode, instruction* newInstruction)
         current_instruction->destBase = instructionCode & maskDoubleRegisterSourceDest;
         current_instruction->addressingModeSrc = (instructionCode & maskDoubleRegisterSourceDestMode) >> 3;
         current_instruction->addressingModeDest = (instructionCode & maskDoubleRegisterSourceDestMode) >> 3;
-        cout << "DOUBLE REG " << "\n";
+        if(verbosity_level >= HIGH_VERBOSITY) cout << "DOUBLE REG " << "\n";
       }
       else
       {
@@ -188,8 +190,8 @@ int parseInstruction(uint16_t instructionCode, instruction* newInstruction)
         current_instruction->destBase = instructionCode & maskDoubleDest;
         current_instruction->addressingModeDest = (instructionCode & maskDoubleDestMode) >> 3;
         cout << "DOUBLE" << "\n";
-        cout << current_instruction->addressingModeSrc << "\n";
-        cout << current_instruction->addressingModeDest << "\n";
+        if(verbosity_level >= HIGH_VERBOSITY) cout << current_instruction->addressingModeSrc << "\n";
+        if(verbosity_level >= HIGH_VERBOSITY) cout << current_instruction->addressingModeDest << "\n";
       }
     }
   }
