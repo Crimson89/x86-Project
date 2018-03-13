@@ -1,11 +1,96 @@
 #include "header.h"
 
+/*
+int CCC(instruction *inst)
+{
+  // format of instruction:
+  // 0 000 000 010 10N ZVC
+
+  uint16_t op = inst->opcode;
+  string code_string = "CL";
+
+  // clear flags based on last 4 bits of opcode
+  if(op & 0000010) {
+    inst->N = 0;
+    code_string += "N";
+  }
+  if(op & 0000004) {
+    inst->Z = 0;
+    code_string += "Z";
+  }
+  if(op & 0000002) {
+    inst->V = 0;
+    code_string += "V";
+  }
+  if(op & 0000001) {
+    inst->C = 0;
+    code_string += "C";
+  }
+  
+  // special case for all bits set
+  if(op & 0000017) {
+    code_string = "CCC";
+  }
+
+  // special case for no bits set (NOP)
+  if(!(op & 0000017)) {
+    code_string = "NOP";
+  }
+
+  inst->op_text = code_string;
+
+  return 0;
+}
+
+int SCC(instruction *inst)
+{
+  // format of instruction:
+  // 0 000 000 010 11N ZVC
+
+  uint16_t op = inst->opcode;
+  string code_string = "SE";
+
+  // clear flags based on last 4 bits of opcode
+  if(op & 0000010) {
+    inst->N = 1;
+    code_string += "N";
+  }
+  if(op & 0000004) {
+    inst->Z = 1;
+    code_string += "Z";
+  }
+  if(op & 0000002) {
+    inst->V = 1;
+    code_string += "V";
+  }
+  if(op & 0000001) {
+    inst->C = 1;
+    code_string += "C";
+  }
+  
+  // special case for all bits set
+  if(op & 0000017) {
+    code_string = "SCC";
+  }
+
+  // special case for no bits set (NOP)
+  if(!(op & 0000017)) {
+    code_string = "NOP";
+  }
+
+  inst->op_text = code_string;
+
+  return 0;
+}
+*/
+
 int CLC(instruction *inst) // Clear carry
 {
   inst->op_text = "CLC";
   inst->C = 0;
   return 0;
 }
+
 
 int CLV(instruction *inst) // Clear overflow
 {
@@ -75,3 +160,4 @@ int SCC(instruction *inst) // Set Condition Codes
   inst->N = 1;
   return 0;
 }
+
