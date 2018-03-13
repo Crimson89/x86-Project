@@ -130,7 +130,8 @@ int NEG(instruction *inst) // 2's Compliment negate (B)
 
 int TST(instruction *inst) // Test (B)
 {
-  uint16_t dest = get_value(inst->addressingModeDest, inst->destBase);
+  uint16_t dest = get_value(inst->addressingModeDest, inst->destBase); 
+  uint16_t dummyValue = get_value(inst->addressingModeReg, inst->regBase);
   if(inst->byteMode)
   {
     inst->op_text = "TSTB";
@@ -327,6 +328,7 @@ int SXT(instruction *inst) // Sign extend
 {
   inst->op_text = "SXT";
   uint16_t destAddress = get_address(inst->addressingModeDest, inst->destBase);
+  uint16_t dummyValue = get_value(inst->addressingModeReg, inst->regBase);
   if (inst->N == 1)
   {
     uint16_t dest = 0xFFFF;

@@ -282,7 +282,7 @@ const uint16_t maskCondBranchOpcode = 0177400;//0x0700;
 const uint16_t maskCondBranchOffset = 0000377;//0x00FF;
 
 // Conditional check
-const uint16_t maskCondCodeOpcode = 0177740;//0xFFE0;
+const uint16_t maskCondCodeOpcode = 0177760;//0xFFE0;
 const uint16_t maskCondSC = 0000020;//0x0010;
 const uint16_t maskCondN = 0000010;//0x0008;
 const uint16_t maskCondZ = 0000004;//0x0004;
