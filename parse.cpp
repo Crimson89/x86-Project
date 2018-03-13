@@ -70,11 +70,13 @@ int parseInstruction(uint16_t instructionCode, instruction* newInstruction)
       
   }*/
 
+  bool special = false;
   // TODO fill these out
   // EMT
   if ((instructionCode & 0177400) == 0104000)
   {
-
+    current_instruction->opcode = (instructionCode & 0177400);
+    special = true;
   } 
 
   // TRAP?
@@ -90,7 +92,6 @@ int parseInstruction(uint16_t instructionCode, instruction* newInstruction)
 
   }*/
   
-  bool special = false;
   // Check RTS (0 0 0 2 0)
   if ((instructionCode & 0177770) == 0000200)
   {
