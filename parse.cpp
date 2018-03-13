@@ -190,6 +190,7 @@ int parseInstruction(uint16_t instructionCode, instruction* newInstruction)
         current_instruction->addressingModeSrc = (instructionCode & maskDoubleSourceMode) >> 9;
         current_instruction->destBase = instructionCode & maskDoubleDest;
         current_instruction->addressingModeDest = (instructionCode & maskDoubleDestMode) >> 3;
+        current_instruction->byteMode = (instructionCode & maskByteMode) >> 15;
         if(verbosity_level >= HIGH_VERBOSITY) cout << "DOUBLE" << "\n";
         if(verbosity_level >= HIGH_VERBOSITY) cout << current_instruction->addressingModeSrc << "\n";
         if(verbosity_level >= HIGH_VERBOSITY) cout << current_instruction->addressingModeDest << "\n";
