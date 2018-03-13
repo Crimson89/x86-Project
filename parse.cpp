@@ -75,8 +75,7 @@ int parseInstruction(uint16_t instructionCode, instruction* newInstruction)
   if ((instructionCode & 0177400) == 0104000)
   {
 
-  }
-
+  } 
 
   // TRAP?
   //if ((instructionCode & ) == 0104440)
@@ -84,11 +83,6 @@ int parseInstruction(uint16_t instructionCode, instruction* newInstruction)
 
   //}
 
-  // Check SOB (0 0 7) (TODO maybe double reg?)
-  /*if ((instructionCode & 0xFE00) == 0x0E00)
-  {
-
-  } */
 
   /*// Check MARK (0 0 6 4) (maybe single)
   if ((instructionCode & 0xFFC0) == 0x0C00)
@@ -121,6 +115,15 @@ int parseInstruction(uint16_t instructionCode, instruction* newInstruction)
     current_instruction->addressingModeDest = (instructionCode & 000070) >> 3;
     current_instruction->destBase = (instructionCode & 0000007);
     if(verbosity_level >= HIGH_VERBOSITY) cout << "JMP" << "\n";
+    special = true;
+  }
+  // Check SWAB
+  if ((instructionCode & 0177700) == 0000300)
+  {
+    current_instruction->opcode = instructionCode & maskSingleOpcode;
+    current_instruction->addressingModeReg = (instructionCode & maskSingleMode) >> 3;
+    current_instruction->regBase = instructionCode & maskSingleRegister;
+    current_instruction->byteMode = (instructionCode & maskByteMode) >> 15;
     special = true;
   }
   if (!special) 
