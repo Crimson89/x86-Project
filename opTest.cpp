@@ -54,6 +54,15 @@ static void clearReg()
     REGS[i] = 0;
 }
 
+static void printFlags(instruction * inst)
+{
+  cout << "OP: " << inst->op_text << endl;
+  printf("N: %i\n", inst->N);
+  printf("Z: %i\n", inst->Z);
+  printf("V: %i\n", inst->V);
+  printf("C: %i\n\n", inst->C);
+}
+
 static int operationTest()
 {
   current_instruction = new instruction;
@@ -64,7 +73,7 @@ static int operationTest()
   // Change the spots with "x" to desired value
 
   // Byte mode                 x00000
-  uint16_t byte_mode   =      0000000;
+  uint16_t byte_mode   =      0100000;
 
   // Addr mode                 0000x0
   uint16_t single_mode =      0000000;
@@ -73,13 +82,13 @@ static int operationTest()
   uint16_t single_reg  =      0000001;
 
   // Addr mode 1               00x000
-  uint16_t double_mode_src =  0000000;
+  uint16_t double_mode_src =  0001000;
 
   // Register 1                000x00
   uint16_t double_src =       0000100;
 
   // Addr mode 2               0000x0
-  uint16_t double_mode_dest = 0000000;
+  uint16_t double_mode_dest = 0000010;
 
   // Register 2                00000x
   uint16_t double_dest =      0000002;
@@ -131,14 +140,15 @@ static int operationTest()
 
   string double_all[7] = {"BIT", "BIC", "BIS", "MOV", "CMP", "ADD", "SUB"};
 
-  int runs = 1; // Number of runs for the loop
+  int runs = 7; // Number of runs for the loop
 
 // Change the number of runs(above), the string output, and value outputs for the loop
 ///////////////////////////////////////////////////////////
   for (int i = 0; i < runs; i++)
   {
     cout << "_________________\n";
-    cout << "MOV"  << " R1,R2\n"; // CHANGE HERE
+    cout << double_all[i]  << endl; // CHANGE HERE
+    printf("code: %u\n", double_ops_all[i]);
     int res;
     int val;
     int test;
@@ -147,20 +157,24 @@ static int operationTest()
 
     val = 0;
     res = clearInstruction(current_instruction);
-    res = parseInstruction(MOV, current_instruction); // CHANGE HERE
+    res = parseInstruction(double_ops_all[i], current_instruction); // CHANGE HERE
     res = printInstruction(current_instruction);
 
     R1 = 10;
     R2 = 14;
 
-    MEM[10] = 4;
-    MEM[14] = 3;
+    MEM[10] = 0xFF;
+    MEM[11] = 0xFF;
+    MEM[14] = 0xFF;
+    MEM[15] = 0xFF;
 
     printMemReg();
+    printFlags(current_instruction);
 
     test = dispatch(current_instruction);
 
     printMemReg();
+    printFlags(current_instruction);
     clearReg();
   }
 ///////////////////////////////////////////////////////////

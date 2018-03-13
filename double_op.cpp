@@ -72,7 +72,7 @@ int SUB(instruction *inst) // Subtract source from destination
   inst->N = IS_NEGATIVE_WORD(temp)? 1:0;
 
   // Overflow, i.e. pos - neg = neg or neg - pos = pos
-  inst->V =IS_OVERFLOW(src,dest,temp)? 0:1;
+  inst->V =IS_OVERFLOW_SUB(src,dest,temp)? 1:0;
 
   // Set C flag if there was a carry from the MSB
   inst->C = CARRY_MSB_WORD(temp) ? 0:1;
@@ -96,11 +96,11 @@ int CMP(instruction *inst) // Compare source to destination (B)
 	  bool msb_dest   = EXTRACT_BIT(dest,BYTE_MSB_INDEX);
     bool msb_result = EXTRACT_BIT(temp,BYTE_MSB_INDEX);
 
-    inst->C = CARRY_MSB_BYTE(temp) ? 1:0;
-    inst->N = IS_NEGATIVE_BYTE(dest)? 1:0;
+    inst->C = CARRY_MSB_BYTE(temp) ? 0:1;
+    inst->N = IS_NEGATIVE_BYTE(temp)? 1:0;
 
     // Overflow, i.e. pos - neg = neg or neg - pos = pos
-    inst->V =IS_OVERFLOW(src,dest,temp)? 1:0;
+    inst->V =IS_OVERFLOW_SUB(src,dest,temp)? 1:0;
 
  }
   else
@@ -110,8 +110,8 @@ int CMP(instruction *inst) // Compare source to destination (B)
 	  bool msb_dest   = EXTRACT_BIT(dest,WORD_MSB_INDEX);
     bool msb_result = EXTRACT_BIT(temp,WORD_MSB_INDEX);
 
-    inst->C = CARRY_MSB_WORD(temp) ? 1:0;
-    inst->N = IS_NEGATIVE_WORD(dest)? 1:0;
+    inst->C = CARRY_MSB_WORD(temp) ? 0:1;
+    inst->N = IS_NEGATIVE_WORD(temp)? 1:0;
 
     // Overflow, i.e. pos - neg = neg or neg - pos = pos
     inst->V =IS_OVERFLOW(src,dest,temp)? 1:0;

@@ -206,4 +206,5 @@
 #define CARRY_MSB_WORD(value) (value>WORD_MAX)
 #define CARRY_MSB_BYTE(value) (value>BYTE_MAX)
 #define EXTRACT_BIT(value, shift_count) (value >> shift_count)
+#define IS_OVERFLOW_SUB(msb_dest, msb_src, msb_result)( ( (IS_ZERO(msb_dest) && IS_NOT_ZERO(msb_src) ) && IS_NOT_ZERO(msb_result) ) ||  ( (IS_NOT_ZERO(msb_dest) && IS_ZERO(msb_src) ) && IS_ZERO(msb_result) ) )
 #define IS_OVERFLOW(msb_dest, msb_src, msb_result)( ( (IS_ZERO(msb_dest) && IS_ZERO(msb_src) ) && IS_NOT_ZERO(msb_result) ) ||  ( (IS_NOT_ZERO(msb_dest) && IS_NOT_ZERO(msb_src) ) && IS_ZERO(msb_result) ) )
