@@ -182,12 +182,12 @@
 #define m_CLV   0000242 // Clear overflow
 #define m_CLZ   0000244 // Clear zero
 #define m_CLN   0000250 // Clear negative
-#define m_CCC   0000257 // Clear all flags
+#define m_CCC   0000240 // Clear all flags
 #define m_SEC   0000261 // Set carry
 #define m_SEV   0000262 // Set overflow
 #define m_SEZ   0000264 // Set zero
 #define m_SEN   0000270 // Set negative
-#define m_SCC   0000277 // Set all flags
+#define m_SCC   0000260 // Set all flags
 
 
 #define SHIFT_WORD_MSB_TO_LSB  15

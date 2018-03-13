@@ -5,6 +5,7 @@ int CLR(instruction *inst) // Clear (B)
 {
   uint16_t destAddress = get_address(inst->addressingModeReg, inst->regBase);
   uint16_t dest = 0;
+  cout << "DESTADDR after: " << destAddress << "\n";
   uint16_t dummyValue = get_value(inst->addressingModeReg, inst->regBase);
   cout << "DESTADDR: " << destAddress << "\n";
   if(inst->byteMode)
@@ -16,6 +17,7 @@ int CLR(instruction *inst) // Clear (B)
   {
     inst->op_text = "CLR";
     write_word(inst->addressingModeReg, destAddress, dest);
+    cout << "DESTADDR: " << destAddress << "\n";
   }
   inst->N = 0;
   inst->Z = 1;

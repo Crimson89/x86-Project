@@ -84,7 +84,7 @@ string get_op_name(void) {
 		case m_DECB		: op_name = "DECB";    break;
 		case m_NEG		: op_name = "NEG";     break;
 		case m_NEGB		: op_name = "NEGB";    break;
-		case m_NOP		: op_name = "NOP";     break;
+		//case m_NOP		: op_name = "NOP";     break;
 		case m_TST		: op_name = "TST";     break;
 		case m_TSTB		: op_name = "TSTB";    break;
 		case m_ASR		: op_name = "ASR";     break;
@@ -314,7 +314,7 @@ string op_formatted(instruction * op) {
 		case m_TRAP  :
 		case m_BPT   :
 		case m_IOT   : 
-		case m_NOP   :
+		//case m_NOP   :
 		case m_HALT  :
 		case m_WAIT  :
 		case m_RESET :

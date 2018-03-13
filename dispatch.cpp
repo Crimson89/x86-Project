@@ -216,9 +216,9 @@ int dispatch(instruction * inst)
     case m_RESET: 
       return RESET(inst);
       break;
-    case m_NOP:
-      return NOP(inst);
-      break;
+    //case m_NOP:
+      //return NOP(inst);
+      //break;
     case m_MTPD:
       return MTPD(inst);
       break;
