@@ -74,6 +74,9 @@ static int decodeTest()
   uint16_t brArray[8] = {};
   uint16_t branch = 00000477;
 
+  // SP 
+  uint16_t spArray[6] = {0061602, 0062602, 0063602, 0010246, 0066602, 0067602};
+  uint16_t pcArray[4] = {0062702, 0063702, 0066702, 0067702};
 
   cout << "_________________\n";
   cout << "ADD R1,R2\n"; 
@@ -383,6 +386,434 @@ static int decodeTest()
   
   printMemReg();
   clearReg();
+
+
+  // TODO SP testing.
+  cout << "_________________\n";
+  cout << "ADD SP,R2\n"; 
+/*
+  fillMem(0);
+
+  val = 0;
+  res = clearInstruction(current_instruction);
+  res = parseInstruction(addArray[0], current_instruction);
+  res = printInstruction(current_instruction); 
+    
+  R2 = 10;
+  SP = 14;
+  
+  //MEM[10] = 4;
+  //MEM[14] = 3;
+
+  printMemReg(); 
+
+  test = dispatch(current_instruction);
+  
+  printMemReg();
+  clearReg();
+    
+*/
+  cout << "_________________\n";
+  cout << "ADD (SP),R2\n"; 
+  val = 0;
+  fillMem(0);
+  res = clearInstruction(current_instruction);
+  res = parseInstruction(spArray[0], current_instruction);
+  res = printInstruction(current_instruction); 
+    
+  R2 = 10;
+  R1 = 10;
+  SP = 10;
+  
+  MEM[10] = 4;
+  MEM[14] = 3;
+  //MEM[4] = ;
+  //MEM[3] = ;
+
+  printMemReg(); 
+
+  test = dispatch(current_instruction);
+  
+  printMemReg();
+  clearReg(); 
+ 
+  cout << "_________________\n"; 
+  cout << "ADD (SP)+,R2\n"; 
+  val = 0;
+  
+  fillMem(0);
+
+  res = clearInstruction(current_instruction);
+  res = parseInstruction(spArray[1], current_instruction);
+  res = printInstruction(current_instruction); 
+    
+  R2 = 10;
+  R1 = 14;
+  SP = 10; 
+ 
+  MEM[10] = 4;
+  MEM[14] = 3;
+  //MEM[4] = ;
+  //MEM[3] = ;
+
+  printMemReg(); 
+
+  test = dispatch(current_instruction);
+  
+  printMemReg();
+  clearReg(); 
+  
+
+  cout << "_________________\n"; 
+  cout << "ADD @(SP)+,R2\n"; 
+  val = 0;
+  fillMem(0); 
+  res = clearInstruction(current_instruction);
+  res = parseInstruction(spArray[2], current_instruction);
+  res = printInstruction(current_instruction); 
+    
+  R2 = 8;
+  R1 = 14;
+  SP = 10;
+  
+  MEM[10] = 2;
+  MEM[11] = 0;
+  MEM[14] = 4;
+  MEM[15] = 0;
+  MEM[4] = 12;
+  MEM[2] = 12;
+
+  printMemReg(); 
+
+  test = dispatch(current_instruction);
+  
+  printMemReg();
+  clearReg(); 
+  
+      cout << "_________________\n"; 
+  cout << "MOV R2,-(SP)\n"; 
+  val = 0;
+
+  fillMem(0);
+ 
+  
+  res = clearInstruction(current_instruction);
+  res = parseInstruction(spArray[3], current_instruction);
+  res = printInstruction(current_instruction); 
+    
+  R2 = 10;
+  R1 = 14;
+  SP = 12;
+  
+  MEM[8] = 4;
+  MEM[12] = 3;
+  MEM[10] = 6;
+  //MEM[4] = 12;
+  //MEM[3] = 12;
+
+  printMemReg(); 
+
+  test = dispatch(current_instruction);
+  
+  printMemReg();
+  clearReg();
+
+  cout << "_________________\n"; 
+  cout << "ADD @-(R1),@-(R2)\n"; 
+  cout << "_________________\n"; 
+  cout << "ADD 4(SP),R2\n"; 
+  val = 0;
+  fillMem(0);
+  res = clearInstruction(current_instruction);
+  res = parseInstruction(spArray[4], current_instruction);
+  res = printInstruction(current_instruction); 
+  cout << current_instruction->addressingModeSrc << "\n";
+  cout << current_instruction->addressingModeDest << "\n";   
+  PC = 18;
+  R2 = 10;
+  R1 = 8;
+  SP = 10;
+  
+  MEM[14] = 2;
+  MEM[8] = 8; 
+  MEM[12] = 6;
+  MEM[16] = 5;
+  MEM[18] = 4;
+
+  printMemReg(); 
+
+  test = dispatch(current_instruction);
+  
+  printMemReg();
+  clearReg();
+  
+
+  cout << "_________________\n"; 
+  cout << "ADD @4(SP),R2\n"; 
+  val = 0;
+  fillMem(0);
+  res = clearInstruction(current_instruction);
+  res = parseInstruction(spArray[5], current_instruction);
+  res = printInstruction(current_instruction); 
+    
+  PC = 16;
+  R2 = 10;
+  R1 = 14;
+  SP = 10;
+  
+  MEM[18] = 2;
+  MEM[16] = 4;
+  MEM[14] = 2;
+  MEM[2] = 4;
+
+  printMemReg(); 
+
+  test = dispatch(current_instruction);
+  
+  printMemReg();
+  clearReg();
+
+  cout << "_________________\n"; 
+  cout << "ADD R1,4(R2)\n"; 
+/*  val = 0;
+  fillMem(0);
+  res = clearInstruction(current_instruction);
+  res = parseInstruction(addArray[8], current_instruction);
+  res = printInstruction(current_instruction); 
+  cout << current_instruction->addressingModeSrc << "\n";
+  cout << current_instruction->addressingModeDest << "\n";   
+  PC = 18;
+  R2 = 10;
+  R1 = 8;
+  
+  MEM[14] = 2;
+  MEM[8] = 8; 
+  MEM[12] = 6;
+  MEM[16] = 5;
+  MEM[18] = 4;
+
+  printMemReg(); 
+
+  test = dispatch(current_instruction);
+  
+  printMemReg();
+  clearReg();
+  */
+
+  cout << "_________________\n"; 
+  cout << "ADD R1,@4(R2)\n"; 
+  /*val = 0;
+  fillMem(0);
+  res = clearInstruction(current_instruction);
+  res = parseInstruction(addArray[9], current_instruction);
+  res = printInstruction(current_instruction); 
+    
+  PC = 16;
+  R2 = 10;
+  R1 = 14;
+  
+  MEM[18] = 2;
+  MEM[16] = 4;
+  MEM[14] = 2;
+  MEM[2] = 4;
+
+  printMemReg(); 
+
+  test = dispatch(current_instruction);
+  
+  printMemReg();
+  clearReg();
+*/
+    cout << "_________________\n"; 
+  cout << "ADD 2(R1),4(R2)\n"; 
+  /*val = 0;
+  fillMem(0);
+  res = clearInstruction(current_instruction);
+  res = parseInstruction(addArray[10], current_instruction);
+  res = printInstruction(current_instruction); 
+  cout << current_instruction->addressingModeSrc << "\n";
+  cout << current_instruction->addressingModeDest << "\n";   
+  PC = 16;
+  R2 = 10;
+  R1 = 8;
+  
+  MEM[14] = 8;
+  MEM[8] = 8; 
+  MEM[10] = 2;
+  MEM[12] = 6;
+  MEM[16] = 2;
+  MEM[18] = 4;
+
+  printMemReg(); 
+
+  test = dispatch(current_instruction);
+  
+  printMemReg();
+  clearReg();
+  
+*/
+  cout << "_________________\n"; 
+  cout << "ADD @2(R1),@4(R2)\n"; 
+  /*val = 0;
+  fillMem(0);
+  res = clearInstruction(current_instruction);
+  res = parseInstruction(addArray[11], current_instruction);
+  res = printInstruction(current_instruction); 
+    
+  PC = 16;
+  R2 = 10;
+  R1 = 6;
+  
+  MEM[8] = 4;
+  MEM[6] = 4;
+  MEM[18] = 4;
+  MEM[16] = 2;
+  MEM[14] = 2;
+  MEM[2] = 4;
+  MEM[4] = 10;
+
+  printMemReg(); 
+
+  test = dispatch(current_instruction);
+  
+  printMemReg();
+  clearReg();
+*/
+  //TODO PC testing
+  
+  cout << "_________________\n";
+  cout << "ADD R1,R2\n"; 
+
+  cout << "_________________\n";
+  cout << "ADD (R1),(R2)\n"; 
+ 
+  cout << "_________________\n"; 
+  cout << "ADD #6,R2\n"; 
+  val = 0;
+  
+  fillMem(0);
+
+  res = clearInstruction(current_instruction);
+  res = parseInstruction(pcArray[0], current_instruction);
+  res = printInstruction(current_instruction); 
+    
+  R2 = 10;
+  R1 = 14;
+  PC = 12;
+  
+  MEM[10] = 4;
+  MEM[12] = 6;
+  MEM[14] = 3;
+  //MEM[4] = ;
+  //MEM[3] = ;
+
+  printMemReg(); 
+
+  test = dispatch(current_instruction);
+  
+  printMemReg();
+  clearReg(); 
+  
+
+  cout << "_________________\n"; 
+  cout << "ADD @#10,R2\n"; 
+  val = 0;
+  fillMem(0); 
+  res = clearInstruction(current_instruction);
+  res = parseInstruction(pcArray[1], current_instruction);
+  res = printInstruction(current_instruction); 
+    
+  R2 = 6;
+  R1 = 14;
+  PC = 14;
+  
+  MEM[10] = 2;
+  MEM[11] = 0;
+  MEM[14] = 10;
+  MEM[15] = 0;
+  MEM[4] = 12;
+  MEM[2] = 12;
+
+  printMemReg(); 
+
+  test = dispatch(current_instruction);
+  
+  printMemReg();
+  clearReg(); 
+  
+      cout << "_________________\n"; 
+  cout << "ADD -(R1),-(R2)\n"; 
+
+  cout << "_________________\n"; 
+  cout << "ADD @-(R1),@-(R2)\n"; 
+
+  cout << "_________________\n"; 
+  cout << "ADD 2(PC),R2\n"; 
+  val = 0;
+  fillMem(0);
+  res = clearInstruction(current_instruction);
+  res = parseInstruction(pcArray[2], current_instruction);
+  res = printInstruction(current_instruction); 
+  cout << current_instruction->addressingModeSrc << "\n";
+  cout << current_instruction->addressingModeDest << "\n";   
+  PC = 6;
+  R2 = 10;
+  R1 = 8;
+  
+  MEM[14] = 2;
+  MEM[6] = 2;
+  MEM[8] = 4; 
+  MEM[10] = 8;
+  MEM[12] = 6;
+  MEM[16] = 4;
+  MEM[18] = 4;
+
+  printMemReg(); 
+
+  test = dispatch(current_instruction);
+  
+  printMemReg();
+  clearReg();
+  
+
+  cout << "_________________\n"; 
+  cout << "ADD @4(PC),R2\n"; 
+  val = 0;
+  fillMem(0);
+  res = clearInstruction(current_instruction);
+  res = parseInstruction(pcArray[3], current_instruction);
+  res = printInstruction(current_instruction); 
+    
+  PC = 6;
+  R2 = 10;
+  R1 = 14;
+  
+  MEM[6] = 4;
+  MEM[18] = 2;
+  MEM[16] = 6;
+  MEM[14] = 2;
+  MEM[12] = 2;
+  MEM[2] = 4;
+
+  printMemReg(); 
+
+  test = dispatch(current_instruction);
+  
+  printMemReg();
+  clearReg();
+
+  cout << "_________________\n"; 
+  cout << "ADD R1,4(R2)\n"; 
+
+  cout << "_________________\n"; 
+  cout << "ADD R1,@4(R2)\n"; 
+
+    cout << "_________________\n"; 
+  cout << "ADD 2(R1),4(R2)\n";
+
+  cout << "_________________\n"; 
+  cout << "ADD @2(R1),@4(R2)\n";
+
   /*
   cout << "_________________\n";
   cout << "MOV R1,R2\n";
@@ -410,6 +841,8 @@ static int decodeTest()
 */
 
   
+  cout << "SINGLE\n";
+
   cout << "_________________\n"; 
   cout << "CLR R5\n";
 
@@ -507,7 +940,7 @@ static int decodeTest()
   
   R5 = 14;
 
-  MEM[14] = 10;
+  MEM[12] = 10;
   MEM[10] = 55;
   
   printMemReg();
@@ -529,7 +962,7 @@ static int decodeTest()
   
   R5 = 14;
 
-  MEM[12] = 16;
+  MEM[12] = 10;
   MEM[13] = 0;
   MEM[14] = 10;
   MEM[10] = 55;
@@ -561,9 +994,10 @@ static int decodeTest()
   
   fillMem(0);
   
-  R5 = 10;
+  R5 = 4;
+  PC = 16;
 
-  MEM[16] = 9;
+  MEM[16] = 6;
   MEM[14] = 10;
   MEM[10] = 55;
   
@@ -584,13 +1018,14 @@ static int decodeTest()
   
   fillMem(0);
   
-  R5 = 10;
+  PC = 16;
+  R5 = 4;
 
   MEM[12] = 16;
   MEM[13] = 0;
   MEM[14] = 10;
-  MEM[10] = 55;
-  MEM[16] = 10;
+  MEM[10] = 14;
+  MEM[16] = 6;
   
   printMemReg();
 
@@ -611,6 +1046,8 @@ static int decodeTest()
   test = dispatch(current_instruction);
   printMemReg();
   clearReg();
+
+  // TODO byte mode testing *pending on parser and dispatch working.
 }
 
 static int octalTest()

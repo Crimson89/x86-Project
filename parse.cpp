@@ -306,7 +306,8 @@ uint16_t get_address(uint16_t mode, uint16_t baseAddress, uint16_t modeTest)
   uint16_t workingAddress = 0;
   bool byte = current_instruction->byteMode;
   uint16_t resultAddress = 0;
-
+  uint16_t offset = 0;
+  
   // TODO define constants for all the values used for logic in here.
   if (baseAddress == 7)
   {
@@ -377,7 +378,7 @@ uint16_t get_address(uint16_t mode, uint16_t baseAddress, uint16_t modeTest)
                   break;
     // Autoincrement
     case 0000002: resultAddress = SP;
-                  SP += 2;
+                  //SP += 2;
                   break;
     // Autoincrement deferred
     case 0000003: workingAddress = SP; 
@@ -390,14 +391,15 @@ uint16_t get_address(uint16_t mode, uint16_t baseAddress, uint16_t modeTest)
                   {
                     resultAddress = read_word(mode, workingAddress, true);
                   }
-                  SP += 2;
+                  //SP += 2;
                   break;
     // Autodecrement
-    case 0000004: SP -= 2;
-                  resultAddress = SP;
+    case 0000004: //SP -= 2;
+                  resultAddress = SP - 2;
                   break;
     // Autodecrement deferred
-    case 0000005: /*REGS[baseAddress] -= 2;
+    case 0000005: cout << "INVALID MODE autodecrement deferred for SP" << "\n";
+                  /*REGS[baseAddress] -= 2;
                   workingAddress = REGS[baseAddress];
                   // READ TRACE
                   if (byte)
@@ -410,19 +412,27 @@ uint16_t get_address(uint16_t mode, uint16_t baseAddress, uint16_t modeTest)
                   }*/
                   break;
     // Index
-    case 0000006: // READ TRACE
-                  X = read_word(mode, PC, true);
-				  current_instruction->immediate = X;
-                  PC += 2;
+    case 0000006: // READ TRACE 
+                  if ((modeTest == 6) || (modeTest == 7))
+                    offset = 2;
+                  else
+                    offset = 0;
+                  X = read_word(mode, PC + offset, true);
+				          current_instruction->immediate = X;
+                  //PC += 2;
                   resultAddress = SP + X;
                   break;
     // Index deferred
-    case 0000007: workingAddress = SP;
+    case 0000007: workingAddress = SP; 
+                  if ((modeTest == 6) || (modeTest == 7))
+                    offset = 2;
+                  else
+                    offset = 0;
                   //TODO only read word?
                   // READ TRACE
-                  X = read_word(mode, PC, true);
-				  current_instruction->immediate = X;
-                  PC += 2;
+                  X = read_word(mode, PC + offset, true);
+				          current_instruction->immediate = X;
+                  //PC += 2;
                   // READ TRACE
                   if (byte)
                   {
@@ -437,7 +447,6 @@ uint16_t get_address(uint16_t mode, uint16_t baseAddress, uint16_t modeTest)
   }
   else
   {
-    uint16_t offset = 0;
     switch (mode)
     {
     // Register

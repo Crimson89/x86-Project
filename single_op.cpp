@@ -3,17 +3,19 @@
 // General
 int CLR(instruction *inst) // Clear (B)
 {
-  uint16_t destAddress = get_address(inst->addressingModeDest, inst->destBase);
+  uint16_t destAddress = get_address(inst->addressingModeReg, inst->regBase);
   uint16_t dest = 0;
+  uint16_t dummyValue = get_value(inst->addressingModeReg, inst->regBase);
+  cout << "DESTADDR: " << destAddress << "\n";
   if(inst->byteMode)
   {
     inst->op_text = "CLRB";
-    write_byte(inst->addressingModeDest, destAddress, dest);
+    write_byte(inst->addressingModeReg, destAddress, dest);
   }
   else
   {
     inst->op_text = "CLR";
-    write_word(inst->addressingModeDest, destAddress, dest);
+    write_word(inst->addressingModeReg, destAddress, dest);
   }
   inst->N = 0;
   inst->Z = 1;
