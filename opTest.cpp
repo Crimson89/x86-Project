@@ -140,15 +140,17 @@ static int operationTest()
 
   string double_all[7] = {"BIT", "BIC", "BIS", "MOV", "CMP", "ADD", "SUB"};
 
-  int runs = 7; // Number of runs for the loop
+  int runs = 16; // Number of runs for the loop
 
 // Change the number of runs(above), the string output, and value outputs for the loop
 ///////////////////////////////////////////////////////////
   for (int i = 0; i < runs; i++)
   {
+    uint16_t clear_op = 0000260 | i;
+
     cout << "_________________\n";
-    cout << double_all[i]  << endl; // CHANGE HERE
-    printf("code: %u\n", double_ops_all[i]);
+    cout << "S__"  << endl; // CHANGE HERE
+    printf("code: %o\n", clear_op);
     int res;
     int val;
     int test;
@@ -157,7 +159,7 @@ static int operationTest()
 
     val = 0;
     res = clearInstruction(current_instruction);
-    res = parseInstruction(double_ops_all[i], current_instruction); // CHANGE HERE
+    res = parseInstruction(clear_op, current_instruction); // CHANGE HERE
     res = printInstruction(current_instruction);
 
     R1 = 10;

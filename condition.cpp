@@ -5,7 +5,7 @@ int CCC(instruction *inst)
   // format of instruction:
   // 0 000 000 010 10N ZVC
 
-  uint16_t op = inst->opcode;
+  uint16_t op = inst->offset;
   string code_string = "";
 
   // clear flags based on last 4 bits of opcode
@@ -13,37 +13,35 @@ int CCC(instruction *inst)
     inst->N = 0;
     code_string += "CLN|";
   }
-  cout << "SCC " << code_string << endl;
   if(op & 0000004) {
     inst->Z = 0;
     code_string += "CLZ|";
   }
-  cout << "SCC " << code_string << endl;
   if(op & 0000002) {
     inst->V = 0;
     code_string += "CLV|";
   }
-  cout << "SCC " << code_string << endl;
   if(op & 0000001) {
     inst->C = 0;
     code_string += "CLC|";
   }
   
-  cout << "SCC " << code_string << endl;
   // special case for all bits set
-  if(op & 0000017) {
+  if((op & 0000017) == 0000017) {
     code_string = "CCC";
   }
 
-  cout << "SCC " << code_string << endl;
   // special case for no bits set (NOP)
   if(!(op & 0000017)) {
     code_string = "NOP";
   }
   
-  cout << "SCC " << code_string << endl;
-  //if(code_string.back() == '|')
-  //  code_string.pop_back();
+  if(code_string.back() == '|')
+    code_string.pop_back();
+  
+  // for testing
+  cout << "CCC result: " << code_string << endl;
+
   inst->op_text = code_string;
 
   return 0;
@@ -54,10 +52,10 @@ int SCC(instruction *inst)
   // format of instruction:
   // 0 000 000 010 11N ZVC
 
-  uint16_t op = inst->opcode;
+  uint16_t op = inst->offset;
   string code_string = "";
 
-  // clear flags based on last 4 bits of opcode
+  // set flags based on last 4 bits of opcode
   if(op & 0000010) {
     inst->N = 1;
     code_string += "SEN|";
@@ -77,23 +75,23 @@ int SCC(instruction *inst)
     inst->C = 1;
     code_string += "SEC|";
   }
-  cout << "SCC " << code_string << endl;
   
   // special case for all bits set
-  if(op & 0000017) {
+  if((op & 0000017) == 0000017) {
     code_string = "SCC";
   }
 
-  cout << "SCC " << code_string << endl;
   // special case for no bits set (NOP)
   if(!(op & 0000017)) {
     code_string = "NOP";
   }
-  cout << "SCC " << code_string << endl;
-
-//  if(code_string.back() == '|')
-//	  code_string.pop_back();
+  
+  if(code_string.back() == '|')
+	  code_string.pop_back();
   inst->op_text = code_string;
+  
+  // for testing
+  cout << "SCC result: " << code_string << endl;
 
   return 0;
 }
