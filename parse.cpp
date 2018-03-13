@@ -3,7 +3,8 @@
 int printInstruction(instruction* newInstruction)
 {
   cout << "Operation Name:" << newInstruction->op_text << endl;
-  printf("\nopcode %u\n", newInstruction->opcode);
+  cout << "0pcode :" << setfill('0') << setw(7) << oct << newInstruction->opcode << endl;
+  //printf("\nopcode %u\n", newInstruction->opcode);
   printf("byteMode %u\n", newInstruction->byteMode);
   printf("addressingModeSrc %u\n", newInstruction->addressingModeSrc);
   printf("addressingModeDest %u\n", newInstruction->addressingModeDest);

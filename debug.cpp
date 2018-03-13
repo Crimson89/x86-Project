@@ -154,6 +154,8 @@ string get_op_name(void) {
 		case m_MFPI		: op_name = "MFPI";    break;
 		case m_MTPS		: op_name = "MTPS";    break;
 		case m_MFPS		: op_name = "MFPS";    break;
+		case m_TSTSET	: op_name = "TSTSET";  break;
+		case m_WRTLCK	: op_name = "WRTLCK";  break;
 		case m_SPL		: op_name = "SPL";     break;
 		case m_CLC		: op_name = "CLC";     break;
 		case m_CLV		: op_name = "CLV";     break;
@@ -325,6 +327,8 @@ string op_formatted(instruction * op) {
 		case m_MTPS  :
 		case m_MFPS  :
 		case m_MFPT  :
+		case m_TSTSET:
+		case m_WRTLCK:
 		case m_SPL   :
 		case m_CSM   :
 		case m_CLC   :
