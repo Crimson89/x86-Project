@@ -84,7 +84,7 @@ string get_op_name(void) {
 		case m_DECB		: op_name = "DECB";    break;
 		case m_NEG		: op_name = "NEG";     break;
 		case m_NEGB		: op_name = "NEGB";    break;
-		case m_NOP		: op_name = "NOP";     break;
+		//case m_NOP		: op_name = "NOP";     break;
 		case m_TST		: op_name = "TST";     break;
 		case m_TSTB		: op_name = "TSTB";    break;
 		case m_ASR		: op_name = "ASR";     break;
@@ -157,15 +157,15 @@ string get_op_name(void) {
 		case m_TSTSET	: op_name = "TSTSET";  break;
 		case m_WRTLCK	: op_name = "WRTLCK";  break;
 		case m_SPL		: op_name = "SPL";     break;
-		case m_CLC		: op_name = "CLC";     break;
-		case m_CLV		: op_name = "CLV";     break;
-		case m_CLZ		: op_name = "CLZ";     break;
-		case m_CLN		: op_name = "CLN";     break;
+		//case m_CLC		: op_name = "CLC";     break;
+		//case m_CLV		: op_name = "CLV";     break;
+		//case m_CLZ		: op_name = "CLZ";     break;
+		//case m_CLN		: op_name = "CLN";     break;
 		case m_CCC		: op_name = "CCC";     break;
-		case m_SEC		: op_name = "SEC";     break;
-		case m_SEV		: op_name = "SEV";     break;
-		case m_SEZ		: op_name = "SEZ";     break;
-		case m_SEN		: op_name = "SEN";     break;
+		//case m_SEC		: op_name = "SEC";     break;
+		//case m_SEV		: op_name = "SEV";     break;
+		//case m_SEZ		: op_name = "SEZ";     break;
+		//case m_SEN		: op_name = "SEN";     break;
 		case m_SCC		: op_name = "SCC";     break;
 		default			: op_name = "UNKNOWN"; break;
 	}
@@ -222,131 +222,132 @@ string op_formatted(instruction * op) {
 	stringstream temp;
 	string byteMode = " ";
 	temp << get_op_name();
+	uint16_t temp_op_masked;
 	if(op->byteMode) // If this isn't a byteMode operation then append " ", if it is, append "B "
 		byteMode = "B ";
-	switch(op->opcode){
-						//Single Operand
-		case m_CLR   :
-		case m_CLRB  :
-		case m_COM   :
-		case m_COMB  :
-		case m_INC   :
-		case m_INCB  :
-		case m_DEC   :
-		case m_DECB  :
-		case m_NEG   :
-		case m_NEGB  :
-		case m_TST   :
-		case m_TSTB  :
-		case m_ASR   :
-		case m_ASRB  :
-		case m_ASL   :
-		case m_ASLB  :
-		case m_JMP   :
-		case m_ROR   :
-		case m_RORB  :
-		case m_ROL   :
-		case m_ROLB  :
-		case m_SWAB  :
-		case m_ADC   :
-		case m_ADCB  :
-		case m_SBC   :
-		case m_SBCB  :
-		case m_SXT   :
-		case m_XOR   : 	temp << byteMode << 
-						format_arg(op->regBase,op->addressingModeReg,op->immediate);
-					break;
-							// Double Operand Group
-		case m_BIT   :
-		case m_BITB  :
-		case m_BIC   :
-		case m_BICB  :
-		case m_BIS   :
-		case m_BISB  :
-		case m_MOV   :
-		case m_MOVB  :
-		case m_ADD   :
-		case m_SUB   :
-		case m_CMP   :
-		case m_CMPB  :	temp << byteMode << 
-						format_arg(op->srcBase,op->addressingModeSrc,op->immediate)
-						<< ", " << 
-						format_arg(op->destBase,op->addressingModeDest,op->immediate); 
-					break;
-							//Program Control Group
-		case m_BR    :
-		case m_BNE   :
-		case m_BEQ   :
-		case m_BPL   :
-		case m_BMI   :
-		case m_BVC   :
-		case m_BVS   :
-		case m_BCC   :
-		case m_BCS   :
-		case m_BGE   :
-		case m_BLT   :
-		case m_BGT   :
-		case m_BLE   :
-		case m_BHI   :
-		case m_BLOS  :    temp << " " << octal_to_string(op->offset); 
-					break;
-							// JSR
-		case m_JSR   :	temp << " " << 
-						format_arg(op->regBase,op->addressingModeReg,op->immediate)
-						<< ", " << 
-						format_arg(op->destBase,op->addressingModeDest,op->immediate); 
-					break;
-							// RTS
-		case m_RTS   :
-					if     (op->rtsReg <= 5)
-						temp << " R" << to_string(op->rtsReg);
-					else if(op->rtsReg == 6)
-						temp << " SP"; 
-					else if(op->rtsReg == 7)
-						temp << " PC"; 
-					break;
-							// Mark
-		case m_MARK  :temp << " " << "VALUE"; break; // Cheating here, we didn't implement this, so I use "value" for the MARK "NM" value
-							// SOB
-		case m_SOB   :temp << " Rn VALUE"; break; // Cheating here, we didn't implement this, so I use dummy values for the SOB "NM" and R values
-							// Trap, Operate Group, Condition Code Operators, and Other stuff
-		case m_EMT   :
-		case m_TRAP  :
-		case m_BPT   :
-		case m_IOT   : 
-		case m_NOP   :
-		case m_HALT  :
-		case m_WAIT  :
-		case m_RESET :
-		case m_RTI   :
-		case m_RTT   :
-		case m_MTPD  :
-		case m_MTPI  :
-		case m_MFPD  :
-		case m_MFPI  :
-		case m_MTPS  :
-		case m_MFPS  :
-		case m_MFPT  :
-		case m_TSTSET:
-		case m_WRTLCK:
-		case m_SPL   :
-		case m_CSM   :
-		case m_CLC   :
-		case m_CLV   :
-		case m_CLZ   :
-		case m_CLN   :
-		case m_CCC   :
-		case m_SEC   :
-		case m_SEV   :
-		case m_SEZ   :
-		case m_SEN   :
-		case m_SCC   : break; // Just return the OP name
-							// FP Operations
-		case m_ASH   :
-		case m_ASHC  :
-		case m_MUL   :
-		case m_DIV   : temp << " Rn"; break; // Cheating here, we didn't implement this, so I use dummy value for the FP op R values
-		default      : temp << "?????";   break;
+	temp_op_masked = op->opcode & 0000260;
+	if(((temp_op_masked == m_CCC) || (temp_op_masked == m_SCC))){
+		switch(temp_op_masked){
+			temp.clear();
+			case m_CCC   : temp << "CCC TEST";break; // Just return the OP name
+			case m_SCC   : temp << "SCC TEST";break; // Just return the OP name
+		}
+	}
+	else {
+		switch(op->opcode){
+							//Single Operand
+			case m_CLR   :
+			case m_CLRB  :
+			case m_COM   :
+			case m_COMB  :
+			case m_INC   :
+			case m_INCB  :
+			case m_DEC   :
+			case m_DECB  :
+			case m_NEG   :
+			case m_NEGB  :
+			case m_TST   :
+			case m_TSTB  :
+			case m_ASR   :
+			case m_ASRB  :
+			case m_ASL   :
+			case m_ASLB  :
+			case m_JMP   :
+			case m_ROR   :
+			case m_RORB  :
+			case m_ROL   :
+			case m_ROLB  :
+			case m_SWAB  :
+			case m_ADC   :
+			case m_ADCB  :
+			case m_SBC   :
+			case m_SBCB  :
+			case m_SXT   :
+			case m_XOR   : 	temp << byteMode << 
+							format_arg(op->regBase,op->addressingModeReg,op->immediate);
+						break;
+								// Double Operand Group
+			case m_BIT   :
+			case m_BITB  :
+			case m_BIC   :
+			case m_BICB  :
+			case m_BIS   :
+			case m_BISB  :
+			case m_MOV   :
+			case m_MOVB  :
+			case m_ADD   :
+			case m_SUB   :
+			case m_CMP   :
+			case m_CMPB  :	temp << byteMode << 
+							format_arg(op->srcBase,op->addressingModeSrc,op->immediate)
+							<< ", " << 
+							format_arg(op->destBase,op->addressingModeDest,op->immediate); 
+						break;
+								//Program Control Group
+			case m_BR    :
+			case m_BNE   :
+			case m_BEQ   :
+			case m_BPL   :
+			case m_BMI   :
+			case m_BVC   :
+			case m_BVS   :
+			case m_BCC   :
+			case m_BCS   :
+			case m_BGE   :
+			case m_BLT   :
+			case m_BGT   :
+			case m_BLE   :
+			case m_BHI   :
+			case m_BLOS  : temp << " " << octal_to_string(op->offset); 
+						break;
+								// JSR
+			case m_JSR   :	temp << " " << 
+							format_arg(op->regBase,op->addressingModeReg,op->immediate)
+							<< ", " << 
+							format_arg(op->destBase,op->addressingModeDest,op->immediate); 
+						break;
+								// RTS
+			case m_RTS   :
+						if     (op->rtsReg <= 5)
+							temp << " R" << to_string(op->rtsReg);
+						else if(op->rtsReg == 6)
+							temp << " SP"; 
+						else if(op->rtsReg == 7)
+							temp << " PC"; 
+						break;
+								// Mark
+			case m_MARK  :temp << " " << "VALUE"; break; // Cheating here, we didn't implement this, so I use "value" for the MARK "NM" value
+								// SOB
+			case m_SOB   :temp << " Rn VALUE"; break; // Cheating here, we didn't implement this, so I use dummy values for the SOB "NM" and R values
+								// Trap, Operate Group, Condition Code Operators, and Other stuff
+			case m_EMT   :
+			case m_TRAP  :
+			case m_BPT   :
+			case m_IOT   : 
+			case m_NOP   :
+			case m_HALT  :
+			case m_WAIT  :
+			case m_RESET :
+			case m_RTI   :
+			case m_RTT   :
+			case m_MTPD  :
+			case m_MTPI  :
+			case m_MFPD  :
+			case m_MFPI  :
+			case m_MTPS  :
+			case m_MFPS  :
+			case m_MFPT  :
+			case m_TSTSET:
+			case m_WRTLCK:
+			case m_SPL   :
+			case m_CSM   : break; // Just return the OP name
+								// FP Operations
+			case m_ASH   :
+			case m_ASHC  :
+			case m_MUL   :
+			case m_DIV   : temp << " Rn"; break; // Cheating here, we didn't implement this, so I use dummy value for the FP op R values
+			default      : temp << "?????";   break;
+		}
 	}
 	return temp.str();
 }

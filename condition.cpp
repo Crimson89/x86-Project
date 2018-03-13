@@ -1,42 +1,49 @@
 #include "header.h"
 
-/*
 int CCC(instruction *inst)
 {
   // format of instruction:
   // 0 000 000 010 10N ZVC
 
   uint16_t op = inst->opcode;
-  string code_string = "CL";
+  string code_string = "";
 
   // clear flags based on last 4 bits of opcode
   if(op & 0000010) {
     inst->N = 0;
-    code_string += "N";
+    code_string += "CLN|";
   }
+  cout << "SCC " << code_string << endl;
   if(op & 0000004) {
     inst->Z = 0;
-    code_string += "Z";
+    code_string += "CLZ|";
   }
+  cout << "SCC " << code_string << endl;
   if(op & 0000002) {
     inst->V = 0;
-    code_string += "V";
+    code_string += "CLV|";
   }
+  cout << "SCC " << code_string << endl;
   if(op & 0000001) {
     inst->C = 0;
-    code_string += "C";
+    code_string += "CLC|";
   }
   
+  cout << "SCC " << code_string << endl;
   // special case for all bits set
   if(op & 0000017) {
     code_string = "CCC";
   }
 
+  cout << "SCC " << code_string << endl;
   // special case for no bits set (NOP)
   if(!(op & 0000017)) {
     code_string = "NOP";
   }
-
+  
+  cout << "SCC " << code_string << endl;
+  //if(code_string.back() == '|')
+  //  code_string.pop_back();
   inst->op_text = code_string;
 
   return 0;
@@ -48,41 +55,49 @@ int SCC(instruction *inst)
   // 0 000 000 010 11N ZVC
 
   uint16_t op = inst->opcode;
-  string code_string = "SE";
+  string code_string = "";
 
   // clear flags based on last 4 bits of opcode
   if(op & 0000010) {
     inst->N = 1;
-    code_string += "N";
+    code_string += "SEN|";
   }
+  cout << "SCC " << code_string << endl;
   if(op & 0000004) {
     inst->Z = 1;
-    code_string += "Z";
+    code_string += "SEZ|";
   }
+  cout << "SCC " << code_string << endl;
   if(op & 0000002) {
     inst->V = 1;
-    code_string += "V";
+    code_string += "SEV|";
   }
+  cout << "SCC " << code_string << endl;
   if(op & 0000001) {
     inst->C = 1;
-    code_string += "C";
+    code_string += "SEC|";
   }
+  cout << "SCC " << code_string << endl;
   
   // special case for all bits set
   if(op & 0000017) {
     code_string = "SCC";
   }
 
+  cout << "SCC " << code_string << endl;
   // special case for no bits set (NOP)
   if(!(op & 0000017)) {
     code_string = "NOP";
   }
+  cout << "SCC " << code_string << endl;
 
+//  if(code_string.back() == '|')
+//	  code_string.pop_back();
   inst->op_text = code_string;
 
   return 0;
 }
-*/
+
 
 int CLC(instruction *inst) // Clear carry
 {
@@ -112,7 +127,7 @@ int CLN(instruction *inst) // Clear negative
   inst->N = 0;
   return 0;
 }
-
+/*
 int CCC(instruction *inst) // Clear Condition Codes
 {
   inst->op_text = "CCC";
@@ -122,7 +137,7 @@ int CCC(instruction *inst) // Clear Condition Codes
   inst->N = 0;
   return 0;
 }
-
+*/
 int SEC(instruction *inst) // Set carry
 {
   inst->op_text = "SEC";
@@ -150,7 +165,7 @@ int SEN(instruction *inst) // Set negative
   inst->N = 1;
   return 0;
 }
-
+/*
 int SCC(instruction *inst) // Set Condition Codes
 {
   inst->op_text = "SCC";
@@ -160,4 +175,4 @@ int SCC(instruction *inst) // Set Condition Codes
   inst->N = 1;
   return 0;
 }
-
+*/

@@ -216,9 +216,9 @@ int dispatch(instruction * inst)
     case m_RESET: 
       return RESET(inst);
       break;
-    case m_NOP:
+    /*case m_NOP:
       return NOP(inst);
-      break;
+      break;*/
     case m_MTPD:
       return MTPD(inst);
       break;
@@ -250,7 +250,7 @@ int dispatch(instruction * inst)
       return WRTLCK(inst);
       break;
 
-
+/*
     // CONDITION CODES
     case m_CLC:
       return CLC(inst);
@@ -278,7 +278,24 @@ int dispatch(instruction * inst)
       break;
     case m_SEN:
       return SEN(inst);
+      break;	  
+    case m_SCC:
+      return SCC(inst);
       break;
+*/	  
+	  
+   // CONDITION CODES
+    case m_CLC:
+    case m_CLV:
+    case m_CLZ:
+    case m_CLN:
+    case m_CCC:
+      return CCC(inst);
+      break;
+    case m_SEC:
+    case m_SEV:
+    case m_SEZ:
+    case m_SEN:
     case m_SCC:
       return SCC(inst);
       break;
