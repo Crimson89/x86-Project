@@ -267,7 +267,7 @@ const uint16_t maskDoubleDestMode = 0000070;//0x0038;
 const uint16_t maskDoubleDest = 0000007;//0x0007;
 
 // Double-operand register
-const uint16_t maskDoubleRegisterOpcode = 0003400;// 0x0700;
+const uint16_t maskDoubleRegisterOpcode = 0177000;// 0x0700;
 const uint16_t maskDoubleRegisterReg = 0000300;//0x00C0;
 const uint16_t maskDoubleRegisterSourceDestMode = 0000070;//0x0038;
 const uint16_t maskDoubleRegisterSourceDest = 0000007;//0x0007;
@@ -282,7 +282,7 @@ const uint16_t maskCondBranchOpcode = 0177400;//0x0700;
 const uint16_t maskCondBranchOffset = 0000377;//0x00FF;
 
 // Conditional check
-const uint16_t maskCondCodeOpcode = 0177740;//0xFFE0;
+const uint16_t maskCondCodeOpcode = 0177760;//0xFFE0;
 const uint16_t maskCondSC = 0000020;//0x0010;
 const uint16_t maskCondN = 0000010;//0x0008;
 const uint16_t maskCondZ = 0000004;//0x0004;
