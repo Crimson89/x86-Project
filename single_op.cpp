@@ -5,7 +5,6 @@ int CLR(instruction *inst) // Clear (B)
 {
   uint16_t destAddress = get_address(inst->addressingModeReg, inst->regBase);
   uint16_t dest = 0;
-  cout << "DESTADDR after: " << destAddress << "\n";
   uint16_t dummyValue = get_value(inst->addressingModeReg, inst->regBase);
   cout << "DESTADDR: " << destAddress << "\n";
   if(inst->byteMode)
@@ -17,7 +16,6 @@ int CLR(instruction *inst) // Clear (B)
   {
     inst->op_text = "CLR";
     write_word(inst->addressingModeReg, destAddress, dest);
-    cout << "DESTADDR: " << destAddress << "\n";
   }
   inst->N = 0;
   inst->Z = 1;
@@ -133,7 +131,6 @@ int NEG(instruction *inst) // 2's Compliment negate (B)
 int TST(instruction *inst) // Test (B)
 {
   uint16_t dest = get_value(inst->addressingModeReg, inst->regBase); 
-  uint16_t dummyValue = get_value(inst->addressingModeReg, inst->regBase);
   if(inst->byteMode)
   {
     inst->op_text = "TSTB";
@@ -155,8 +152,10 @@ int ASR(instruction *inst) // Arithmetic shift right (B)
 {
   uint16_t destAddress = get_address(inst->addressingModeReg, inst->regBase);
   uint16_t dest = get_value(inst->addressingModeReg, inst->regBase);
+  uint16_t msb = dest & 0100000;
   inst->C = dest & 1; // C = old LSB
   dest >>= 1;
+  dest |= msb;
 
    if(inst->byteMode)
   {
@@ -204,20 +203,26 @@ int ASL(instruction *inst) // Arithmetic shift left (B)
 int ROR(instruction *inst) // Rotate right (B)
 {
   uint16_t destAddress = get_address(inst->addressingModeReg, inst->regBase);
-  uint16_t dest = get_value(inst->addressingModeReg, inst->regBase);
-  uint16_t temp2 = dest;
-  uint16_t temp = 0x0001 & dest;
-  temp <<= 15;
-  (dest >>= 1) | temp;
-
+  uint16_t dest; 
+  uint16_t temp2;
+  uint16_t temp;
+  dest = get_value(inst->addressingModeReg, inst->regBase);
+  temp = 0x0001 & dest;
+  
   if(inst->byteMode)
-  {
+  { 
+    temp <<= 7;
+    dest = (dest >> 1);
+    dest |= temp;
     inst->op_text = "RORB";
     write_byte(inst->addressingModeReg, destAddress, dest);
     inst->N = IS_NEGATIVE_BYTE(dest) ? 1:0;
   }
   else
   {
+    temp <<= 15;
+    dest = (dest >> 1);
+    dest |= temp;
     inst->op_text = "ROR";
     write_word(inst->addressingModeReg, destAddress, dest);
     inst->N = IS_NEGATIVE_WORD(dest) ? 1:0;
@@ -234,18 +239,25 @@ int ROL(instruction *inst) // Rotate left (B)
   uint16_t destAddress = get_address(inst->addressingModeReg, inst->regBase);
   uint16_t dest = get_value(inst->addressingModeReg, inst->regBase);
   uint16_t temp2 = dest;
-  uint16_t temp = 0x8000 & dest;
-  temp >>= 15;
-  (dest <<= 1) | temp;
+  uint16_t temp;
 
+  cout  << "VAL: "<< dest << "\n";
   if(inst->byteMode)
-  {
+  { 
+    temp = 0x0080 & dest;
+    temp >>= 7;
+    dest = (dest << 1);
+    dest |= temp;
     inst->op_text = "ROLB";
     write_byte(inst->addressingModeReg, destAddress, dest);
     inst->N = IS_NEGATIVE_BYTE(dest) ? 1:0;
   }
   else
   {
+    temp = 0x8000 & dest;
+    temp >>= 15;
+    dest = (dest << 1);
+    dest |= temp;
     inst->op_text = "ROL";
     write_word(inst->addressingModeReg, destAddress, dest);
     inst->N = IS_NEGATIVE_WORD(dest) ? 1:0;
@@ -264,7 +276,8 @@ int SWAB(instruction *inst) // Swap bytes
   uint16_t dest = get_value(inst->addressingModeReg, inst->regBase);
   uint16_t temp = 0x00FF & dest;
   temp <<= 8;
-  (dest >>= 8) | (temp);
+  dest = (dest >> 8); 
+  dest |= (temp);
 
   write_word(inst->addressingModeReg, destAddress, dest);
 

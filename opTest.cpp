@@ -76,7 +76,7 @@ static int operationTest()
   uint16_t byte_mode   =      0100000;
 
   // Addr mode                 0000x0
-  uint16_t single_mode =      0000000;
+  uint16_t single_mode =      0000030;
 
   // Register                  00000x
   uint16_t single_reg  =      0000001;
@@ -140,17 +140,16 @@ static int operationTest()
 
   string double_all[7] = {"BIT", "BIC", "BIS", "MOV", "CMP", "ADD", "SUB"};
 
-  int runs = 16; // Number of runs for the loop
+  int runs = 14; // Number of runs for the loop
 
 // Change the number of runs(above), the string output, and value outputs for the loop
 ///////////////////////////////////////////////////////////
   for (int i = 0; i < runs; i++)
   {
-    uint16_t clear_op = 0000260 | i;
-
+    //uint16_t clear_op = 0000260 | i;
     cout << "_________________\n";
-    cout << "S__"  << endl; // CHANGE HERE
-    printf("code: %o\n", clear_op);
+    cout << "i"  << endl; // CHANGE HERE
+    printf("code: %d\n", i);
     int res;
     int val;
     int test;
@@ -159,14 +158,17 @@ static int operationTest()
 
     val = 0;
     res = clearInstruction(current_instruction);
-    res = parseInstruction(clear_op, current_instruction); // CHANGE HERE
+    current_instruction->C = 1;
+    res = parseInstruction(single_ops_all[i], current_instruction); // CHANGE HERE
     res = printInstruction(current_instruction);
 
-    R1 = 10;
+    R1 = 12;
     R2 = 14;
 
-    MEM[10] = 0xFF;
-    MEM[11] = 0xFF;
+    MEM[10] = 0xCF;
+    MEM[11] = 0xFC;
+    MEM[12] = 0x0B;
+    MEM[13] = 0x00;
     MEM[14] = 0xFF;
     MEM[15] = 0xFF;
 
