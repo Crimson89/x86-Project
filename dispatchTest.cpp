@@ -385,8 +385,111 @@ static int operationTest()
 									"SEZ", 
 									"SEN", 
 									"SCC"};
+
+	/*
+	//Just testing the problem children
+	int entries = 49;
+	int end_byte_opable= 5;
+	uint16_t ops[entries] = {	BIT, 
+								BIC, 
+								BIS, 
+								MOV, 
+								CMP, 
+								TSTSET,
+								WRTLCK,
+								SXT, 
+								XOR, 
+								SUB, 
+								SWAB, 
+								ASH, 
+								ASHC, 
+								MUL, 
+								DIV, 
+								BPL, 
+								BMI, 
+								BVC, 
+								BVS, 
+								BCC, 
+								BCS, 
+								SOB, 
+								BHI, 
+								BLOS, 
+								EMT, 
+								TRAP, 
+								BPT, 
+								IOT, 
+								RTI, 
+								RTT, 
+								HALT, 
+								WAIT, 
+								RESET, 
+								MTPD, 
+								MFPD, 
+								MTPS, 
+								MFPS, 
+								MFPT, 
+								SPL, 
+								CLC, 
+								CLV, 
+								CLZ, 
+								CLN, 
+								CCC, 
+								SEC, 
+								SEV, 
+								SEZ, 
+								SEN, 
+								SCC}; 
+	string ops_string[entries] = {	"BITB", 
+									"BICB", 
+									"BISB", 
+									"MOVB", 
+									"CMPB", 
+									"TSTSET",
+									"WRTLCK",
+									"SXT", 
+									"XOR", 
+									"SUB", 
+									"SWAB", 
+									"ASH", 
+									"ASHC", 
+									"MUL", 
+									"DIV", 
+									"BPL", 
+									"BMI", 
+									"BVC", 
+									"BVS", 
+									"BCC", 
+									"BCS", 
+									"SOB", 
+									"BHI", 
+									"BLOS", 
+									"EMT", 
+									"TRAP", 
+									"BPT", 
+									"IOT", 
+									"RTI", 
+									"RTT", 
+									"HALT", 
+									"WAIT", 
+									"RESET", 
+									"MTPD", 
+									"MFPD", 
+									"MTPS", 
+									"MFPS", 
+									"MFPT", 
+									"SPL", 
+									"CLC", 
+									"CLV", 
+									"CLZ", 
+									"CLN", 
+									"CCC", 
+									"SEC", 
+									"SEV", 
+									"SEZ", 
+									"SEN", 
+									"SCC"}; */
 	int runs = entries;
-	uint16_t temp_op;
+	uint16_t temp_op = 0;
 	for (int i = 0; i < runs; i++)
 	{
 		cout << "_________________\n" <<endl;
@@ -396,11 +499,15 @@ static int operationTest()
 			cout << "Byte Instruction" << endl;
 			temp_op|=0x8000;
 		}
+		cout << "Raw OpCode: "<< setfill('0') << setw(7) << oct << temp_op << endl;
 		res = parseInstruction(temp_op, current_instruction);
 		cout << "Pretty-Print function generated: "<< op_formatted(current_instruction) << endl;
 		test = dispatch(current_instruction);
 		cout << "Actually Ran : "<< current_instruction->op_text << endl;
 		clearReg();
+		printInstruction(current_instruction);
+		clearInstruction(current_instruction);
+		temp_op = 0;
 		cout << "\n_________________" << endl;
 	}
 }
