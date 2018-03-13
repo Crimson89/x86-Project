@@ -267,7 +267,7 @@ const uint16_t maskDoubleDestMode = 0000070;//0x0038;
 const uint16_t maskDoubleDest = 0000007;//0x0007;
 
 // Double-operand register
-const uint16_t maskDoubleRegisterOpcode = 0003400;// 0x0700;
+const uint16_t maskDoubleRegisterOpcode = 0177000;// 0x0700;
 const uint16_t maskDoubleRegisterReg = 0000300;//0x00C0;
 const uint16_t maskDoubleRegisterSourceDestMode = 0000070;//0x0038;
 const uint16_t maskDoubleRegisterSourceDest = 0000007;//0x0007;
