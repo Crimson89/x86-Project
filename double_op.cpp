@@ -57,6 +57,7 @@ int ADD(instruction *inst) // Add source to destination
 
 int SUB(instruction *inst) // Subtract source from destination
 {
+  inst->byteMode = 0;
   inst->op_text = "SUB";
   uint16_t destAddress = get_address(inst->addressingModeDest, inst->destBase, inst->addressingModeSrc);
   uint16_t src = get_value(inst->addressingModeSrc, inst->srcBase);
@@ -64,19 +65,21 @@ int SUB(instruction *inst) // Subtract source from destination
   bool msb_dest = EXTRACT_BIT(dest,WORD_MSB_INDEX);
   bool msb_src = EXTRACT_BIT(src,WORD_MSB_INDEX);
   uint32_t temp = dest - src;
+  uint16_t temp2 = dest;
 
+  dest = dest - src;
   bool msb_result = EXTRACT_BIT(temp,WORD_MSB_INDEX);
-  write_word(inst->addressingModeDest, destAddress, temp);
+  write_word(inst->addressingModeDest, destAddress, dest);
 
   // Set NZVC flags
-  inst->N = IS_NEGATIVE_WORD(temp)? 1:0;
+  inst->N = IS_NEGATIVE_WORD(dest)? 1:0;
 
   // Overflow, i.e. pos - neg = neg or neg - pos = pos
-  inst->V =IS_OVERFLOW_SUB(src,dest,temp)? 1:0;
+  inst->V =IS_OVERFLOW_SUB(src,temp2,temp)? 1:0;
 
   // Set C flag if there was a carry from the MSB
-  inst->C = CARRY_MSB_WORD(temp) ? 0:1;
-  inst->Z = IS_ZERO(temp) ? 1:0;
+  inst->C = CARRY_MSB_WORD(temp+src) ? 0:1;
+  inst->Z = IS_ZERO(dest) ? 1:0;
   return 0;
 }
 
@@ -126,7 +129,7 @@ int BIT(instruction *inst) // Bit test (B)
   uint16_t src = get_value(inst->addressingModeSrc, inst->srcBase);
   uint16_t dest = get_value(inst->addressingModeDest, inst->destBase);
 
-  uint16_t temp = dest & src;
+  uint16_t temp = dest ^ src;
 
   // Check MSB for sign
   if (inst->byteMode)
