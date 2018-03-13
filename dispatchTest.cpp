@@ -192,10 +192,102 @@ static int operationTest()
 	uint16_t SEN = m_SEN;
 	uint16_t SCC = m_SCC;
 	
+	int res, test;
+	
+	
+///*	
+	int entries = 34;
+	int end_byte_opable= 0;
+
+	CLC = 0000241;
+	CLV = 0000242;
+	CLZ = 0000244;
+	CLN = 0000250;
+	CCC = 0000257;
+	SEC = 0000261;
+	SEV = 0000262;
+	SEZ = 0000264;
+	SEN = 0000270;
+	SCC = 0000277;
+	NOP = 0000240;
+///*	
+	uint16_t ops[entries] = {
+							NOP,
+							CLC, 
+							CLV,
+							0000243,
+							CLZ,
+							0000245,
+							0000246,
+							0000247,
+							CLN,
+							0000251,
+							0000252,
+							0000253,
+							0000254,
+							0000255,
+							0000256,
+							0000257,
+							CCC,
+							0000260,
+							SEC, 
+							SEV,
+							0000263,
+							SEZ,
+							0000265,
+							0000266,
+							0000267,
+							SEN,
+							0000271,
+							0000272,
+							0000273,
+							0000274,
+							0000275,
+							0000276,
+							0000277,
+							SCC
+							};
+							
+	string ops_string[entries] = {
+							"NOP",
+							"CCC",
+							"CCC",
+							"CCC",
+							"CCC",
+							"CCC",
+							"CCC",
+							"CCC",
+							"CCC",
+							"CCC",
+							"CCC",
+							"CCC",
+							"CCC",
+							"CCC",
+							"CCC",
+							"CCC",
+							"CCC",
+							"NOP",
+							"SCC",
+							"SCC",
+							"SCC",
+							"SCC",
+							"SCC",
+							"SCC",
+							"SCC",
+							"SCC",
+							"SCC",
+							"SCC",
+							"SCC",
+							"SCC",
+							"SCC",
+							"SCC",
+							"SCC",
+							"SCC"
+							};
+//*/
+/*	
 	int entries = 94;
 	int end_byte_opable= 34;
-	int res, test;
-
 	uint16_t ops[entries] = {CLR, //Start of byte-able operations
 							CLR, 
 							COM, 
@@ -385,8 +477,8 @@ static int operationTest()
 									"SEZ", 
 									"SEN", 
 									"SCC"};
-
-	/*
+*/
+/*
 	//Just testing the problem children
 	int entries = 49;
 	int end_byte_opable= 5;
@@ -492,6 +584,17 @@ static int operationTest()
 	uint16_t temp_op = 0;
 	for (int i = 0; i < runs; i++)
 	{
+		CLC = 0000241;
+		CLV = 0000242;
+		CLZ = 0000244;
+		CLN = 0000250;
+		CCC = 0000257;
+		SEC = 0000261;
+		SEV = 0000262;
+		SEZ = 0000264;
+		SEN = 0000270;
+		SCC = 0000277;
+		NOP = 0000240;
 		cout << "_________________\n" <<endl;
 		cout << "Testing " <<ops_string[i] << endl;
 		temp_op = ops[i];

@@ -50,13 +50,14 @@ void write_byte(uint16_t addressMode, uint16_t address, uint16_t byte, bool trac
   {
     tempValue = 0xFF00 & REGS[address];
     tempValue = tempValue | (byte & 0x00FF);
+    REGS[address] = tempValue;
   }
   else
   {
     if(trace)
 		write_trace(address, byte);
-	MEM[address] = 0x00FF&byte;
-	MEM_USED_FLAGS[address] = true;
+	  MEM[address] = 0x00FF&byte;
+	  MEM_USED_FLAGS[address] = true;
   }
 }
 

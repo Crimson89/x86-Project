@@ -182,11 +182,13 @@
 #define m_CLV   0000242 // Clear overflow
 #define m_CLZ   0000244 // Clear zero
 #define m_CLN   0000250 // Clear negative
+//#define m_CCC   0000257 // Clear all flags
 #define m_CCC   0000240 // Clear all flags
 #define m_SEC   0000261 // Set carry
 #define m_SEV   0000262 // Set overflow
 #define m_SEZ   0000264 // Set zero
 #define m_SEN   0000270 // Set negative
+//#define m_SCC   0000277 // Set all flags
 #define m_SCC   0000260 // Set all flags
 
 
@@ -208,4 +210,3 @@
 #define EXTRACT_BIT(value, shift_count) (value >> shift_count)
 #define IS_OVERFLOW_SUB(msb_dest, msb_src, msb_result)( ( (IS_ZERO(msb_dest) && IS_NOT_ZERO(msb_src) ) && IS_NOT_ZERO(msb_result) ) ||  ( (IS_NOT_ZERO(msb_dest) && IS_ZERO(msb_src) ) && IS_ZERO(msb_result) ) )
 #define IS_OVERFLOW(msb_dest, msb_src, msb_result)( ( (IS_ZERO(msb_dest) && IS_ZERO(msb_src) ) && IS_NOT_ZERO(msb_result) ) ||  ( (IS_NOT_ZERO(msb_dest) && IS_NOT_ZERO(msb_src) ) && IS_ZERO(msb_result) ) )
-#define IS_OVERFLOW_SUB(msb_dest, msb_src, msb_result)( ( (IS_ZERO(msb_dest) && IS_NOT_ZERO(msb_src) ) && IS_NOT_ZERO(msb_result) ) ||  ( (IS_NOT_ZERO(msb_dest) && IS_ZERO(msb_src) ) && IS_ZERO(msb_result) ) )
