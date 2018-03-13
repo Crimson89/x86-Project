@@ -278,7 +278,7 @@ const uint16_t maskSingleMode = 0000070;//0x0038;
 const uint16_t maskSingleRegister = 0000007;//0x0007;
 
 // Conditional branch
-const uint16_t maskCondBranchOpcode = 0003400;//0x0700;
+const uint16_t maskCondBranchOpcode = 0177400;//0x0700;
 const uint16_t maskCondBranchOffset = 0000377;//0x00FF;
 
 // Conditional check
