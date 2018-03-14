@@ -85,13 +85,16 @@ static int operationTest()
   uint16_t double_mode_src =  0001000;
 
   // Register 1                000x00
-  uint16_t double_src =       0000100;
+  uint16_t double_src =       0000500;
 
   // Addr mode 2               0000x0
   uint16_t double_mode_dest = 0000010;
 
   // Register 2                00000x
-  uint16_t double_dest =      0000002;
+  uint16_t double_dest =      0000006;
+
+  // Branch offset             0000xx
+  uint16_t branch_offset =    0000001;
 
   //SINGLE OPERAND
 
@@ -126,6 +129,34 @@ static int operationTest()
 	uint16_t ADD  =  0060000 + double_mode_src + double_src + double_mode_dest + double_dest; // Add source to destination
 	uint16_t SUB  =  0160000 + double_mode_src + double_src + double_mode_dest + double_dest; // Subtract source from destination
 
+// Branch
+  uint16_t BR   =  0000400 + branch_offset; // Branch unconditional
+  uint16_t BNE  =  0001000 + branch_offset; // Branch if not equal (to zero)
+  uint16_t BEQ  =  0001400 + branch_offset; // Branch if equal (to zero)
+  uint16_t BPL  =  0100000 + branch_offset; // Branch if plus
+  uint16_t BMI  =  0100400 + branch_offset; // Branch if minus
+  uint16_t BVC  =  0102000 + branch_offset; // Branch if overflow is clear
+  uint16_t BVS  =  0102400 + branch_offset; // Branch if overflow is set
+  uint16_t BCC  =  0103000 + branch_offset; // Branch if carry is clear
+  uint16_t BCS  =  0103400 + branch_offset; // Branch if carry is set
+
+// Signed Conditional Branch
+  uint16_t BGE  =  0002000 + branch_offset; // Branch if greater than or equal (to zero)
+  uint16_t BLT  =  0002400 + branch_offset; // Branch if less than (zero)
+  uint16_t BGT  =  0003000 + branch_offset; // Branch if greater than (zero)
+  uint16_t BLE  =  0003400 + branch_offset; // Branch if less than or equal (to zero)
+  uint16_t SOB  =  0077000 + branch_offset; // Subtract one and branch (if not = 0)
+
+// Unsigned Conditional Branch
+  uint16_t BHI  =  0101000 + branch_offset; // Branch if higher
+  uint16_t BLOS =  0101400 + branch_offset; // Branch if lower or same
+  uint16_t BHIS =  0103000 + branch_offset; // Branch if higher or same (same as BCC)
+  uint16_t BLO  =  0103400 + branch_offset; // Branch if lower (same as BCS)
+
+  uint16_t JMP  =  0000100 + 022; // Jump
+  uint16_t JSR  =  0004000 + 0311; // Jump to subroutine
+  uint16_t RTS  =  0000200 + 05; // Return from subroutine
+
   uint16_t single_ops_all[14] = {CLR, COM, INC, DEC, NEG, TST, ASR, ASL, ROR, ROL, SWAB, ADC, SBC, SXT};
   uint16_t single_ops_general[6] = {CLR, COM, INC, DEC, NEG, TST};
   uint16_t single_ops_snr[5] = {ASR, ASL, ROR, ROL, SWAB};
@@ -140,15 +171,12 @@ static int operationTest()
 
   string double_all[7] = {"BIT", "BIC", "BIS", "MOV", "CMP", "ADD", "SUB"};
 
-  int runs = 7; // Number of runs for the loop
+  uint16_t branch_ops_all[18] = {BR, BNE, BEQ, BPL, BMI, BVC, BVS, BCC, BCS, BGE, BLT, BGT, BLE, SOB, BHI, BLOS, BHIS, BLO};
 
-// Change the number of runs(above), the string output, and value outputs for the loop
-///////////////////////////////////////////////////////////
-  for (int i = 0; i < runs; i++)
-  {
-    cout << "_________________\n";
-    cout << double_all[i]  << endl; // CHANGE HERE
-    printf("code: %u\n", double_ops_all[i]);
+  uint16_t test_branch[3] = {JMP, JSR, RTS};
+
+  int runs = 3; // Number of runs for the loop
+
     int res;
     int val;
     int test;
@@ -157,16 +185,47 @@ static int operationTest()
 
     val = 0;
     res = clearInstruction(current_instruction);
-    res = parseInstruction(double_ops_all[i], current_instruction); // CHANGE HERE
+
+// Change the number of runs(above), the string output, and value outputs for the loop
+///////////////////////////////////////////////////////////
+  for (int i = 0; i < runs; i++)
+  {
+    cout << "_________________\n";
+    cout << endl; // CHANGE HERE
+    //printf("code: %u\n", double_ops_all[i]);
+
+    res = parseInstruction(test_branch[i], current_instruction); // CHANGE HERE
     res = printInstruction(current_instruction);
 
-    R1 = 10;
-    R2 = 14;
+    R0 = 0;
+    R1 = 2;
+    R2 = 4;
+    R3 = 6;
+    R4 = 8;
+    R5 = 10;
+    R6 = 14;
+    R7 = 18;
 
-    MEM[10] = 0xFF;
-    MEM[11] = 0xFF;
-    MEM[14] = 0xFF;
-    MEM[15] = 0xFF;
+    MEM[0] = 0x00;
+    MEM[1] = 0x11;
+    MEM[2] = 0x22;
+    MEM[3] = 0x33;
+    MEM[4] = 0x44;
+    MEM[5] = 0x55;
+    MEM[6] = 0x66;
+    MEM[7] = 0x77;
+    MEM[8] = 0x88;
+    MEM[9] = 0x99;
+    MEM[10] = 0xaa;
+    MEM[11] = 0xbb;
+    MEM[12] = 0xcc;
+    MEM[13] = 0xdd;
+    MEM[14] = 0xee;
+    MEM[15] = 0xff;
+    MEM[16] = 0x04;
+    MEM[17] = 0x15;
+    MEM[18] = 0x26;
+    MEM[19] = 0x37;
 
     printMemReg();
     printFlags(current_instruction);
@@ -175,7 +234,7 @@ static int operationTest()
 
     printMemReg();
     printFlags(current_instruction);
-    clearReg();
+    //clearReg();
   }
 ///////////////////////////////////////////////////////////
 }

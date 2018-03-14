@@ -16,7 +16,7 @@ int BR(instruction *inst) // Branch unconditional
 int BNE(instruction *inst) // Branch if not equal (to zero)
 {
   inst->op_text = "BNE";
-  if(inst->Z) {
+  if(!(inst->Z)) {
     int16_t signed_offset;
     memcpy(&signed_offset, &(inst->offset), 2);
     PC += (signed_offset << 1); 
@@ -28,7 +28,7 @@ int BNE(instruction *inst) // Branch if not equal (to zero)
 int BEQ(instruction *inst) // Branch if equal (to zero)
 {
   inst->op_text = "BEQ";
-  if(!(inst->Z)) {
+  if(inst->Z) {
     int16_t signed_offset;
     memcpy(&signed_offset, &(inst->offset), 2);
     PC += (signed_offset << 1); 
@@ -166,7 +166,7 @@ int BLE(instruction *inst) // Branch if less than or equal (to zero)
 int BHI(instruction *inst) // Branch if higher
 {
   inst->op_text = "BHI";
-  if(!(inst->C) && !(inst->Z)) {
+  if(!(inst->C) || !(inst->Z)) {
     int16_t signed_offset;
 		memcpy(&signed_offset, &(inst->offset), 2);
     PC += (signed_offset << 1); 
