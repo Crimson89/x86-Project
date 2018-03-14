@@ -71,6 +71,7 @@ int parseInstruction(uint16_t instructionCode, instruction* newInstruction)
       
   }
 
+  verbosity_level = HIGH_VERBOSITY;
   // TODO fill these out
   // EMT
   if (!special& ( (instructionCode & 0177400) == 0104000))
@@ -118,8 +119,8 @@ int parseInstruction(uint16_t instructionCode, instruction* newInstruction)
   if (!special& ( (instructionCode & 0177700) == 0000100))
   {
     current_instruction->opcode = instructionCode & 0177700;
-    current_instruction->addressingModeDest = (instructionCode & 000070) >> 3;
-    current_instruction->destBase = (instructionCode & 0000007);
+    current_instruction->addressingModeReg = (instructionCode & 000070) >> 3;
+    current_instruction->regBase = (instructionCode & 0000007);
     if(verbosity_level >= HIGH_VERBOSITY) cout << "JMP" << "\n";
     special = true;
   }
