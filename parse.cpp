@@ -550,7 +550,7 @@ uint16_t get_address(uint16_t mode, uint16_t baseAddress, uint16_t modeTest)
   return resultAddress;
 }
 
-uint16_t get_value(uint16_t mode, uint16_t baseAddress)
+uint16_t get_value(uint16_t mode, uint16_t baseAddress, bool trace)
 {
   uint16_t X = 0;
   uint16_t workingAddress = 0;
@@ -583,12 +583,12 @@ uint16_t get_value(uint16_t mode, uint16_t baseAddress)
                     if (byte)
                     {
                       // READ TRACE
-                      resultValue = read_byte(mode, workingAddress, true);
+                      resultValue = read_byte(mode, workingAddress, trace);
                     }
                     else
                     {
                       // READ TRACE
-                      resultValue = read_word(mode, workingAddress, true);
+                      resultValue = read_word(mode, workingAddress, trace);
                     }
                     PC += 2;
                     break;
@@ -597,15 +597,15 @@ uint16_t get_value(uint16_t mode, uint16_t baseAddress)
                     workingAddress = PC;
                     if (byte)
                     {
-                      workingAddress = read_byte(mode, workingAddress, true);
+                      workingAddress = read_byte(mode, workingAddress, trace);
                       // READ TRACE
-                      resultValue = read_byte(mode, workingAddress, true);
+                      resultValue = read_byte(mode, workingAddress, trace);
                     }
                     else
                     { 
-                      workingAddress = read_word(mode, workingAddress, true);
+                      workingAddress = read_word(mode, workingAddress, trace);
                       // READ TRACE
-                      resultValue = read_word(mode, workingAddress, true);
+                      resultValue = read_word(mode, workingAddress, trace);
                     }
                     PC += 2;
                     break;
@@ -623,12 +623,12 @@ uint16_t get_value(uint16_t mode, uint16_t baseAddress)
                     if (byte)
                     {
                       // READ TRACE
-                      resultValue = read_byte(mode, PC + X, true);
+                      resultValue = read_byte(mode, PC + X, trace);
                     }
                     else
                     { 
                       // READ TRACE
-                      resultValue = read_word(mode, PC + X, true);
+                      resultValue = read_word(mode, PC + X, trace);
                     }
                     break;
       // Index deferred
@@ -639,16 +639,16 @@ uint16_t get_value(uint16_t mode, uint16_t baseAddress)
                     if (byte)
                     {
                       // READ TRACE
-                      workingAddress = read_byte(mode, PC + X, true);
+                      workingAddress = read_byte(mode, PC + X, trace);
                       // READ TRACE
-                      resultValue = read_byte(mode, workingAddress, true);
+                      resultValue = read_byte(mode, workingAddress, trace);
                     }
                     else
                     {
                       // READ TRACE
-                      workingAddress = read_word(mode, PC + X, true);
+                      workingAddress = read_word(mode, PC + X, trace);
                       // READ TRACE
-                      resultValue = read_word(mode, workingAddress, true);
+                      resultValue = read_word(mode, workingAddress, trace);
                     }
                     break;
     }
@@ -667,12 +667,12 @@ uint16_t get_value(uint16_t mode, uint16_t baseAddress)
                     if (byte)
                     {
                       // READ TRACE
-                      resultValue = read_byte(mode, workingAddress, true);
+                      resultValue = read_byte(mode, workingAddress, trace);
                     }
                     else
                     {
                       // READ TRACE
-                      resultValue = read_word(mode, workingAddress, true);
+                      resultValue = read_word(mode, workingAddress, trace);
                     }
                     break;
       // Autoincrement
@@ -680,12 +680,12 @@ uint16_t get_value(uint16_t mode, uint16_t baseAddress)
                     if (byte)
                     {
                       // READ TRACE
-                      resultValue = read_byte(mode, workingAddress, true);
+                      resultValue = read_byte(mode, workingAddress, trace);
                     }
                     else
                     {
                       // READ TRACE
-                      resultValue = read_word(mode, workingAddress, true);
+                      resultValue = read_word(mode, workingAddress, trace);
                     }
                     SP += 2;
                     break;
@@ -694,15 +694,15 @@ uint16_t get_value(uint16_t mode, uint16_t baseAddress)
                     workingAddress = SP;
                     if (byte)
                     {
-                      workingAddress = read_byte(mode, workingAddress, true);
+                      workingAddress = read_byte(mode, workingAddress, trace);
                       // READ TRACE
-                      resultValue = read_byte(mode, workingAddress, true);
+                      resultValue = read_byte(mode, workingAddress, trace);
                     }
                     else
                     { 
-                      workingAddress = read_word(mode, workingAddress, true);
+                      workingAddress = read_word(mode, workingAddress, trace);
                       // READ TRACE
-                      resultValue = read_word(mode, workingAddress, true);
+                      resultValue = read_word(mode, workingAddress, trace);
                     }
                     SP += 2;
                     break;
@@ -712,12 +712,12 @@ uint16_t get_value(uint16_t mode, uint16_t baseAddress)
                     if (byte)
                     {
                       // READ TRACE
-                      resultValue = read_byte(mode, workingAddress, true);
+                      resultValue = read_byte(mode, workingAddress, trace);
                     }
                     else
                     {
                       // READ TRACE
-                      resultValue = read_word(mode, workingAddress, true);
+                      resultValue = read_word(mode, workingAddress, trace);
                     }
                     break;
       // Autodecrement deferred
@@ -741,39 +741,39 @@ uint16_t get_value(uint16_t mode, uint16_t baseAddress)
       // Index
       case 0000006: // READ TRACE
                     workingAddress = SP;
-                    X = read_word(mode, PC, true);
+                    X = read_word(mode, PC, trace);
 					current_instruction->immediate = X;
                     PC += 2;
                     if (byte)
                     {
                       // READ TRACE
-                      resultValue = read_byte(mode, workingAddress + X, true);
+                      resultValue = read_byte(mode, workingAddress + X, trace);
                     }
                     else
                     { 
                       // READ TRACE
-                      resultValue = read_word(mode, workingAddress + X, true);
+                      resultValue = read_word(mode, workingAddress + X, trace);
                     }
                     break;
       // Index deferred
       case 0000007: // READ TRACE
                     workingAddress = SP;
-                    X = read_word(mode, PC, true);
+                    X = read_word(mode, PC, trace);
 					current_instruction->immediate = X;
                     PC += 2;
                     if (byte)
                     {
                       // READ TRACE
-                      workingAddress = read_byte(mode, workingAddress + X, true);
+                      workingAddress = read_byte(mode, workingAddress + X, trace);
                       // READ TRACE
-                      resultValue = read_byte(mode, workingAddress, true);
+                      resultValue = read_byte(mode, workingAddress, trace);
                     }
                     else
                     {
                       // READ TRACE
-                      workingAddress = read_word(mode, workingAddress + X, true);
+                      workingAddress = read_word(mode, workingAddress + X, trace);
                       // READ TRACE
-                      resultValue = read_word(mode, workingAddress, true);
+                      resultValue = read_word(mode, workingAddress, trace);
                     }
                     break;
     }
@@ -790,12 +790,12 @@ uint16_t get_value(uint16_t mode, uint16_t baseAddress)
                     if (byte)
                     {
                       // READ TRACE
-                      resultValue = read_byte(mode, workingAddress, true);
+                      resultValue = read_byte(mode, workingAddress, trace);
                     }
                     else
                     {
                       // READ TRACE
-                      resultValue = read_word(mode, workingAddress, true);
+                      resultValue = read_word(mode, workingAddress, trace);
                     }
                     break;
       // Autoincrement
@@ -803,12 +803,12 @@ uint16_t get_value(uint16_t mode, uint16_t baseAddress)
                     if (byte)
                     {
                       // READ TRACE
-                      resultValue = read_byte(mode, workingAddress, true);
+                      resultValue = read_byte(mode, workingAddress, trace);
                     }
                     else
                     {
                       // READ TRACE
-                      resultValue = read_word(mode, workingAddress, true);
+                      resultValue = read_word(mode, workingAddress, trace);
                     }
                     if (byte == true)
                     {
@@ -824,15 +824,15 @@ uint16_t get_value(uint16_t mode, uint16_t baseAddress)
                     workingAddress = REGS[baseAddress];
                     if (byte)
                     {
-                      workingAddress = read_byte(mode, workingAddress, true);
+                      workingAddress = read_byte(mode, workingAddress, trace);
                       // READ TRACE
-                      resultValue = read_byte(mode, workingAddress, true);
+                      resultValue = read_byte(mode, workingAddress, trace);
                     }
                     else
                     { 
-                      workingAddress = read_word(mode, workingAddress, true);
+                      workingAddress = read_word(mode, workingAddress, trace);
                       // READ TRACE
-                      resultValue = read_word(mode, workingAddress, true);
+                      resultValue = read_word(mode, workingAddress, trace);
                     }
                     REGS[baseAddress] += 2;
                     break;
@@ -849,12 +849,12 @@ uint16_t get_value(uint16_t mode, uint16_t baseAddress)
                     if (byte)
                     {
                       // READ TRACE
-                      resultValue = read_byte(mode, workingAddress, true);
+                      resultValue = read_byte(mode, workingAddress, trace);
                     }
                     else
                     {
                       // READ TRACE
-                      resultValue = read_word(mode, workingAddress, true);
+                      resultValue = read_word(mode, workingAddress, trace);
                     }
                     break;
       // Autodecrement deferred
@@ -863,54 +863,54 @@ uint16_t get_value(uint16_t mode, uint16_t baseAddress)
                     if (byte)
                     {
                       // READ TRACE
-                      workingAddress = read_byte(mode, workingAddress, true);
+                      workingAddress = read_byte(mode, workingAddress, trace);
                       // READ TRACE
-                      resultValue = read_byte(mode, workingAddress, true);
+                      resultValue = read_byte(mode, workingAddress, trace);
                     }
                     else
                     { 
                       // READ TRACE
-                      workingAddress = read_word(mode, workingAddress, true);
+                      workingAddress = read_word(mode, workingAddress, trace);
                       // READ TRACE
-                      resultValue = read_word(mode, workingAddress, true);
+                      resultValue = read_word(mode, workingAddress, trace);
                     }
                     break;
       // Index
       case 0000006: // READ TRACE
                     workingAddress = REGS[baseAddress];
-                    X = read_word(mode, PC, true);
+                    X = read_word(mode, PC, trace);
 					current_instruction->immediate = X;
                     PC += 2;
                     if (byte)
                     {
                       // READ TRACE
-                      resultValue = read_byte(mode, workingAddress + X, true);
+                      resultValue = read_byte(mode, workingAddress + X, trace);
                     }
                     else
                     { 
                       // READ TRACE
-                      resultValue = read_word(mode, workingAddress + X, true);
+                      resultValue = read_word(mode, workingAddress + X, trace);
                     }
                     break;
       // Index deferred
       case 0000007: // READ TRACE
                     workingAddress = REGS[baseAddress];
-                    X = read_word(mode, PC, true);
+                    X = read_word(mode, PC, trace);
 					current_instruction->immediate = X;
                     PC += 2;
                     if (byte)
                     {
                       // READ TRACE
-                      workingAddress = read_byte(mode, workingAddress + X, true);
+                      workingAddress = read_byte(mode, workingAddress + X, trace);
                       // READ TRACE
-                      resultValue = read_byte(mode, workingAddress, true);
+                      resultValue = read_byte(mode, workingAddress, trace);
                     }
                     else
                     {
                       // READ TRACE
-                      workingAddress = read_word(mode, workingAddress + X, true);
+                      workingAddress = read_word(mode, workingAddress + X, trace);
                       // READ TRACE
-                      resultValue = read_word(mode, workingAddress, true);
+                      resultValue = read_word(mode, workingAddress, trace);
                     }
                     break;
     }

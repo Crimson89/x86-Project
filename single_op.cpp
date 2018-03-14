@@ -5,7 +5,7 @@ int CLR(instruction *inst) // Clear (B)
 {
   uint16_t destAddress = get_address(inst->addressingModeReg, inst->regBase);
   uint16_t dest = 0;
-  uint16_t dummyValue = get_value(inst->addressingModeReg, inst->regBase);
+  uint16_t dummyValue = get_value(inst->addressingModeReg, inst->regBase, false);
   cout << "DESTADDR: " << destAddress << "\n";
   if(inst->byteMode)
   {
@@ -388,7 +388,7 @@ int SXT(instruction *inst) // Sign extend
 {
   inst->op_text = "SXT";
   uint16_t destAddress = get_address(inst->addressingModeReg, inst->regBase);
-  uint16_t dummyValue = get_value(inst->addressingModeReg, inst->regBase);
+  uint16_t dummyValue = get_value(inst->addressingModeReg, inst->regBase, false);
   if (inst->N == 1)
   {
     uint16_t dest = 0xFFFF;
