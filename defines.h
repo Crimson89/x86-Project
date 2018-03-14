@@ -174,7 +174,7 @@
 #define m_MTPS   0106400 // Move byte to processor status word
 #define m_MFPS   0106700 // Move byte from processor status word
 #define m_MFPT   0000007 // Move from processor type
-#define m_SPL    0000230 //SPL is not implemented in PDP-11
+#define m_SPL    0000230 // SPL is not implemented in PDP-11
 
 // CONDITION CODES
 #define m_CCCNOP  0000240 //CCC/NOP
