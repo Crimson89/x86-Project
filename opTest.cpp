@@ -35,7 +35,7 @@ static void printMemReg()
 
   for (int i = 0; i <= 7; i++)
   {
-    printf("Reg: %u   val: %u\n", i, REGS[i]);
+    printf("Reg: %u   val: %04x\n", i, REGS[i]);
   }
   cout << "\n";
 }
@@ -73,7 +73,7 @@ static int operationTest()
   // Change the spots with "x" to desired value
 
   // Byte mode                 x00000
-  uint16_t byte_mode   =      0000000;
+  uint16_t byte_mode   =      0100000;
 
   // Addr mode                 0000x0
   uint16_t single_mode =      0000010;
@@ -85,13 +85,13 @@ static int operationTest()
   uint16_t double_mode_src =  0001000;
 
   // Register 1                000x00
-  uint16_t double_src =       0000500;
+  uint16_t double_src =       0000400;
 
   // Addr mode 2               0000x0
   uint16_t double_mode_dest = 0000010;
 
   // Register 2                00000x
-  uint16_t double_dest =      0000006;
+  uint16_t double_dest =      0000005;
 
   // Branch offset             0000xx
   uint16_t branch_offset =    0000001;
@@ -175,7 +175,7 @@ static int operationTest()
 
   uint16_t test_branch[3] = {JMP, JSR, RTS};
 
-  int runs = 3; // Number of runs for the loop
+  int runs = 7; // Number of runs for the loop
 
     int res;
     int val;
@@ -193,39 +193,40 @@ static int operationTest()
     cout << "_________________\n";
     cout << endl; // CHANGE HERE
     //printf("code: %u\n", double_ops_all[i]);
-
-    res = parseInstruction(test_branch[i], current_instruction); // CHANGE HERE
+    fillMem(0);
+    res = clearInstruction(current_instruction);
+    res = parseInstruction(double_ops_all[i], current_instruction); // CHANGE HERE
     res = printInstruction(current_instruction);
 
     R0 = 0;
-    R1 = 2;
-    R2 = 4;
-    R3 = 6;
-    R4 = 8;
-    R5 = 10;
-    R6 = 14;
-    R7 = 18;
+    R1 = 0;
+    R2 = 0;
+    R3 = 0;
+    R4 = 2;
+    R5 = 4;
+    R6 = 0;
+    R7 = 0;
 
     MEM[0] = 0x00;
-    MEM[1] = 0x11;
-    MEM[2] = 0x22;
-    MEM[3] = 0x33;
-    MEM[4] = 0x44;
-    MEM[5] = 0x55;
-    MEM[6] = 0x66;
-    MEM[7] = 0x77;
-    MEM[8] = 0x88;
-    MEM[9] = 0x99;
-    MEM[10] = 0xaa;
-    MEM[11] = 0xbb;
-    MEM[12] = 0xcc;
-    MEM[13] = 0xdd;
-    MEM[14] = 0xee;
-    MEM[15] = 0xff;
-    MEM[16] = 0x04;
-    MEM[17] = 0x15;
-    MEM[18] = 0x26;
-    MEM[19] = 0x37;
+    MEM[1] = 0x00;
+    MEM[2] = 0x80;
+    MEM[3] = 0x00;
+    MEM[4] = 0x00;
+    MEM[5] = 0x00;
+    MEM[6] = 0x00;
+    MEM[7] = 0x00;
+    MEM[8] = 0x00;
+    MEM[9] = 0x00;
+    MEM[10] = 0x00;
+    MEM[11] = 0x00;
+    MEM[12] = 0x00;
+    MEM[13] = 0x00;
+    MEM[14] = 0x00;
+    MEM[15] = 0x00;
+    MEM[16] = 0x00;
+    MEM[17] = 0x00;
+    MEM[18] = 0x00;
+    MEM[19] = 0x00;
 
     printMemReg();
     printFlags(current_instruction);
