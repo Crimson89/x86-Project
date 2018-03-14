@@ -54,53 +54,59 @@ int parseInstruction(uint16_t instructionCode, instruction* newInstruction)
        MARK, SOB, RTS, JSR, JMP
    */
   
+  bool special = false;
   //TODO add masks to some of these (like EMT and TRAP) maybe pull out if needed
+  //                                    IOT      BPT     HALT     WAIT      RTI    RESET      RTT
   uint16_t uniqueInstructions[7] = {0000004, 0000003, 0000000, 0000001, 0000002, 0000005, 0000006};
 
-  // TODO need to account for EMT, JMP, 
-  // EMT should be the only one to implement needed with a full opcode.
-  /*for (int i = 0; i < 10; i++)
+  for (int i = 0; i < 10; i++)
   {
     if (instructionCode == uniqueInstructions[i])
     {
       // unique, full instruction is a unique opcode. Because why not I guess.
       current_instruction->opcode = instructionCode;
+	  special = true;
       break;
     }
       
-  }*/
+  }
 
-  bool special = false;
+  verbosity_level = HIGH_VERBOSITY;
   // TODO fill these out
   // EMT
-  if ((instructionCode & 0177400) == 0104000)
+  if (!special& ( (instructionCode & 0177400) == 0104000))
   {
     current_instruction->opcode = (instructionCode & 0177400);
+	current_instruction->offset = (instructionCode & 0000077);
     special = true;
   } 
 
-  // TRAP?
-  //if ((instructionCode & ) == 0104440)
-  //{
-
-  //}
-
-
-  /*// Check MARK (0 0 6 4) (maybe single)
-  if ((instructionCode & 0xFFC0) == 0x0C00)
+  // TRAP
+  if (!special& ( (instructionCode & 104400) == 0104440))
   {
+	  current_instruction->opcode = (instructionCode & 0104400);
+	  current_instruction->offset = (instructionCode & 0000077);
+      special = true;
+  }
 
-  }*/
+
+  // Check MARK
+  if (!special& ((instructionCode & 0006400) == 0006400))
+  {
+	  current_instruction->opcode = (instructionCode & 0006400);
+	  current_instruction->offset = (instructionCode & 0000077);
+      special = true;
+  }
   
   // Check RTS (0 0 0 2 0)
-  if ((instructionCode & 0177770) == 0000200)
+  if (!special& ( (instructionCode & 0177770) == 0000200))
   {
-    newInstruction->opcode = instructionCode & 0177770;
-    newInstruction->rtsReg = instructionCode & 0000007;
+    current_instruction->opcode = (instructionCode & 0177770);
+    current_instruction->rtsReg = (instructionCode & 0000007);
     if(verbosity_level >= HIGH_VERBOSITY) cout << "RTS" << "\n";
     special = true;
   }// Check JSR (0 0 4)
-  if ((instructionCode & 0177000) == 0004000)
+  if (!special& ( (instructionCode & 0177000) == 0004000))
   {
     current_instruction->opcode = (instructionCode & 0177000);
     current_instruction->regBase = (instructionCode & 0000700) >> 6;
@@ -110,16 +116,16 @@ int parseInstruction(uint16_t instructionCode, instruction* newInstruction)
     if(verbosity_level >= HIGH_VERBOSITY) cout << "JSR" << "\n";
     special = true;
   }// Check JMP ()
-  if ((instructionCode & 0177700) == 0000100)
+  if (!special& ( (instructionCode & 0177700) == 0000100))
   {
     current_instruction->opcode = instructionCode & 0177700;
-    current_instruction->addressingModeDest = (instructionCode & 000070) >> 3;
-    current_instruction->destBase = (instructionCode & 0000007);
+    current_instruction->addressingModeReg = (instructionCode & 000070) >> 3;
+    current_instruction->regBase = (instructionCode & 0000007);
     if(verbosity_level >= HIGH_VERBOSITY) cout << "JMP" << "\n";
     special = true;
   }
   // Check SWAB
-  if ((instructionCode & 0177700) == 0000300)
+  if (!special& ( (instructionCode & 0177700) == 0000300))
   {
     current_instruction->opcode = instructionCode & maskSingleOpcode;
     current_instruction->addressingModeReg = (instructionCode & maskSingleMode) >> 3;
@@ -153,15 +159,7 @@ int parseInstruction(uint16_t instructionCode, instruction* newInstruction)
         {
           // cond check
         
-          newInstruction->opcode = instructionCode & maskCondCodeOpcode;
-          //TODO fix this
-          //newInstruction->SC = instructionCode & maskCondSC;
-          /*
-          newInstruction->N = instructionCode & maskCondN;
-          newInstruction->Z = instructionCode & maskCondZ;
-          newInstruction->V = instructionCode & maskCondV;
-          newInstruction->C = instructionCode & maskCondC;
-          */
+          current_instruction->opcode = instructionCode & maskCondCodeOpcode;
           current_instruction->offset = instructionCode & 0x000F;
           if(verbosity_level >= HIGH_VERBOSITY) cout << "COND CHECK" << "\n";
         }

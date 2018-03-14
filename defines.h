@@ -174,7 +174,7 @@
 #define m_MTPS   0106400 // Move byte to processor status word
 #define m_MFPS   0106700 // Move byte from processor status word
 #define m_MFPT   0000007 // Move from processor type
-#define m_SPL    0000230 //SPL is not implemented in PDP-11
+#define m_SPL    0000230 // SPL is not implemented in PDP-11
 
 // CONDITION CODES
 #define m_CCCNOP  0000240 //CCC/NOP
@@ -223,6 +223,8 @@
 #define IS_NEGATIVE_WORD(value) IS_NEGATIVE(value, WORD_MSB_MASK, SHIFT_WORD_MSB_TO_LSB)
 #define IS_NEGATIVE_BYTE(value) IS_NEGATIVE(value, BYTE_MSB_MASK, SHIFT_BYTE_MSB_TO_LSB)
 #define IS_ZERO(value) (value==0)
+#define IS_ZERO_WORD(value) (value==0)
+#define IS_ZERO_BYTE(value) ((value & 0x00FF)==0) //TODO does this work?
 #define IS_NOT_ZERO(value) (value!=0)
 #define CARRY_MSB_WORD(value) (value>WORD_MAX)
 #define CARRY_MSB_BYTE(value) (value>BYTE_MAX)

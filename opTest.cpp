@@ -73,10 +73,10 @@ static int operationTest()
   // Change the spots with "x" to desired value
 
   // Byte mode                 x00000
-  uint16_t byte_mode   =      0100000;
+  uint16_t byte_mode   =      0000000;
 
   // Addr mode                 0000x0
-  uint16_t single_mode =      0000000;
+  uint16_t single_mode =      0000010;
 
   // Register                  00000x
   uint16_t single_reg  =      0000001;
@@ -236,6 +236,45 @@ static int operationTest()
     printFlags(current_instruction);
     //clearReg();
   }
+
+    /*cout << "_________________\n";
+    cout << "i"  << endl; // CHANGE HERE
+    //printf("code: %d\n", i);
+    int res;
+    int val;
+    int test;
+
+    fillMem(0);
+
+
+    PC = 6;
+    val = 0;
+    res = clearInstruction(current_instruction);
+    //current_instruction->N = 1;
+    //current_instruction->Z = 1;
+    //current_instruction->V = 1;
+    //current_instruction->C = 1;
+    res = parseInstruction(JMP, current_instruction); // CHANGE HERE
+    res = printInstruction(current_instruction);
+
+    R1 = 12;
+    R2 = 14;
+
+    MEM[10] = 0xCF;
+    MEM[11] = 0x00;
+    MEM[12] = 0x14;
+    MEM[13] = 0x00;
+    MEM[14] = 0xFF;
+    MEM[15] = 0xFF;
+
+    printMemReg();
+    printFlags(current_instruction);
+
+    test = dispatch(current_instruction);
+
+    printMemReg();
+    printFlags(current_instruction);
+    clearReg();*/
 ///////////////////////////////////////////////////////////
 }
 
