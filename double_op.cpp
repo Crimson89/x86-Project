@@ -8,7 +8,19 @@ int MOV(instruction *inst) // Move source to destination (B)
   if(inst->byteMode)
   {
     inst->op_text = "MOVB";
-    write_byte(inst->addressingModeDest, destAddress, src);
+    if (inst->addressingModeDest == 0)
+    {
+      uint16_t sign = (src & 0x0080) >> 7;
+      if (sign == 0x1)
+      {
+        src = src | 0xFF00;
+      }
+      write_word(inst->addressingModeDest, destAddress, src);
+    }
+    else
+    {
+      write_byte(inst->addressingModeDest, destAddress, src);
+    }
   }
   else
   {
