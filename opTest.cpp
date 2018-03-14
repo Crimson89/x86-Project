@@ -186,7 +186,7 @@ static int operationTest()
     val = 0;
     res = clearInstruction(current_instruction);
 
-// Change the number of runs(above), the string output, and value outputs for the loop
+    // Change the number of runs(above), the string output, and value outputs for the loop
 ///////////////////////////////////////////////////////////
   for (int i = 0; i < runs; i++)
   {

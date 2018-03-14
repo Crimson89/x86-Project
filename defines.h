@@ -177,19 +177,38 @@
 #define m_SPL    0000230 //SPL is not implemented in PDP-11
 
 // CONDITION CODES
-
-#define m_CLC   0000241 // Clear carry
-#define m_CLV   0000242 // Clear overflow
-#define m_CLZ   0000244 // Clear zero
-#define m_CLN   0000250 // Clear negative
-//#define m_CCC   0000257 // Clear all flags
-#define m_CCC   0000240 // Clear all flags
-#define m_SEC   0000261 // Set carry
-#define m_SEV   0000262 // Set overflow
-#define m_SEZ   0000264 // Set zero
-#define m_SEN   0000270 // Set negative
-//#define m_SCC   0000277 // Set all flags
-#define m_SCC   0000260 // Set all flags
+#define m_CCCNOP  0000240 //CCC/NOP
+#define m_CLC     0000241 //CLC
+#define m_CLV     0000242 //CLV
+#define m_CLVnC   0000243 //CLV|CLC
+#define m_CLZ     0000244 //CLZ
+#define m_CLZnC   0000245 //CLZ|CLC
+#define m_CLZnV   0000246 //CLZ|CLV
+#define m_CLZnVnC 0000247 //CLZ|CLV|CLC
+#define m_CLN     0000250 //CLN
+#define m_CLNnC   0000251 //CLN|CLC
+#define m_CLNnV   0000252 //CLN|CLV
+#define m_CLNnVnC 0000253 //CLN|CLV|CLC
+#define m_CLNnZ   0000254 //CLN|CLZ
+#define m_CLNnZnC 0000255 //CLN|CLZ|CLC
+#define m_CLNnZnV 0000256 //CLN|CLZ|CLV
+#define m_CCC     0000257 //CCC
+#define m_SCCNOP  0000260 //SCC/NOP
+#define m_SEC     0000261 //SEC
+#define m_SEV     0000262 //SEV
+#define m_SEVnC   0000263 //SEV|SEC
+#define m_SEZ     0000264 //SEZ
+#define m_SEZnC   0000265 //SEZ|SEC
+#define m_SEZnV   0000266 //SEZ|SEV
+#define m_SEZnVnC 0000267 //SEZ|SEV|SEC
+#define m_SEN     0000270 //SEN
+#define m_SENnC   0000271 //SEN|SEC
+#define m_SENnV   0000272 //SEN|SEV
+#define m_SENnVnC 0000273 //SEN|SEV|SEC
+#define m_SENnZ   0000274 //SEN|SEZ
+#define m_SENnZnC 0000275 //SEN|SEZ|SEC
+#define m_SENnZnV 0000276 //SEN|SEZ|SEV
+#define m_SCC     0000277 //SCC
 
 
 #define SHIFT_WORD_MSB_TO_LSB  15

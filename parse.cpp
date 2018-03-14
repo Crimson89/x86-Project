@@ -156,10 +156,13 @@ int parseInstruction(uint16_t instructionCode, instruction* newInstruction)
           newInstruction->opcode = instructionCode & maskCondCodeOpcode;
           //TODO fix this
           //newInstruction->SC = instructionCode & maskCondSC;
+          /*
           newInstruction->N = instructionCode & maskCondN;
           newInstruction->Z = instructionCode & maskCondZ;
           newInstruction->V = instructionCode & maskCondV;
           newInstruction->C = instructionCode & maskCondC;
+          */
+          current_instruction->offset = instructionCode & 0x000F;
           if(verbosity_level >= HIGH_VERBOSITY) cout << "COND CHECK" << "\n";
         }
         else

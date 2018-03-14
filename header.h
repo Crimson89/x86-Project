@@ -203,20 +203,11 @@ int EMT(instruction *inst); // Emulator trap
 // CONDITION CODES
 
 int SPL(instruction *inst); // Set priority level
-int CLC(instruction *inst); // Clear carry
-int CLV(instruction *inst); // Clear overflow
-int CLZ(instruction *inst); // Clear zero
-int CLN(instruction *inst); // Clear negative
 int CCC(instruction *inst); // Clear Condition Codes
-int SEC(instruction *inst); // Set carry
-int SEV(instruction *inst); // Set overflow
-int SEZ(instruction *inst); // Set zero
-int SEN(instruction *inst); // Set negative
 int SCC(instruction *inst); // Set Condition Codes
 
 
 //Temporary dummy functions
-int NOP(instruction *inst);
 int XOR(instruction *inst);
 int ASH(instruction *inst);
 int ASHC(instruction *inst);
