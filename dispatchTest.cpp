@@ -138,7 +138,6 @@ static int operationTest()
 	uint16_t WRTLCK = m_WRTLCK;
 	uint16_t TSTSET = m_TSTSET;
 	uint16_t XOR = m_XOR;
-	uint16_t NOP = m_NOP;
 	uint16_t ASH = m_ASH;
 	uint16_t ASHC = m_ASHC;
 	uint16_t MUL = m_MUL;
@@ -180,22 +179,11 @@ static int operationTest()
 	uint16_t MTPS = m_MTPS;
 	uint16_t MFPS = m_MFPS;
 	uint16_t MFPT = m_MFPT;
-	uint16_t SPL = m_SPL;
-	uint16_t CLC = m_CLC;
-	uint16_t CLV = m_CLV;
-	uint16_t CLZ = m_CLZ;
-	uint16_t CLN = m_CLN;
-	uint16_t CCC = m_CCC;
-	uint16_t SEC = m_SEC;
-	uint16_t SEV = m_SEV;
-	uint16_t SEZ = m_SEZ;
-	uint16_t SEN = m_SEN;
-	uint16_t SCC = m_SCC;
-	
+	uint16_t SPL = m_SPL;	
 	int res, test;
 	
 	
-///*	
+/*	
 	int entries = 34;
 	int end_byte_opable= 0;
 
@@ -284,11 +272,12 @@ static int operationTest()
 							"SCC",
 							"SCC"
 							};
-//*/
-/*	
-	int entries = 94;
+*/
+///*	
+	int entries = 115;
 	int end_byte_opable= 34;
-	uint16_t ops[entries] = {CLR, //Start of byte-able operations
+	uint16_t ops[entries] = {
+							CLR, //Start of byte-able operations
 							CLR, 
 							COM, 
 							COM, 
@@ -329,7 +318,6 @@ static int operationTest()
 							SWAB, 
 							TSTSET,
 							WRTLCK,
-							NOP, 
 							ASH, 
 							ASHC, 
 							MUL, 
@@ -372,18 +360,42 @@ static int operationTest()
 							MFPS, 
 							MFPT, 
 							SPL, 
-							CLC, 
-							CLV, 
-							CLZ, 
-							CLN, 
-							CCC, 
-							SEC, 
-							SEV, 
-							SEZ, 
-							SEN, 
-							SCC};
+							m_CCCNOP ,// Condition codes
+							m_CLC    ,
+							m_CLV    ,
+							m_CLVnC  ,
+							m_CLZ    ,
+							m_CLZnC  ,
+							m_CLZnV  ,
+							m_CLZnVnC,
+							m_CLN    ,
+							m_CLNnC  ,
+							m_CLNnV  ,
+							m_CLNnVnC,
+							m_CLNnZ  ,
+							m_CLNnZnC,
+							m_CLNnZnV,
+							m_CCC    ,
+							m_SCCNOP ,
+							m_SEC    ,
+							m_SEV    ,
+							m_SEVnC  ,
+							m_SEZ    ,
+							m_SEZnC  ,
+							m_SEZnV  ,
+							m_SEZnVnC,
+							m_SEN    ,
+							m_SENnC  ,
+							m_SENnV  ,
+							m_SENnVnC,
+							m_SENnZ  ,
+							m_SENnZnC,
+							m_SENnZnV,
+							m_SCC
+							};
 	
-	string ops_string[entries] = {"CLR", 
+	string ops_string[entries] = {
+									"CLR", 
 									"CLRB", 
 									"COM", 
 									"COMB", 
@@ -424,7 +436,6 @@ static int operationTest()
 									"SWAB", 
 									"TSTSET",
 									"WRTLCK",
-									"NOP", 
 									"ASH", 
 									"ASHC", 
 									"MUL", 
@@ -467,17 +478,40 @@ static int operationTest()
 									"MFPS", 
 									"MFPT", 
 									"SPL", 
-									"CLC", 
-									"CLV", 
-									"CLZ", 
-									"CLN", 
-									"CCC", 
-									"SEC", 
-									"SEV", 
-									"SEZ", 
-									"SEN", 
-									"SCC"};
-*/
+									"NOP"        ,
+									"CLC"        ,
+									"CLV"        ,
+									"CLV|CLC"    ,
+									"CLZ"        ,
+									"CLZ|CLC"    ,
+									"CLZ|CLV"    ,
+									"CLZ|CLV|CLC",
+									"CLN"        ,
+									"CLN|CLC"    ,
+									"CLN|CLV"    ,
+									"CLN|CLV|CLC",
+									"CLN|CLZ"    ,
+									"CLN|CLZ|CLC",
+									"CLN|CLZ|CLV",
+									"CCC"        ,
+									"NOP"        ,
+									"SEC"        ,
+									"SEV"        ,
+									"SEV|SEC"    ,
+									"SEZ"        ,
+									"SEZ|SEC"    ,
+									"SEZ|SEV"    ,
+									"SEZ|SEV|SEC",
+									"SEN"        ,
+									"SEN|SEC"    ,
+									"SEN|SEV"    ,
+									"SEN|SEV|SEC",
+									"SEN|SEZ"    ,
+									"SEN|SEZ|SEC",
+									"SEN|SEZ|SEV",
+									"SCC"
+										};
+//*/
 /*
 	//Just testing the problem children
 	int entries = 49;
@@ -584,17 +618,6 @@ static int operationTest()
 	uint16_t temp_op = 0;
 	for (int i = 0; i < runs; i++)
 	{
-		CLC = 0000241;
-		CLV = 0000242;
-		CLZ = 0000244;
-		CLN = 0000250;
-		CCC = 0000257;
-		SEC = 0000261;
-		SEV = 0000262;
-		SEZ = 0000264;
-		SEN = 0000270;
-		SCC = 0000277;
-		NOP = 0000240;
 		cout << "_________________\n" <<endl;
 		cout << "Testing " <<ops_string[i] << endl;
 		temp_op = ops[i];

@@ -216,9 +216,6 @@ int dispatch(instruction * inst)
     case m_RESET: 
       return RESET(inst);
       break;
-    /*case m_NOP:
-      return NOP(inst);
-      break;*/
     case m_MTPD:
       return MTPD(inst);
       break;
@@ -249,54 +246,42 @@ int dispatch(instruction * inst)
 	 case m_WRTLCK:
       return WRTLCK(inst);
       break;
-
-/*
-    // CONDITION CODES
-    case m_CLC:
-      return CLC(inst);
-      break;
-    case m_CLV:
-      return CLV(inst);
-      break;
-    case m_CLZ:
-      return CLZ(inst);
-      break;
-    case m_CLN:
-      return CLN(inst);
-      break;
-    case m_CCC:
-      return CCC(inst);
-      break;
-    case m_SEC:
-      return SEC(inst);
-      break;
-    case m_SEV:
-      return SEV(inst);
-      break;
-    case m_SEZ:
-      return SEZ(inst);
-      break;
-    case m_SEN:
-      return SEN(inst);
-      break;	  
-    case m_SCC:
-      return SCC(inst);
-      break;
-*/	  
 	  
    // CONDITION CODES
-    case m_CLC:
-    case m_CLV:
-    case m_CLZ:
-    case m_CLN:
-    case m_CCC:
+	case m_CCCNOP :
+	case m_CLC    :
+	case m_CLV    :
+	case m_CLVnC  :
+	case m_CLZ    :
+	case m_CLZnC  :
+	case m_CLZnV  :
+	case m_CLZnVnC:
+	case m_CLN    :
+	case m_CLNnC  :
+	case m_CLNnV  :
+	case m_CLNnVnC:
+	case m_CLNnZ  :
+	case m_CLNnZnC:
+	case m_CLNnZnV:
+	case m_CCC    :
       return CCC(inst);
       break;
-    case m_SEC:
-    case m_SEV:
-    case m_SEZ:
-    case m_SEN:
-    case m_SCC:
+	case m_SCCNOP :
+	case m_SEC    :
+	case m_SEV    :
+	case m_SEVnC  :
+	case m_SEZ    :
+	case m_SEZnC  :
+	case m_SEZnV  :
+	case m_SEZnVnC:
+	case m_SEN    :
+	case m_SENnC  :
+	case m_SENnV  :
+	case m_SENnVnC:
+	case m_SENnZ  :
+	case m_SENnZnC:
+	case m_SENnZnV:
+	case m_SCC    :
       return SCC(inst);
       break;
 
