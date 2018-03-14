@@ -206,6 +206,7 @@ int dispatch(instruction * inst)
       return RTT(inst);
       break;
 
+	  
     // MISC
     case m_HALT: 
       return HALT(inst);
