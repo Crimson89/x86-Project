@@ -126,6 +126,9 @@ static int operationTest()
 	uint16_t ADD  =  0060000 + double_mode_src + double_src + double_mode_dest + double_dest; // Add source to destination
 	uint16_t SUB  =  0160000 + double_mode_src + double_src + double_mode_dest + double_dest; // Subtract source from destination
 
+  // JMP
+  uint16_t JMP = 0000111;
+
   uint16_t single_ops_all[14] = {CLR, COM, INC, DEC, NEG, TST, ASR, ASL, ROR, ROL, SWAB, ADC, SBC, SXT};
   uint16_t single_ops_general[6] = {CLR, COM, INC, DEC, NEG, TST};
   uint16_t single_ops_snr[5] = {ASR, ASL, ROR, ROL, SWAB};
@@ -144,7 +147,7 @@ static int operationTest()
 
 // Change the number of runs(above), the string output, and value outputs for the loop
 ///////////////////////////////////////////////////////////
-  for (int i = 0; i < runs; i++)
+   for (int i = 0; i < runs; i++)
   {
     //uint16_t clear_op = 0000260 | i;
     cout << "_________________\n";
@@ -184,6 +187,45 @@ static int operationTest()
     printFlags(current_instruction);
     clearReg();
   }
+
+    /*cout << "_________________\n";
+    cout << "i"  << endl; // CHANGE HERE
+    //printf("code: %d\n", i);
+    int res;
+    int val;
+    int test;
+
+    fillMem(0);
+
+
+    PC = 6;
+    val = 0;
+    res = clearInstruction(current_instruction);
+    //current_instruction->N = 1;
+    //current_instruction->Z = 1;
+    //current_instruction->V = 1;
+    //current_instruction->C = 1;
+    res = parseInstruction(JMP, current_instruction); // CHANGE HERE
+    res = printInstruction(current_instruction);
+
+    R1 = 12;
+    R2 = 14;
+
+    MEM[10] = 0xCF;
+    MEM[11] = 0x00;
+    MEM[12] = 0x14;
+    MEM[13] = 0x00;
+    MEM[14] = 0xFF;
+    MEM[15] = 0xFF;
+
+    printMemReg();
+    printFlags(current_instruction);
+
+    test = dispatch(current_instruction);
+
+    printMemReg();
+    printFlags(current_instruction);
+    clearReg();*/
 ///////////////////////////////////////////////////////////
 }
 
