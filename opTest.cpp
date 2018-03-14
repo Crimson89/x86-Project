@@ -73,10 +73,10 @@ static int operationTest()
   // Change the spots with "x" to desired value
 
   // Byte mode                 x00000
-  uint16_t byte_mode   =      0100000;
+  uint16_t byte_mode   =      0000000;
 
   // Addr mode                 0000x0
-  uint16_t single_mode =      0000030;
+  uint16_t single_mode =      0000010;
 
   // Register                  00000x
   uint16_t single_reg  =      0000001;
@@ -158,6 +158,9 @@ static int operationTest()
 
     val = 0;
     res = clearInstruction(current_instruction);
+    current_instruction->N = 1;
+    //current_instruction->Z = 1;
+    current_instruction->V = 1;
     current_instruction->C = 1;
     res = parseInstruction(single_ops_all[i], current_instruction); // CHANGE HERE
     res = printInstruction(current_instruction);
@@ -166,9 +169,9 @@ static int operationTest()
     R2 = 14;
 
     MEM[10] = 0xCF;
-    MEM[11] = 0xFC;
-    MEM[12] = 0x0B;
-    MEM[13] = 0x00;
+    MEM[11] = 0x00;
+    MEM[12] = 0x00;
+    MEM[13] = 0x80;
     MEM[14] = 0xFF;
     MEM[15] = 0xFF;
 
