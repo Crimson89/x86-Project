@@ -159,8 +159,13 @@ int TST(instruction *inst) // Test (B)
 // Shift & Rotate
 int ASR(instruction *inst) // Arithmetic shift right (B)
 {
+
+
+  cout << "In ASR, about to fetch ops.  PC = " << PC << "\n";
   uint16_t destAddress = get_address(inst->addressingModeReg, inst->regBase);
+  cout << "In ASR, called get_address on reg. PC = " << PC << ", destAddress = " << destAddress << "\n";
   uint16_t dest = get_value(inst->addressingModeReg, inst->regBase);
+  cout << "In ASR, called get_value on reg.  PC = " << PC << ", reg value = " << dest << "\n";
   uint16_t msb;
   cout << "destAddress " << oct << destAddress << "\n";
   cout << "dest " << oct << destAddress << "\n";

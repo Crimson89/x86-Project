@@ -1,0 +1,10 @@
+A: .WORD 011111
+B: .WORD 010000
+C: .WORD 000111
+D: .WORD 111000
+START: MOV #4, R1;
+LOOP1: ADD B,A;
+       ASR B;
+       SUB #1, R1;
+       BNE LOOP1;
+       HALT;

@@ -43,8 +43,8 @@ int ADD(instruction *inst) // Add source to destination
 {
   inst->op_text = "ADD";
   // Read values from memory
-  uint16_t destAddress = get_address(inst->addressingModeDest, inst->destBase, inst->addressingModeSrc);
   uint16_t src = get_value(inst->addressingModeSrc, inst->srcBase);
+  uint16_t destAddress = get_address(inst->addressingModeDest, inst->destBase, inst->addressingModeSrc);
   uint16_t dest = get_value(inst->addressingModeDest, inst->destBase);
   bool msb_dest = EXTRACT_BIT(dest,WORD_MSB_INDEX);
   bool msb_src = EXTRACT_BIT(src,WORD_MSB_INDEX);

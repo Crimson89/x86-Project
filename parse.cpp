@@ -354,11 +354,12 @@ uint16_t get_address(uint16_t mode, uint16_t baseAddress, uint16_t modeTest)
                     offset = 2;
                   else
                     offset = 0;
+                  offset = 2;
                   cout << "g_a offset: " << offset << "\n";
-                  X = read_word(mode, PC + offset, true);
+                  X = read_word(mode, PC, true);
 				          current_instruction->immediate = X;
                   //PC += 2;
-                  resultAddress = PC + X;
+                  resultAddress = PC + 2 + X;
                   cout << "get_a PC: " << oct << PC << "X: " << oct << X << "\n";
                   break;
     // Index deferred
