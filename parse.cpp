@@ -203,6 +203,8 @@ int parseInstruction(uint16_t instructionCode, instruction* newInstruction)
     }
   }
  
+  //TODO right place to put this?
+  inst->PSW = PSW.PSW_BYTE;
   
   uint16_t bad_mode = 0; 
   if ((current_instruction->regBase == 7) || (current_instruction->regBase == 6)) {
