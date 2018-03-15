@@ -29,6 +29,8 @@ int main(int argc, char ** argv)
 	int err;							// error checking
 	uint16_t instruction_code;			// 16-bit instruction
 	bool at_breakpoint = false;         // Current PC triggered breakpoint
+	bool program_step_mode = false;     // Stepping mode enabled, breakpoint at each new instruction
+	bool old_program_step_mode = false; // Value of stepping mode at last loop
 	uint16_t breakpoint_pc;             // PC when breakpoint was triggered
 	
 	trace_file = "test_trace.txt";
@@ -58,6 +60,8 @@ int main(int argc, char ** argv)
 			cin.get();
 			cout << "                            Executing program" <<endl;
 			cout << "-------------------------------------------------------------------------" <<endl;
+			old_program_step_mode = false;
+			program_step_mode = false;
 
 			// Main program loop
 			while(program_execution_control == RUN_PROGRAM) {
@@ -67,10 +71,12 @@ int main(int argc, char ** argv)
 					cerr << "\n\n-------------------------------------------------------------------------" <<endl;
 					cerr << "-------------------------------------------------------------------------" <<endl;
 					cerr << "\n\n\t\tInstruction Fetch Fault, Terminating Program!!\n\n" << endl;
-					cerr << "\t\t\t\tPress ENTER to return to menu" << endl;
+					cerr << "\t\t\tPress ENTER to return to menu" << endl;
 					cerr << "-------------------------------------------------------------------------" <<endl;
 					cerr << "-------------------------------------------------------------------------\n\n" <<endl;
 					program_execution_control = PRINT_MENU;
+					old_program_step_mode = false;
+					program_step_mode = false;
 					cin.get();
 					break;
 				}
@@ -80,17 +86,19 @@ int main(int argc, char ** argv)
 					cerr << "\n\n-------------------------------------------------------------------------" <<endl;
 					cerr << "-------------------------------------------------------------------------" <<endl;
 					cerr << "\n\n\t\tInstruction Decode Fault, Terminating Program!!\n\n" << endl;
-					cerr << "\t\t\t\tPress ENTER to return to menu" << endl;
+					cerr << "\t\t\tPress ENTER to return to menu" << endl;
 					cerr << "-------------------------------------------------------------------------" <<endl;
 					cerr << "-------------------------------------------------------------------------\n\n" <<endl;
 					program_execution_control = PRINT_MENU;
+					old_program_step_mode = false;
+					program_step_mode = false;
 					cin.get();
 					break;
 				}
 				
 				// If this is a breakpoint, then print breakpoint information
-				if(at_breakpoint){
-					handle_breakpoint(breakpoint_pc, instruction_code);
+				if(at_breakpoint || program_step_mode){
+					program_step_mode = handle_breakpoint(breakpoint_pc, instruction_code, old_program_step_mode);
 					at_breakpoint = false;
 				}
 
@@ -99,9 +107,11 @@ int main(int argc, char ** argv)
 					cerr << "\n\n-------------------------------------------------------------------------" <<endl;
 					cerr << "-------------------------------------------------------------------------" <<endl;
 					cerr << "\n\n\t\tInstruction Execution/Dispatch Fault\n\n" << endl;
-					cerr << "\t\t\t\tPress ENTER to continue" << endl;
+					cerr << "\t\t\tPress ENTER to continue" << endl;
 					cerr << "-------------------------------------------------------------------------" <<endl;
 					cerr << "-------------------------------------------------------------------------\n\n" <<endl;
+					old_program_step_mode = false;
+					program_step_mode = false;
 					cin.get();
 					break;
 				}
@@ -118,11 +128,13 @@ cout << "Instruction: " << op_formatted(current_instruction) << endl;
 				if(write_back(PSW, current_instruction)) {
 					cerr << "\n\n-------------------------------------------------------------------------" <<endl;
 					cerr << "-------------------------------------------------------------------------" <<endl;
-					cerr << "\n\n\t\tPSW Write Back Fault, Terminating Program!!\n\n" << endl;
-					cerr << "\t\t\t\tPress ENTER to return to menu" << endl;
+					cerr << "\n\n   PSW Write Back Fault, Terminating Program!!\n\n" << endl;
+					cerr << "              Press ENTER to return to menu" << endl;
 					cerr << "-------------------------------------------------------------------------" <<endl;
 					cerr << "-------------------------------------------------------------------------\n\n" <<endl;
 					program_execution_control = PRINT_MENU;
+					old_program_step_mode = false;
+					program_step_mode = false;
 					cin.get();
 				}
 				
@@ -133,10 +145,14 @@ cout << "Instruction: " << op_formatted(current_instruction) << endl;
 // End Debug, print stuff////
 //////////////////////////
 				
-				if(current_instruction->opcode == m_HALT)
+				if(current_instruction->opcode == m_HALT) {
+					old_program_step_mode = false;
+					program_step_mode = false;
 					program_execution_control = PRINT_MENU;
+				}
 				
 				clearInstruction(current_instruction);
+				old_program_step_mode = program_step_mode;
 			}
 			cout << "-------------------------------------------------------------------------" <<endl;
 			cout << "                            Program Completed!" <<endl;
@@ -151,6 +167,8 @@ cout << "Instruction: " << op_formatted(current_instruction) << endl;
 			cerr << "-------------------------------------------------------------------------" <<endl;
 			cin.get();
 			program_execution_control = PRINT_MENU;
+			old_program_step_mode = false;
+			program_step_mode = false;
 		}
 	}
 	delete current_instruction;

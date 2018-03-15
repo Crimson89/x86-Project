@@ -17,8 +17,9 @@ uint16_t& PC = REGS[7];
 uint16_t starting_pc;
 instruction * current_instruction;	//decoded instruction information
 int verbosity_level = 0;            //Level of verbosity in print statements
-string trace_file;
-string data_file;
+string trace_file = "trace.txt";
+string data_file = "addc.ascii";
+PSW_t PSW;
 
 void get_user_octal(string prompt, string error_text, uint16_t &word)
 {
