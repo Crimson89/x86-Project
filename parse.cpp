@@ -350,16 +350,25 @@ uint16_t get_address(uint16_t mode, uint16_t baseAddress, uint16_t modeTest)
     // Autodecrement deferred
     case 0000005: 
     // Index
-    case 0000006: 
-                  X = PC;
-				  current_instruction->immediate = X;
-                  PC += 2;
+    case 0000006: if ((modeTest == 6) || (modeTest == 7))
+                    offset = 2;
+                  else
+                    offset = 0;
+                  cout << "g_a offset: " << offset << "\n";
+                  X = read_word(mode, PC + offset, true);
+				          current_instruction->immediate = X;
+                  //PC += 2;
                   resultAddress = PC + X;
+                  cout << "get_a PC: " << oct << PC << "X: " << oct << X << "\n";
                   break;
     // Index deferred
-    case 0000007: X = PC;
+    case 0000007: if ((modeTest == 6) || (modeTest == 7))
+                    offset = 2;
+                  else
+                    offset = 0;
+                  X = read_word(mode, PC + offset, true);
 				  current_instruction->immediate = X;
-                  PC += 2;
+                  //PC += 2;
                   workingAddress = PC + X;
                   // READ TRACE
                   if (byte)

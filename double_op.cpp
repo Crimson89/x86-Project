@@ -50,6 +50,9 @@ int ADD(instruction *inst) // Add source to destination
   bool msb_src = EXTRACT_BIT(src,WORD_MSB_INDEX);
   uint32_t temp = dest + src;
 
+  cout << "ADDRESS : " << oct << destAddress << "\n";
+  cout << "DESTVAL : " << oct << src << "\n";
+  cout << "SRCEVAL : " << oct << dest << "\n";
   // Do the add and store
   dest += src;
   bool msb_result = EXTRACT_BIT(dest,WORD_MSB_INDEX);
