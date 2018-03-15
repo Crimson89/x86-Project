@@ -330,7 +330,7 @@ uint16_t get_address(uint16_t mode, uint16_t baseAddress, uint16_t modeTest)
                   break;
     // Autoincrement
     case 0000002: resultAddress = PC;
-                  PC += 2;
+                  //PC += 2; TODO i think this is unneeded.
                   break;
     // Autoincrement deferred
     case 0000003: workingAddress = PC; 
@@ -343,34 +343,35 @@ uint16_t get_address(uint16_t mode, uint16_t baseAddress, uint16_t modeTest)
                   {
                     resultAddress = read_word(REGISTER_MODE, workingAddress, false);
                   }
-                  PC += 2;
+                  //PC += 2; TODO i think this is unneeded.
                   break;
     // Autodecrement
     case 0000004: 
     // Autodecrement deferred
     case 0000005: 
     // Index
-    case 0000006: if ((modeTest == 6) || (modeTest == 7))
+    case 0000006: /*if ((modeTest == 6) || (modeTest == 7))
                     offset = 2;
                   else
-                    offset = 0;
+                    offset = 0;*/
                   offset = 2;
                   cout << "g_a offset: " << offset << "\n";
                   X = read_word(mode, PC, true);
 				          current_instruction->immediate = X;
                   //PC += 2;
-                  resultAddress = PC + 2 + X;
+                  resultAddress = PC + offset + X;
                   cout << "get_a PC: " << oct << PC << "X: " << oct << X << "\n";
                   break;
     // Index deferred
-    case 0000007: if ((modeTest == 6) || (modeTest == 7))
+    case 0000007: /*if ((modeTest == 6) || (modeTest == 7))
                     offset = 2;
                   else
-                    offset = 0;
-                  X = read_word(mode, PC + offset, true);
-				  current_instruction->immediate = X;
+                    offset = 0;*/
+                  offset = 2;
+                  X = read_word(mode, PC, true);
+				          current_instruction->immediate = X;
                   //PC += 2;
-                  workingAddress = PC + X;
+                  workingAddress = PC + offset + X;
                   // READ TRACE
                   if (byte)
                   {
@@ -431,24 +432,24 @@ uint16_t get_address(uint16_t mode, uint16_t baseAddress, uint16_t modeTest)
                   break;
     // Index
     case 0000006: // READ TRACE 
-                  if ((modeTest == 6) || (modeTest == 7))
+                  /*if ((modeTest == 6) || (modeTest == 7))
                     offset = 2;
                   else
-                    offset = 0;
-                  X = read_word(mode, PC + offset, true);
+                    offset = 0;*/
+                  X = read_word(mode, PC, true);
 				          current_instruction->immediate = X;
                   //PC += 2;
                   resultAddress = SP + X;
                   break;
     // Index deferred
     case 0000007: workingAddress = SP; 
-                  if ((modeTest == 6) || (modeTest == 7))
+                  /*if ((modeTest == 6) || (modeTest == 7))
                     offset = 2;
                   else
-                    offset = 0;
+                    offset = 0;*/
                   //TODO only read word?
                   // READ TRACE
-                  X = read_word(mode, PC + offset, true);
+                  X = read_word(mode, PC, true);
 				          current_instruction->immediate = X;
                   //PC += 2;
                   // READ TRACE
@@ -524,12 +525,12 @@ uint16_t get_address(uint16_t mode, uint16_t baseAddress, uint16_t modeTest)
                   break;
     // Index
     case 0000006: // READ TRACE
-                  cout << "modeTest \n" << modeTest << "\n";
+                  /*cout << "modeTest \n" << modeTest << "\n";
                   if ((modeTest == 6) || (modeTest == 7))
                     offset = 2;
                   else
-                    offset = 0;
-                  X = read_word(mode, PC + offset, true);
+                    offset = 0;*/
+                  X = read_word(mode, PC, true);
                   cout << "offset \n" << X << "\n";
 				          current_instruction->immediate = X;
                   //PC += 2;
@@ -539,11 +540,11 @@ uint16_t get_address(uint16_t mode, uint16_t baseAddress, uint16_t modeTest)
     case 0000007: workingAddress = REGS[baseAddress];
                   //TODO only read word?
                   // READ TRACE
-                  if ((modeTest == 6) | (modeTest == 7))
+                  /*if ((modeTest == 6) | (modeTest == 7))
                     offset = 2;
                   else
-                    offset = 0;
-                  X = read_word(mode, PC + offset, true);
+                    offset = 0;*/
+                  X = read_word(mode, PC, true);
 				  current_instruction->immediate = X;
                   //PC += 2;
                   // READ TRACE
