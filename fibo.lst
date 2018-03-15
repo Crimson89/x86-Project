@@ -1,0 +1,26 @@
+       1                                	.PSECT A, REL
+       2                                ;	**************************************
+       3                                ; * CALCULATE THE NTH FIBONACCI NUMBER *
+       4                                ; **************************************
+       5 000000 000000                  OLD:		.WORD		0.		; Initialize variables
+       6 000002 000000                  NEW:		.WORD		0.
+       7 000004 000000                  FIBO:		.WORD		0.
+       8 000006 000006                  N:			.WORD		6.
+       9                                
+      10                                START:								; Program starts executing here
+      11 000010 012767  000001  177762  	MOV	#1.,OLD					; Set OLD, FIBO to 1
+      12 000016 012767  000001  177760  	MOV	#1.,FIBO
+      13                                WHILE:								; WHILE N > 1 DO
+      14 000024 026727  177756  000001  	CMP	N,#1
+      15 000032 003417                  	BLE	WEND
+      16 000034 016767  177744  177740  	MOV	FIBO,NEW				; NEW = FIBO + OLD
+      17 000042 066767  177732  177732  	ADD	OLD,NEW
+      18 000050 016767  177730  177722  	MOV	FIBO,OLD				; OLD = FIBO
+      19 000056 016767  177720  177720  	MOV	NEW,FIBO				; FIBO = NEW
+      20 000064 005367  177716          	DEC	N								; N = N - 1
+      21 000070 000755                  	BR	WHILE
+      22                                WEND:	
+      23 000072 000000                  	HALT
+      24                                	.END
+      25                                
+      25                                

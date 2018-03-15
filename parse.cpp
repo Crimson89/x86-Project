@@ -308,7 +308,7 @@ pc_error:
 // TODO, test PC and SP?
 // This returns the address, doing N-1 trace statements. We could probably have the trace statements in
 // the read_byte and read_word functions honestly.
-uint16_t get_address(uint16_t mode, uint16_t baseAddress, uint16_t modeTest)
+uint16_t get_address(uint16_t mode, uint16_t baseAddress, bool trace)
 {
   uint16_t X = 0;
   uint16_t workingAddress = 0;
@@ -328,20 +328,20 @@ uint16_t get_address(uint16_t mode, uint16_t baseAddress, uint16_t modeTest)
     // Register deferred
     case 0000001: //INVALID
                   break;
-    // Autoincrement
+    // Immediate
     case 0000002: resultAddress = PC;
                   //PC += 2; TODO i think this is unneeded.
                   break;
-    // Autoincrement deferred
+    // Immediate  deferred
     case 0000003: workingAddress = PC; 
                   // READ TRACE
                   if (byte)
                   {
-                    resultAddress = read_byte(REGISTER_MODE, workingAddress, false);
+                    resultAddress = read_byte(REGISTER_MODE, workingAddress, trace);
                   }
                   else
                   {
-                    resultAddress = read_word(REGISTER_MODE, workingAddress, false);
+                    resultAddress = read_word(REGISTER_MODE, workingAddress, trace);
                   }
                   //PC += 2; TODO i think this is unneeded.
                   break;
@@ -350,13 +350,10 @@ uint16_t get_address(uint16_t mode, uint16_t baseAddress, uint16_t modeTest)
     // Autodecrement deferred
     case 0000005: 
     // Index
-    case 0000006: /*if ((modeTest == 6) || (modeTest == 7))
-                    offset = 2;
-                  else
-                    offset = 0;*/
+    case 0000006: 
                   offset = 2;
                   cout << "g_a offset: " << offset << "\n";
-                  X = read_word(mode, PC, true);
+                  X = read_word(mode, PC, trace);
 				          current_instruction->immediate = X;
                   //PC += 2;
                   resultAddress = PC + offset + X;
@@ -368,18 +365,18 @@ uint16_t get_address(uint16_t mode, uint16_t baseAddress, uint16_t modeTest)
                   else
                     offset = 0;*/
                   offset = 2;
-                  X = read_word(mode, PC, true);
+                  X = read_word(mode, PC, trace);
 				          current_instruction->immediate = X;
                   //PC += 2;
                   workingAddress = PC + offset + X;
                   // READ TRACE
                   if (byte)
                   {
-                    resultAddress = read_byte(mode, workingAddress, true);
+                    resultAddress = read_byte(mode, workingAddress, trace);
                   }
                   else
                   {
-                    resultAddress = read_word(mode, workingAddress, true);
+                    resultAddress = read_word(mode, workingAddress, trace);
                   }
                   break;
     }
@@ -404,11 +401,11 @@ uint16_t get_address(uint16_t mode, uint16_t baseAddress, uint16_t modeTest)
                   // READ TRACE
                   if (byte)
                   {
-                    resultAddress = read_byte(mode, workingAddress, true);
+                    resultAddress = read_byte(mode, workingAddress, trace);
                   }
                   else
                   {
-                    resultAddress = read_word(mode, workingAddress, true);
+                    resultAddress = read_word(mode, workingAddress, trace);
                   }
                   //SP += 2;
                   break;
@@ -436,7 +433,7 @@ uint16_t get_address(uint16_t mode, uint16_t baseAddress, uint16_t modeTest)
                     offset = 2;
                   else
                     offset = 0;*/
-                  X = read_word(mode, PC, true);
+                  X = read_word(mode, PC, trace);
 				          current_instruction->immediate = X;
                   //PC += 2;
                   resultAddress = SP + X;
@@ -449,17 +446,17 @@ uint16_t get_address(uint16_t mode, uint16_t baseAddress, uint16_t modeTest)
                     offset = 0;*/
                   //TODO only read word?
                   // READ TRACE
-                  X = read_word(mode, PC, true);
+                  X = read_word(mode, PC, trace);
 				          current_instruction->immediate = X;
                   //PC += 2;
                   // READ TRACE
                   if (byte)
                   {
-                    resultAddress = read_byte(mode, workingAddress + X, true);
+                    resultAddress = read_byte(mode, workingAddress + X, trace);
                   }
                   else
                   {
-                    resultAddress = read_word(mode, workingAddress + X, true);
+                    resultAddress = read_word(mode, workingAddress + X, trace);
                   }
                   break;
     }
@@ -490,11 +487,11 @@ uint16_t get_address(uint16_t mode, uint16_t baseAddress, uint16_t modeTest)
                   // READ TRACE
                   if (byte)
                   {
-                    resultAddress = read_byte(mode, workingAddress, true);
+                    resultAddress = read_byte(mode, workingAddress, trace);
                   }
                   else
                   {
-                    resultAddress = read_word(mode, workingAddress, true);
+                    resultAddress = read_word(mode, workingAddress, trace);
                   }
                   //REGS[baseAddress] += 2;
                   break;
@@ -516,11 +513,11 @@ uint16_t get_address(uint16_t mode, uint16_t baseAddress, uint16_t modeTest)
                   // READ TRACE
                   if (byte)
                   {
-                    resultAddress = read_byte(mode, workingAddress, true);
+                    resultAddress = read_byte(mode, workingAddress, trace);
                   }
                   else
                   {
-                    resultAddress = read_word(mode, workingAddress, true);
+                    resultAddress = read_word(mode, workingAddress, trace);
                   }
                   break;
     // Index
@@ -530,7 +527,7 @@ uint16_t get_address(uint16_t mode, uint16_t baseAddress, uint16_t modeTest)
                     offset = 2;
                   else
                     offset = 0;*/
-                  X = read_word(mode, PC, true);
+                  X = read_word(mode, PC, trace);
                   cout << "offset \n" << X << "\n";
 				          current_instruction->immediate = X;
                   //PC += 2;
@@ -544,17 +541,17 @@ uint16_t get_address(uint16_t mode, uint16_t baseAddress, uint16_t modeTest)
                     offset = 2;
                   else
                     offset = 0;*/
-                  X = read_word(mode, PC, true);
+                  X = read_word(mode, PC, trace);
 				  current_instruction->immediate = X;
                   //PC += 2;
                   // READ TRACE
                   if (byte)
                   {
-                    resultAddress = read_byte(mode, workingAddress + X, true);
+                    resultAddress = read_byte(mode, workingAddress + X, trace);
                   }
                   else
                   {
-                    resultAddress = read_word(mode, workingAddress + X, true);
+                    resultAddress = read_word(mode, workingAddress + X, trace);
                   }
                   break;
     }

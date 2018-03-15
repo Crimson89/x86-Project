@@ -26,7 +26,7 @@ int CLR(instruction *inst) // Clear (B)
 
 int COM(instruction *inst) // 1's Compliment (B)
 {
-  uint16_t destAddress = get_address(inst->addressingModeReg, inst->regBase);
+  uint16_t destAddress = get_address(inst->addressingModeReg, inst->regBase, false);
   uint16_t dest = get_value(inst->addressingModeReg, inst->regBase);
   dest = ~dest;
 
@@ -52,7 +52,7 @@ int COM(instruction *inst) // 1's Compliment (B)
 
 int INC(instruction *inst) // Increment (B)
 {
-  uint16_t destAddress = get_address(inst->addressingModeReg, inst->regBase);
+  uint16_t destAddress = get_address(inst->addressingModeReg, inst->regBase, false);
   uint16_t dest = get_value(inst->addressingModeReg, inst->regBase);
   uint16_t temp = dest;
   dest++;
@@ -79,7 +79,7 @@ int INC(instruction *inst) // Increment (B)
 
 int DEC(instruction *inst) // Decrement (B)
 {
-  uint16_t destAddress = get_address(inst->addressingModeReg, inst->regBase);
+  uint16_t destAddress = get_address(inst->addressingModeReg, inst->regBase, false);
   uint16_t dest = get_value(inst->addressingModeReg, inst->regBase);
   uint16_t temp = dest;
   dest--;
@@ -108,7 +108,7 @@ int DEC(instruction *inst) // Decrement (B)
 
 int NEG(instruction *inst) // 2's Compliment negate (B)
 {
-  uint16_t destAddress = get_address(inst->addressingModeReg, inst->regBase);
+  uint16_t destAddress = get_address(inst->addressingModeReg, inst->regBase, false);
   uint16_t dest = get_value(inst->addressingModeReg, inst->regBase);
   dest = ~dest;
   dest += 1;
@@ -162,7 +162,7 @@ int ASR(instruction *inst) // Arithmetic shift right (B)
 
 
   cout << "In ASR, about to fetch ops.  PC = " << PC << "\n";
-  uint16_t destAddress = get_address(inst->addressingModeReg, inst->regBase);
+  uint16_t destAddress = get_address(inst->addressingModeReg, inst->regBase, false);
   cout << "In ASR, called get_address on reg. PC = " << PC << ", destAddress = " << destAddress << "\n";
   uint16_t dest = get_value(inst->addressingModeReg, inst->regBase);
   cout << "In ASR, called get_value on reg.  PC = " << PC << ", reg value = " << dest << "\n";
@@ -202,7 +202,7 @@ int ASR(instruction *inst) // Arithmetic shift right (B)
 
 int ASL(instruction *inst) // Arithmetic shift left (B)
 {
-  uint16_t destAddress = get_address(inst->addressingModeReg, inst->regBase);
+  uint16_t destAddress = get_address(inst->addressingModeReg, inst->regBase, false);
   uint16_t dest = get_value(inst->addressingModeReg, inst->regBase);
 
   if(inst->byteMode)
@@ -233,7 +233,7 @@ int ASL(instruction *inst) // Arithmetic shift left (B)
 
 int ROR(instruction *inst) // Rotate right (B)
 {
-  uint16_t destAddress = get_address(inst->addressingModeReg, inst->regBase);
+  uint16_t destAddress = get_address(inst->addressingModeReg, inst->regBase, false);
   uint16_t dest; 
   uint16_t temp2 = dest;
   uint16_t temp;
@@ -270,7 +270,7 @@ int ROR(instruction *inst) // Rotate right (B)
 
 int ROL(instruction *inst) // Rotate left (B)
 {
-  uint16_t destAddress = get_address(inst->addressingModeReg, inst->regBase);
+  uint16_t destAddress = get_address(inst->addressingModeReg, inst->regBase, false);
   uint16_t dest = get_value(inst->addressingModeReg, inst->regBase);
   uint16_t temp2 = dest;
   uint16_t temp;
@@ -310,7 +310,7 @@ int ROL(instruction *inst) // Rotate left (B)
 int SWAB(instruction *inst) // Swap bytes
 {
   inst->op_text = "SWAB";
-  uint16_t destAddress = get_address(inst->addressingModeReg, inst->regBase);
+  uint16_t destAddress = get_address(inst->addressingModeReg, inst->regBase, false);
   uint16_t dest = get_value(inst->addressingModeReg, inst->regBase);
   uint16_t temp = 0x00FF & dest;
   temp <<= 8;
@@ -332,7 +332,7 @@ int SWAB(instruction *inst) // Swap bytes
 // Multiple Precision
 int ADC(instruction *inst) // Add carry (B)
 {
-  uint16_t destAddress = get_address(inst->addressingModeReg, inst->regBase);
+  uint16_t destAddress = get_address(inst->addressingModeReg, inst->regBase, false);
   uint16_t dest = get_value(inst->addressingModeReg, inst->regBase);
   uint16_t temp = dest;
   dest += inst->C;
@@ -363,7 +363,7 @@ int ADC(instruction *inst) // Add carry (B)
 
 int SBC(instruction *inst) // Subtract carry (B)
 {
-  uint16_t destAddress = get_address(inst->addressingModeReg, inst->regBase);
+  uint16_t destAddress = get_address(inst->addressingModeReg, inst->regBase, false);
   uint16_t dest = get_value(inst->addressingModeReg, inst->regBase);
   uint16_t temp = dest;
   dest -= inst->C;
@@ -396,7 +396,7 @@ int SBC(instruction *inst) // Subtract carry (B)
 int SXT(instruction *inst) // Sign extend
 {
   inst->op_text = "SXT";
-  uint16_t destAddress = get_address(inst->addressingModeReg, inst->regBase);
+  uint16_t destAddress = get_address(inst->addressingModeReg, inst->regBase, false);
   uint16_t dummyValue = get_value(inst->addressingModeReg, inst->regBase, false);
   if (inst->N == 1)
   {

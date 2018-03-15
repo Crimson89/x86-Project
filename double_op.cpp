@@ -1,10 +1,29 @@
 #include "header.h"
 
+/*
+  Note: use get_address and get_value in the following way:
+
+  get_address(addressingMode, register, modeTest)
+  get_value(addressingMode, register, trace)
+
+  call in this order:
+
+  get_value for source (trace = true)
+  get_address for dest
+  get_value for dest (trace = false)
+
+  get_address won't increment PC for the dest calls,
+  second get_value has to be called a second time even if it's not used
+
+*/
+
+
 // General Instructions
 int MOV(instruction *inst) // Move source to destination (B)
 {
-  uint16_t destAddress = get_address(inst->addressingModeDest, inst->destBase, inst->addressingModeSrc);
   uint16_t src = get_value(inst->addressingModeSrc, inst->srcBase);
+  uint16_t destAddress = get_address(inst->addressingModeDest, inst->destBase);
+  
   if(inst->byteMode)
   {
     inst->op_text = "MOVB";
@@ -44,7 +63,7 @@ int ADD(instruction *inst) // Add source to destination
   inst->op_text = "ADD";
   // Read values from memory
   uint16_t src = get_value(inst->addressingModeSrc, inst->srcBase);
-  uint16_t destAddress = get_address(inst->addressingModeDest, inst->destBase, inst->addressingModeSrc);
+  uint16_t destAddress = get_address(inst->addressingModeDest, inst->destBase, false);
   uint16_t dest = get_value(inst->addressingModeDest, inst->destBase);
   bool msb_dest = EXTRACT_BIT(dest,WORD_MSB_INDEX);
   bool msb_src = EXTRACT_BIT(src,WORD_MSB_INDEX);
@@ -75,9 +94,10 @@ int SUB(instruction *inst) // Subtract source from destination
   cout << "SUB" << "\n";
   inst->byteMode = 0;
   inst->op_text = "SUB";
-  uint16_t destAddress = get_address(inst->addressingModeDest, inst->destBase, inst->addressingModeSrc);
-  cout << "destAddress" << oct << destAddress << "\n";
+  
   uint16_t src = get_value(inst->addressingModeSrc, inst->srcBase);
+  uint16_t destAddress = get_address(inst->addressingModeDest, inst->destBase, false);
+  cout << "destAddress" << oct << destAddress << "\n";
   cout << "src" << oct << src << "\n";
   uint16_t dest = get_value(inst->addressingModeDest, inst->destBase);
   cout << "dest" << oct << dest << "\n";
@@ -168,8 +188,8 @@ int BIT(instruction *inst) // Bit test (B)
 
 int BIC(instruction *inst) // Bit clear (B)
 {
-  uint16_t destAddress = get_address(inst->addressingModeDest, inst->destBase, inst->addressingModeSrc);
   uint16_t src = get_value(inst->addressingModeSrc, inst->srcBase);
+  uint16_t destAddress = get_address(inst->addressingModeDest, inst->destBase, false);
   uint16_t dest = get_value(inst->addressingModeDest, inst->destBase);
 
   dest = (~src) & dest;
@@ -193,8 +213,8 @@ int BIC(instruction *inst) // Bit clear (B)
 
 int BIS(instruction *inst) // Bit set (B)
 {
-  uint16_t destAddress = get_address(inst->addressingModeDest, inst->destBase, inst->addressingModeSrc);
   uint16_t src = get_value(inst->addressingModeSrc, inst->srcBase);
+  uint16_t destAddress = get_address(inst->addressingModeDest, inst->destBase, false);
   uint16_t dest = get_value(inst->addressingModeDest, inst->destBase);
 
   dest |= src;
