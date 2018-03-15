@@ -19,6 +19,7 @@ instruction * current_instruction;	//decoded instruction information
 int verbosity_level = 0;            //Level of verbosity in print statements
 string trace_file;
 string data_file;
+PSW_t PSW;
 
 void get_user_octal(string prompt, string error_text, uint16_t &word)
 {
@@ -155,7 +156,7 @@ static int operationTest()
 
   uint16_t JMP  =  0000100 + 022; // Jump
   uint16_t JSR  =  0004000 + 0311; // Jump to subroutine
-  uint16_t RTS  =  0000200 + 05; // Return from subroutine
+  uint16_t RTS  =  0000200 + 03; // Return from subroutine
 
   uint16_t single_ops_all[14] = {CLR, COM, INC, DEC, NEG, TST, ASR, ASL, ROR, ROL, SWAB, ADC, SBC, SXT};
   uint16_t single_ops_general[6] = {CLR, COM, INC, DEC, NEG, TST};
@@ -188,7 +189,7 @@ static int operationTest()
 
     // Change the number of runs(above), the string output, and value outputs for the loop
 ///////////////////////////////////////////////////////////
-  for (int i = 0; i < runs; i++)
+  /*for (int i = 0; i < runs; i++)
   {
     cout << "_________________\n";
     cout << endl; // CHANGE HERE
@@ -236,31 +237,30 @@ static int operationTest()
     printMemReg();
     printFlags(current_instruction);
     //clearReg();
-  }
+  }*/
 
-    /*cout << "_________________\n";
+    cout << "_________________\n";
     cout << "i"  << endl; // CHANGE HERE
     //printf("code: %d\n", i);
-    int res;
-    int val;
-    int test;
 
     fillMem(0);
 
 
-    PC = 6;
-    val = 0;
     res = clearInstruction(current_instruction);
     //current_instruction->N = 1;
     //current_instruction->Z = 1;
     //current_instruction->V = 1;
     //current_instruction->C = 1;
-    res = parseInstruction(JMP, current_instruction); // CHANGE HERE
+    res = parseInstruction(JSR, current_instruction); // CHANGE HERE
     res = printInstruction(current_instruction);
 
-    R1 = 12;
-    R2 = 14;
+    R1 = 10;
+    R2 = 0;
+    R3 = 6;
+    R6 = 20;
+    R7 = 0;
 
+    MEM[6] = 0xF0;
     MEM[10] = 0xCF;
     MEM[11] = 0x00;
     MEM[12] = 0x14;
@@ -275,7 +275,20 @@ static int operationTest()
 
     printMemReg();
     printFlags(current_instruction);
-    clearReg();*/
+    //clearReg();
+
+    res = clearInstruction(current_instruction);
+    //current_instruction->N = 1;
+    //current_instruction->Z = 1;
+    //current_instruction->V = 1;
+    //current_instruction->C = 1;
+    res = parseInstruction(RTS, current_instruction); // CHANGE HERE
+    res = printInstruction(current_instruction);
+    test = dispatch(current_instruction);
+
+    printMemReg();
+    printFlags(current_instruction);
+
 ///////////////////////////////////////////////////////////
 }
 

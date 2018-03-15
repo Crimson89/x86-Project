@@ -82,6 +82,7 @@ extern instruction * current_instruction;	// decoded instruction information
 extern int verbosity_level;             // Level of verbosity in print statements
 extern string trace_file;
 extern string data_file;
+extern PSW_t PSW;
 
 
 // MAIN functions - main.cpp
