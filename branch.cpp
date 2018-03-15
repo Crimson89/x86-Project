@@ -16,10 +16,19 @@ int BR(instruction *inst) // Branch unconditional
 int BNE(instruction *inst) // Branch if not equal (to zero)
 {
   inst->op_text = "BNE";
+  uint16_t branchOffset;
   if(!(inst->Z)) {
-    int16_t signed_offset;
-    memcpy(&signed_offset, &(inst->offset), 2);
-    PC += (signed_offset << 1); 
+    if ((inst->offset & 0x80) == 0)
+    {
+      branchOffset = inst->offset;
+    }
+    else
+    {
+      branchOffset = inst->offset | 0xFF00;
+    }
+    //int16_t signed_offset;
+    //memcpy(&signed_offset, &(inst->offset), 2);
+    PC += (branchOffset << 1); 
   }
 
   return 0;

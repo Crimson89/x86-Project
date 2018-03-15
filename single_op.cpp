@@ -162,6 +162,9 @@ int ASR(instruction *inst) // Arithmetic shift right (B)
   uint16_t destAddress = get_address(inst->addressingModeReg, inst->regBase);
   uint16_t dest = get_value(inst->addressingModeReg, inst->regBase);
   uint16_t msb;
+  cout << "destAddress " << oct << destAddress << "\n";
+  cout << "dest " << oct << destAddress << "\n";
+  cout << "PC " << oct << PC << "\n";
 
    if(inst->byteMode)
   { 
@@ -186,6 +189,7 @@ int ASR(instruction *inst) // Arithmetic shift right (B)
     inst->Z = IS_ZERO_WORD(dest)? 1:0;
   }
 
+  cout << "PC " << oct << PC << "\n";
   //inst->Z = IS_ZERO(dest)? 1:0;
   inst->V = inst->N ^ inst->C;
   return 0;

@@ -72,16 +72,20 @@ int ADD(instruction *inst) // Add source to destination
 
 int SUB(instruction *inst) // Subtract source from destination
 {
+  cout << "SUB" << "\n";
   inst->byteMode = 0;
   inst->op_text = "SUB";
   uint16_t destAddress = get_address(inst->addressingModeDest, inst->destBase, inst->addressingModeSrc);
+  cout << "destAddress" << oct << destAddress << "\n";
   uint16_t src = get_value(inst->addressingModeSrc, inst->srcBase);
+  cout << "src" << oct << src << "\n";
   uint16_t dest = get_value(inst->addressingModeDest, inst->destBase);
+  cout << "dest" << oct << dest << "\n";
   bool msb_dest = EXTRACT_BIT(dest,WORD_MSB_INDEX);
   bool msb_src = EXTRACT_BIT(src,WORD_MSB_INDEX);
   uint32_t temp = dest - src;
   uint16_t temp2 = dest;
-
+  
   dest = dest - src;
   bool msb_result = EXTRACT_BIT(temp,WORD_MSB_INDEX);
   write_word(inst->addressingModeDest, destAddress, dest);
