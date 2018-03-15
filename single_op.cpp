@@ -234,16 +234,17 @@ int ASL(instruction *inst) // Arithmetic shift left (B)
 int ROR(instruction *inst) // Rotate right (B)
 {
   uint16_t destAddress = get_address(inst->addressingModeReg, inst->regBase, false);
-  uint16_t dest; 
+  uint16_t dest;
   uint16_t temp2 = dest;
   uint16_t temp;
   uint16_t prevC = inst->C;
   dest = get_value(inst->addressingModeReg, inst->regBase);
   inst->C = (dest & 0x0001)? 1:0;
+  prevC = (dest & 0x0001)? 1:0;
   //temp = 0x0001 & dest;
-  
+
   if(inst->byteMode)
-  { 
+  {
     //temp <<= 7;
     dest = (dest >> 1);
     dest |= (prevC << 7);
