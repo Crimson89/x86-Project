@@ -240,7 +240,6 @@ int ROR(instruction *inst) // Rotate right (B)
   uint16_t prevC = inst->C;
   dest = get_value(inst->addressingModeReg, inst->regBase);
   inst->C = (dest & 0x0001)? 1:0;
-  prevC = (dest & 0x0001)? 1:0;
   //temp = 0x0001 & dest;
 
   if(inst->byteMode)
