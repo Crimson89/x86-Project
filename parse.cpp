@@ -346,10 +346,12 @@ uint16_t get_address(uint16_t mode, uint16_t baseAddress, bool trace)
                   //PC += 2; TODO i think this is unneeded.
                   break;
     // Autodecrement
-    case 0000004: 
+    case 0000004: // INVALID
+                  break;
     // Autodecrement deferred
-    case 0000005: 
-    // Index
+    case 0000005: // INVALID
+                  break;
+    // Relative
     case 0000006: 
                   offset = 2;
                   cout << "g_a offset: " << offset << "\n";
@@ -359,7 +361,7 @@ uint16_t get_address(uint16_t mode, uint16_t baseAddress, bool trace)
                   resultAddress = PC + offset + X;
                   cout << "get_a PC: " << oct << PC << "X: " << oct << X << "\n";
                   break;
-    // Index deferred
+    // Relative deferred
     case 0000007: /*if ((modeTest == 6) || (modeTest == 7))
                     offset = 2;
                   else
@@ -573,20 +575,12 @@ uint16_t get_value(uint16_t mode, uint16_t baseAddress, bool trace)
     switch (mode)
     {
       // Register
-      case 0000000: //resultValue = REGS[baseAddress];
+      case 0000000: 
+                    cerr << "Invalid PC addressing mode: 0\n";
                     break;
       // Register deferred
-      case 0000001: /*workingAddress = REGS[baseAddress];
-                    if (byte)
-                    {
-                      // READ TRACE
-                      resultValue = read_byte(mode, workingAddress, true);
-                    }
-                    else
-                    {
-                      // READ TRACE
-                      resultValue = read_word(mode, workingAddress, true);
-                    }*/
+      case 0000001: 
+                    cerr << "Invalid PC addressing mode: 1\n";
                     break;
       // Autoincrement
       case 0000002: workingAddress = PC;
@@ -621,9 +615,11 @@ uint16_t get_value(uint16_t mode, uint16_t baseAddress, bool trace)
                     break;
       // Autodecrement
       case 0000004: 
+                    cerr << "Invalid PC addressing mode: 4\n";
                     break;
       // Autodecrement deferred
       case 0000005: 
+                    cerr << "Invalid PC addressing mode: 5\n";
                     break;
       // Index
       case 0000006: // READ TRACE
