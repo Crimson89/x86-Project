@@ -42,7 +42,7 @@ bool check_breakpoint(uint16_t address){
 	return false;
 }
 
-bool handle_breakpoint(uint16_t address, uint16_t instruction_code){
+bool handle_breakpoint(uint16_t address, uint16_t instruction_code, bool old_program_step_mode){
 	string op_name;
 	string mode;
 	cout << "\n\n-------------------------------------------------------------------------" <<endl;
@@ -58,7 +58,10 @@ bool handle_breakpoint(uint16_t address, uint16_t instruction_code){
 	print_all_registers();
 	cout << "End of Registers" << endl;
 	cout << "-------------------------------------------------------------------------" <<endl;
-	cout << "\n\n\t\tPress ENTER to continue  normal execution, or S(s) to enter \"Stepping\" mode" << endl;
+	if(old_program_step_mode)
+		cout << "\n\n\t\tPress C(c) to continue  normal execution, or S(s) to advance one more step" << endl;
+	else
+		cout << "\n\n\t\tPress C(c) to continue  normal execution, or S(s) to enter \"Single Instruction Stepping\" mode" << endl;
 	cin >> mode;
 	cin.get();
 	if(tolower(mode.front()) == 's')
