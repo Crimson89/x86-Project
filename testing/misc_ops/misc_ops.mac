@@ -1,0 +1,9 @@
+A: 000000
+B: 111111
+C: 111000
+START: INC A
+       DEC B
+       NEG B
+       SWAB C
+       CLR A
+       HALT
