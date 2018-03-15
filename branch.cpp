@@ -265,6 +265,7 @@ int BLE(instruction *inst) // Branch if less than or equal (to zero)
     //int16_t signed_offset;
     //memcpy(&signed_offset, &(inst->offset), 2);
     PC += (branchOffset << 1);  
+    cout << "In BLE: branch offset = " << branchOffset << "\n";
   }
 
   return 0;

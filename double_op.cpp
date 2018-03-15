@@ -23,6 +23,7 @@ int MOV(instruction *inst) // Move source to destination (B)
 {
   uint16_t src = get_value(inst->addressingModeSrc, inst->srcBase);
   uint16_t destAddress = get_address(inst->addressingModeDest, inst->destBase);
+  uint16_t temp = get_value(inst->addressingModeDest, inst->destBase, false);
   
   if(inst->byteMode)
   {
