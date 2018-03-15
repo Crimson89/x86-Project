@@ -42,17 +42,16 @@ int JSR(instruction *inst)
   
   // tmp <- dest
   dst_tmp = get_value(inst->addressingModeDest, inst->destBase);
-  
   // -(SP) <- reg
   reg_tmp = get_value(00, inst->regBase);
   SP -= 2;
-  write_word(01, SP, reg_tmp, true);
+  write_word(REGISTER_DEFR_MODE, SP, reg_tmp, true);
 
   // reg <- PC
-  write_word(00, inst->regBase, PC, false);
+  write_word(REGISTER_MODE, inst->regBase, PC, false);
 
   // PC <- tmp
-  write_word(00, PC, dst_tmp, false);
+  write_word(REGISTER_MODE, PC_REG_INDEX, dst_tmp, false);
 
   return 0;
 }
@@ -64,12 +63,12 @@ int RTS(instruction *inst)
   uint16_t tmp;
 
   // PC <- reg
-  tmp = get_value(00, inst->regBase);
-  write_word(00, PC, tmp, false);
+  tmp = get_value(REGISTER_MODE, inst->rtsReg);
+  write_word(REGISTER_MODE, PC_REG_INDEX, tmp, false);
 
   // reg <- (SP)+
-  tmp = get_value(01, SP);
-  write_word(00, inst->regBase, tmp, false);
+  tmp = get_value(REGISTER_DEFR_MODE, SP_REG_INDEX);
+  write_word(REGISTER_MODE, inst->rtsReg, tmp, false);
   SP += 2;
 
   return 0;

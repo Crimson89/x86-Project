@@ -257,7 +257,7 @@ static int operationTest()
     R1 = 10;
     R2 = 0;
     R3 = 6;
-    R6 = 20;
+    R6 = 10;
     R7 = 0;
 
     MEM[6] = 0xF0;
