@@ -29,6 +29,7 @@ int main(int argc, char ** argv)
 	int err;							// error checking
 	uint16_t instruction_code;			// 16-bit instruction
 	bool at_breakpoint = false;         // Current PC triggered breakpoint
+	bool program_step_mode = false;     // Stepping mode enabled, breakpoint at each new instruction
 	uint16_t breakpoint_pc;             // PC when breakpoint was triggered
 	
 	trace_file = "test_trace.txt";
@@ -90,7 +91,7 @@ int main(int argc, char ** argv)
 				
 				// If this is a breakpoint, then print breakpoint information
 				if(at_breakpoint){
-					handle_breakpoint(breakpoint_pc, instruction_code);
+					program_step_mode = handle_breakpoint(breakpoint_pc, instruction_code);
 					at_breakpoint = false;
 				}
 

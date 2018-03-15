@@ -42,8 +42,9 @@ bool check_breakpoint(uint16_t address){
 	return false;
 }
 
-void handle_breakpoint(uint16_t address, uint16_t instruction_code){
+bool handle_breakpoint(uint16_t address, uint16_t instruction_code){
 	string op_name;
+	string mode;
 	cout << "\n\n-------------------------------------------------------------------------" <<endl;
 	cout <<"Hit breakpoint @ADDR="; print_octal(address); cout << endl;
 	op_name = get_op_name();
@@ -56,9 +57,13 @@ void handle_breakpoint(uint16_t address, uint16_t instruction_code){
 	cout << "Print Register Contents" << endl;
 	print_all_registers();
 	cout << "End of Registers" << endl;
-	cout << "\n\n                      Press ENTER to continue" << endl;
 	cout << "-------------------------------------------------------------------------" <<endl;
+	cout << "\n\n\t\tPress ENTER to continue  normal execution, or S(s) to enter \"Stepping\" mode" << endl;
+	cin >> mode;
 	cin.get();
+	if(tolower(mode.front()) == 's')
+		return true;
+	return false;
 }
 
 void print_all_breakpoints(void){
