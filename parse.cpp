@@ -91,7 +91,7 @@ int parseInstruction(uint16_t instructionCode, instruction* newInstruction)
 
 
   // Check MARK
-  if (!special& ((instructionCode & 0006400) == 0006400))
+  if (!special& ((instructionCode & 0176400) == 0006400))
   {
 	  current_instruction->opcode = (instructionCode & 0006400);
 	  current_instruction->offset = (instructionCode & 0000077);
