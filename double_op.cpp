@@ -141,7 +141,7 @@ int BIT(instruction *inst) // Bit test (B)
   uint16_t src = get_value(inst->addressingModeSrc, inst->srcBase);
   uint16_t dest = get_value(inst->addressingModeDest, inst->destBase);
 
-  uint16_t temp = dest ^ src;
+  uint16_t temp = dest & src;
 
   // Check MSB for sign
   if (inst->byteMode)
