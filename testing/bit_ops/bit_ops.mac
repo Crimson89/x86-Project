@@ -1,0 +1,5 @@
+A: 010101
+B: 000000
+START: BIS A, B;
+       BIC A, B;
+       HALT;
