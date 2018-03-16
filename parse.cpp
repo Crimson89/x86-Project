@@ -55,6 +55,7 @@ int parseInstruction(uint16_t instructionCode, instruction* newInstruction)
    */
   
   bool special = false;
+  if(verbosity_level > HIGH_VERBOSITY) cout << "In parser, found " << "\n";
   //TODO add masks to some of these (like EMT and TRAP) maybe pull out if needed
   //                                    IOT      BPT     HALT     WAIT      RTI    RESET      RTT
   uint16_t uniqueInstructions[7] = {0000004, 0000003, 0000000, 0000001, 0000002, 0000005, 0000006};
@@ -65,6 +66,7 @@ int parseInstruction(uint16_t instructionCode, instruction* newInstruction)
     {
       // unique, full instruction is a unique opcode. Because why not I guess.
       current_instruction->opcode = instructionCode;
+      if(verbosity_level > HIGH_VERBOSITY) cout << "Unique instruction list" << "\n";
 	  special = true;
       break;
     }
@@ -78,6 +80,7 @@ int parseInstruction(uint16_t instructionCode, instruction* newInstruction)
   {
     current_instruction->opcode = (instructionCode & 0177400);
 	current_instruction->offset = (instructionCode & 0000077);
+    if(verbosity_level > HIGH_VERBOSITY) cout << "EMT" << "\n";
     special = true;
   } 
 
@@ -86,6 +89,7 @@ int parseInstruction(uint16_t instructionCode, instruction* newInstruction)
   {
 	  current_instruction->opcode = (instructionCode & 0104400);
 	  current_instruction->offset = (instructionCode & 0000077);
+    if(verbosity_level > HIGH_VERBOSITY) cout << "TRAP" << "\n";
       special = true;
   }
 
@@ -93,9 +97,10 @@ int parseInstruction(uint16_t instructionCode, instruction* newInstruction)
   // Check MARK
   if (!special& ((instructionCode & 0176400) == 0006400))
   {
-	  current_instruction->opcode = (instructionCode & 0006400);
-	  current_instruction->offset = (instructionCode & 0000077);
-      special = true;
+	current_instruction->opcode = (instructionCode & 0006400);
+	current_instruction->offset = (instructionCode & 0000077);
+    if(verbosity_level > HIGH_VERBOSITY) cout << "MARK" << "\n";
+    special = true;
   }
   
   // Check RTS (0 0 0 2 0)
@@ -103,7 +108,7 @@ int parseInstruction(uint16_t instructionCode, instruction* newInstruction)
   {
     current_instruction->opcode = (instructionCode & 0177770);
     current_instruction->rtsReg = (instructionCode & 0000007);
-    if(verbosity_level >= HIGH_VERBOSITY) cout << "RTS" << "\n";
+    if(verbosity_level > HIGH_VERBOSITY) cout << "RTS" << "\n";
     special = true;
   }// Check JSR (0 0 4)
   if (!special& ( (instructionCode & 0177000) == 0004000))
@@ -113,7 +118,7 @@ int parseInstruction(uint16_t instructionCode, instruction* newInstruction)
     current_instruction->addressingModeReg = (instructionCode & 0007000) >> 9;
     current_instruction->addressingModeDest = (instructionCode & 000070) >> 3;
     current_instruction->destBase = (instructionCode & 0000007);
-    if(verbosity_level >= HIGH_VERBOSITY) cout << "JSR" << "\n";
+    if(verbosity_level > HIGH_VERBOSITY) cout << "JSR" << "\n";
     special = true;
   }// Check JMP ()
   if (!special& ( (instructionCode & 0177700) == 0000100))
@@ -121,7 +126,7 @@ int parseInstruction(uint16_t instructionCode, instruction* newInstruction)
     current_instruction->opcode = instructionCode & 0177700;
     current_instruction->addressingModeReg = (instructionCode & 000070) >> 3;
     current_instruction->regBase = (instructionCode & 0000007);
-    if(verbosity_level >= HIGH_VERBOSITY) cout << "JMP" << "\n";
+    if(verbosity_level > HIGH_VERBOSITY) cout << "JMP" << "\n";
     special = true;
   }
   // Check SWAB
@@ -131,6 +136,7 @@ int parseInstruction(uint16_t instructionCode, instruction* newInstruction)
     current_instruction->addressingModeReg = (instructionCode & maskSingleMode) >> 3;
     current_instruction->regBase = instructionCode & maskSingleRegister;
     current_instruction->byteMode = (instructionCode & maskByteMode) >> 15;
+    if(verbosity_level > HIGH_VERBOSITY) cout << "SWAB " << "\n";
     special = true;
   }
   if (!special) 
@@ -150,7 +156,7 @@ int parseInstruction(uint16_t instructionCode, instruction* newInstruction)
         tempLocation = instructionCode & maskSingleRegister;
         current_instruction->regBase = tempLocation;
         current_instruction->byteMode = (instructionCode & maskByteMode) >> 15;
-        if(verbosity_level >= HIGH_VERBOSITY) cout << "SINGLE " << "\n";
+        if(verbosity_level > HIGH_VERBOSITY) cout << "SINGLE " << "\n";
       }
       else
       {
@@ -161,14 +167,14 @@ int parseInstruction(uint16_t instructionCode, instruction* newInstruction)
         
           current_instruction->opcode = instructionCode & maskCondCodeOpcode;
           current_instruction->offset = instructionCode & 0x000F;
-          if(verbosity_level >= HIGH_VERBOSITY) cout << "COND CHECK" << "\n";
+          if(verbosity_level > HIGH_VERBOSITY) cout << "COND CHECK" << "\n";
         }
         else
         {
           //cond branch
           current_instruction->opcode = instructionCode & maskCondBranchOpcode;
           current_instruction->offset = instructionCode & maskCondBranchOffset;
-          if(verbosity_level >= HIGH_VERBOSITY) cout << "COND BRANCH " << "\n";
+          if(verbosity_level > HIGH_VERBOSITY) cout << "COND BRANCH " << "\n";
         }
       } 
     }
@@ -185,7 +191,7 @@ int parseInstruction(uint16_t instructionCode, instruction* newInstruction)
         current_instruction->destBase = instructionCode & maskDoubleRegisterSourceDest;
         current_instruction->addressingModeSrc = (instructionCode & maskDoubleRegisterSourceDestMode) >> 3;
         current_instruction->addressingModeDest = (instructionCode & maskDoubleRegisterSourceDestMode) >> 3;
-        if(verbosity_level >= HIGH_VERBOSITY) cout << "DOUBLE REG " << "\n";
+        if(verbosity_level > HIGH_VERBOSITY) cout << "DOUBLE REG " << "\n";
       }
       else
       {
@@ -196,9 +202,9 @@ int parseInstruction(uint16_t instructionCode, instruction* newInstruction)
         current_instruction->destBase = instructionCode & maskDoubleDest;
         current_instruction->addressingModeDest = (instructionCode & maskDoubleDestMode) >> 3;
         current_instruction->byteMode = (instructionCode & maskByteMode) >> 15;
-        if(verbosity_level >= HIGH_VERBOSITY) cout << "DOUBLE" << "\n";
-        if(verbosity_level >= HIGH_VERBOSITY) cout << current_instruction->addressingModeSrc << "\n";
-        if(verbosity_level >= HIGH_VERBOSITY) cout << current_instruction->addressingModeDest << "\n";
+        if(verbosity_level > HIGH_VERBOSITY) cout << "DOUBLE" << "\n";
+        if(verbosity_level > HIGH_VERBOSITY) cout << current_instruction->addressingModeSrc << "\n";
+        if(verbosity_level > HIGH_VERBOSITY) cout << current_instruction->addressingModeDest << "\n";
       }
     }
   }
@@ -288,7 +294,7 @@ int parseInstruction(uint16_t instructionCode, instruction* newInstruction)
 	}
   }
   
-  if(verbosity_level >= HIGH_VERBOSITY) cout << "In parse, opCode=" << oct << current_instruction->opcode << endl;
+  if(verbosity_level > HIGH_VERBOSITY) cout << "In parse, opCode=" << oct << current_instruction->opcode << endl;
   if((current_instruction->opcode == m_JSR) && (current_instruction->addressingModeDest)) {
 	  cerr << "TRAP!, to Vector Address 4, Invalid JSR addressing mode: " << current_instruction->addressingModeDest << ", not currently implemented" <<endl;
 	  return 2;
@@ -354,12 +360,12 @@ uint16_t get_address(uint16_t mode, uint16_t baseAddress, bool trace)
     // Relative
     case 0000006: 
                   offset = 2;
-                  cout << "g_a offset: " << offset << "\n";
+                  if(verbosity_level > HIGH_VERBOSITY) cout << "g_a offset: " << offset << "\n";
                   X = read_word(mode, PC, trace);
 				          current_instruction->immediate = X;
                   //PC += 2;
                   resultAddress = PC + offset + X;
-                  cout << "get_a PC: " << oct << PC << "X: " << oct << X << "\n";
+                  if(verbosity_level > HIGH_VERBOSITY) cout << "get_a PC: " << oct << PC << "X: " << oct << X << "\n";
                   break;
     // Relative deferred
     case 0000007: /*if ((modeTest == 6) || (modeTest == 7))
@@ -530,8 +536,8 @@ uint16_t get_address(uint16_t mode, uint16_t baseAddress, bool trace)
                   else
                     offset = 0;*/
                   X = read_word(mode, PC, trace);
-                  cout << "offset \n" << X << "\n";
-				          current_instruction->immediate = X;
+                  if(verbosity_level > HIGH_VERBOSITY) cout << "offset \n" << X << "\n";
+				  current_instruction->immediate = X;
                   //PC += 2;
                   resultAddress = REGS[baseAddress] + X;
                   break;

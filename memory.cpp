@@ -90,9 +90,9 @@ void print_all_memory(void) {
 			memory_word = read_word(1, i, false, false);
 			hasContent+=1;
 			cout <<"@ADDR="; print_octal(i); cout <<", Contents=" << octal_to_string(memory_word);
-			if( (PC != 0xFFFF) && (i == PC) )
+			if( i == PC )
 				cout << " <-- PC";
-			if( (SP != 0xFFFF) && (i == SP) )
+			if( i == SP )
 				cout << " <-- SP";
 			cout<< endl;
 		}
@@ -113,20 +113,18 @@ void initializeMemory(){
 }
 
 void print_all_registers(void) {
-	for(int i = 0; i < 5; i++) {
+	for(int i = 0; i < 6; i++) {
 		cout <<"R"<<i<<":";
 		print_octal(REGS[i]);
 		cout<< endl;
 	}
 	cout <<"SP"<<":";
 	print_octal(SP);
-	if(SP == 0xFFFF)
-		cout<< "  <-- This is an invalid SP, 0xFFFF";
 	cout<< endl;
 	cout <<"PC"<<":";
 	print_octal(PC);
-	if(PC == 0xFFFF)
-		cout<< "  <-- This is an invalid PC, 0xFFFF";
+	if(PC == 0xFFFE)
+		cout<< "  <-- This is an invalid PC, 0xFFFE";
 	cout<< endl;
 }
 
@@ -235,7 +233,7 @@ int readData(){
 		stringLength = temp.length();
 		if( stringLength > 1) {
 			line_type = temp[0];
-			if(verbosity_level >= HIGH_VERBOSITY) cout << "Reading data on line #"<<file_line_num<<",\t\""<<temp<<"\""<<endl;
+			if(verbosity_level > HIGH_VERBOSITY) cout << "Reading data on line #"<<file_line_num<<",\t\""<<temp<<"\""<<endl;
 			if(verbosity_level >= DEBUG_VERBOSITY) cout << "Line type "<<line_type<<endl;
 			for(int i = 1; i < stringLength; i++) { 			//Iterate through read line and copy out characters that are valid octal
 				if (isxdigit(temp[i]) && ((temp[i]-48) < 8))	//Valid octal character

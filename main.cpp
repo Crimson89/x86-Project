@@ -30,8 +30,8 @@ int main(int argc, char ** argv)
 	uint16_t instruction_code;			// 16-bit instruction
 	bool at_breakpoint = false;         // Current PC triggered breakpoint
 	bool program_step_mode = false;     // Stepping mode enabled, breakpoint at each new instruction
-	bool old_program_step_mode = false; // Value of stepping mode at last loop
 	uint16_t breakpoint_pc;             // PC when breakpoint was triggered
+	int num_instructions_executed = 0;  // The number of instructions executed by this program
 	
 	trace_file = "test_trace.txt";
 	data_file = "FALSE";
@@ -42,11 +42,13 @@ int main(int argc, char ** argv)
 	get_cmd_options(argc, argv); // Read command line options
 	current_instruction = new instruction;
 	clearInstruction(current_instruction);
+	bool bp_print_mem = false;  // Hitting a breakpoint prints all valid memory contents
+	bool bp_print_regs = false; // Hitting a breakpoint prints all register contents 
 	clear_psw(PSW);
 	
 	
 	for(;;){
-		program_execution_control = menu_function();
+		program_execution_control = menu_function(bp_print_mem, bp_print_regs);
 		if(program_execution_control == LOAD_DATA) {
 			if(readData()) {
 				cerr << "failed to open file : " << data_file << endl;
@@ -60,8 +62,8 @@ int main(int argc, char ** argv)
 			cin.get();
 			cout << "                            Executing program" <<endl;
 			cout << "-------------------------------------------------------------------------" <<endl;
-			old_program_step_mode = false;
 			program_step_mode = false;
+			num_instructions_executed = 0;
 
 			// Main program loop
 			while(program_execution_control == RUN_PROGRAM) {
@@ -75,7 +77,6 @@ int main(int argc, char ** argv)
 					cerr << "-------------------------------------------------------------------------" <<endl;
 					cerr << "-------------------------------------------------------------------------\n\n" <<endl;
 					program_execution_control = PRINT_MENU;
-					old_program_step_mode = false;
 					program_step_mode = false;
 					cin.get();
 					break;
@@ -90,7 +91,6 @@ int main(int argc, char ** argv)
 					cerr << "-------------------------------------------------------------------------" <<endl;
 					cerr << "-------------------------------------------------------------------------\n\n" <<endl;
 					program_execution_control = PRINT_MENU;
-					old_program_step_mode = false;
 					program_step_mode = false;
 					cin.get();
 					break;
@@ -98,8 +98,15 @@ int main(int argc, char ** argv)
 				
 				// If this is a breakpoint, then print breakpoint information
 				if(at_breakpoint || program_step_mode){
-					program_step_mode = handle_breakpoint(breakpoint_pc, instruction_code, old_program_step_mode);
+					program_step_mode = handle_breakpoint(breakpoint_pc, instruction_code, program_step_mode, bp_print_mem, bp_print_regs);
 					at_breakpoint = false;
+				}
+				else if(verbosity_level >= HIGH_VERBOSITY) {
+					cout << "Instruction: " << op_formatted(current_instruction) << endl;
+					cout << "Current Operation PSW:" << oct << uint8_t(current_instruction->PSW) << endl;
+					cout << "Print Register Contents" << endl;
+					print_all_registers();
+					cout << "End of Registers" << endl;
 				}
 
 				// EX
@@ -110,19 +117,10 @@ int main(int argc, char ** argv)
 					cerr << "\t\t\tPress ENTER to continue" << endl;
 					cerr << "-------------------------------------------------------------------------" <<endl;
 					cerr << "-------------------------------------------------------------------------\n\n" <<endl;
-					old_program_step_mode = false;
 					program_step_mode = false;
 					cin.get();
 					break;
 				}
-
-//////////////////////////
-// Debug, print stuff////
-//printInstruction(current_instruction);
-cout << "Instruction: " << op_formatted(current_instruction) << endl;
-//cout << "Current Operation PSW:" << oct << uint8_t(current_instruction->PSW) << endl;
-// End Debug, print stuff////
-//////////////////////////
 
 				// WB
 				if(write_back(PSW, current_instruction)) {
@@ -133,41 +131,32 @@ cout << "Instruction: " << op_formatted(current_instruction) << endl;
 					cerr << "-------------------------------------------------------------------------" <<endl;
 					cerr << "-------------------------------------------------------------------------\n\n" <<endl;
 					program_execution_control = PRINT_MENU;
-					old_program_step_mode = false;
 					program_step_mode = false;
 					cin.get();
 				}
 				
-//////////////////////////
-// Debug, print stuff////
-//cout << "PSW written back to processor:" << oct << PSW << endl;
-//print_psw(PSW);
-// End Debug, print stuff////
-//////////////////////////
-				
 				if(current_instruction->opcode == m_HALT) {
-					old_program_step_mode = false;
 					program_step_mode = false;
 					program_execution_control = PRINT_MENU;
 				}
 				
+				num_instructions_executed++;
 				clearInstruction(current_instruction);
-				old_program_step_mode = program_step_mode;
 			}
 			cout << "-------------------------------------------------------------------------" <<endl;
 			cout << "                            Program Completed!" <<endl;
+			cout << "                          Executed " << num_instructions_executed << " instructions." <<endl;
 			cout << "                     Press ENTER to return to menu" << endl;
 			cout << "-------------------------------------------------------------------------" <<endl;
 			cin.get();
 		}
 		else {
 			cerr << "-------------------------------------------------------------------------" <<endl;
-			cerr << "                  Unhandled condition, is PC set to valid address?!" <<endl;
-			cerr << "                     Press ENTER to return to menu" << endl;
+			cerr << "              Unhandled condition, is PC set to valid address?!" <<endl;
+			cerr << "                 Press ENTER to return to menu" << endl;
 			cerr << "-------------------------------------------------------------------------" <<endl;
 			cin.get();
 			program_execution_control = PRINT_MENU;
-			old_program_step_mode = false;
 			program_step_mode = false;
 		}
 	}
@@ -201,7 +190,7 @@ void get_user_octal(string prompt, string error_text, uint16_t &word){
 }
 
 
-int menu_function() {
+int menu_function(bool & bp_print_mem, bool & bp_print_regs) {
 	string input;
 	char input_char;
 	int menu_continue = 1;
@@ -223,6 +212,8 @@ int menu_function() {
 		cout << "C(c) to clear breakpoint" << endl;
 		cout << "V(v) to clear all breakpoints" << endl;
 		cout << "N(n) to print all breakpoints" << endl;
+		cout << "Z(z) to toggle \"breakpoints print register contents\" option" << endl;
+		cout << "X(x) to toggle \"breakpoints print all memory contents\" option" << endl;
 		cout << "-------------------------------------------------------------------------" <<endl;
 		cout << "-------------------------------------------------------------------------" <<endl;
 		cout << "\n\nSelection: ";
@@ -247,6 +238,40 @@ int menu_function() {
 					cin.get();
 					delete current_instruction;
 					exit(EXIT_SUCCESS);
+					break;
+				case 'z':
+					cout << "\n\n-------------------------------------------------------------------------" <<endl;
+					cout << "                     Toggle breakpoint register print" << endl;
+					if(bp_print_regs)
+						bp_print_regs = false;
+					else
+						bp_print_regs = true;
+					if(!bp_print_regs)
+							cout << " to false" << endl;
+					else
+							cout << " to true" << endl;
+					cout << "-------------------------------------------------------------------------" <<endl;
+					cout << "                          Press ENTER to continue" << endl;
+					cout << "-------------------------------------------------------------------------" <<endl;
+					cin.ignore(numeric_limits<streamsize>::max(), '\n');
+					cin.get();
+					break;
+				case 'x':
+					cout << "\n\n-------------------------------------------------------------------------" <<endl;
+					cout << "                     Toggle breakpoint memory print" << endl;
+					if(bp_print_mem)
+						bp_print_mem = false;
+					else
+						bp_print_mem = true;
+					if(!bp_print_mem)
+							cout << " to false" << endl;
+					else
+							cout << " to true" << endl;
+					cout << "-------------------------------------------------------------------------" <<endl;
+					cout << "                          Press ENTER to continue" << endl;
+					cout << "-------------------------------------------------------------------------" <<endl;
+					cin.ignore(numeric_limits<streamsize>::max(), '\n');
+					cin.get();
 					break;
 				case 't':
 					cout << "\n\n-------------------------------------------------------------------------" <<endl;
@@ -333,7 +358,7 @@ int menu_function() {
 				case 'n':
 					cout << "-------------------------------------------------------------------------" <<endl;
 					cout << "                     Printing all breakpoints" << endl;
-					print_all_breakpoints();
+					print_all_breakpoints(bp_print_mem, bp_print_regs);
 					cout <<endl;
 					cout << "                      Press ENTER to continue" << endl;
 					cout << "-------------------------------------------------------------------------" <<endl;
@@ -374,8 +399,12 @@ int instruction_fetch(bool & at_breakpoint, uint16_t & instruction_code,  uint16
 		at_breakpoint = true;
 	}
 	else
-		at_breakpoint = false;				
+		at_breakpoint = false;		
 	PC += 2;
+	if(PC%2 == 1) {//IF at odd memory address not allowed
+		cerr << "Error: Instruction fetch from odd address is not permitted, halting program!" <<endl;
+		return 1;
+	}
 	return 0;
 }
 

@@ -285,6 +285,7 @@ int dispatch(instruction * inst)
 	case m_SCC    :
       return SCC(inst);
       break;
+	default: if(verbosity_level > HIGH_VERBOSITY) cerr << "Dispatch operation failed, unknown masked opCode "<< inst->opcode << endl;break;
 
   }
 

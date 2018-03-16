@@ -42,21 +42,27 @@ bool check_breakpoint(uint16_t address){
 	return false;
 }
 
-bool handle_breakpoint(uint16_t address, uint16_t instruction_code, bool old_program_step_mode){
+bool handle_breakpoint(uint16_t address, uint16_t instruction_code, bool old_program_step_mode, bool & bp_print_mem, bool & bp_print_regs){
 	string op_name;
 	string mode;
 	cout << "\n\n-------------------------------------------------------------------------" <<endl;
 	cout <<"Hit breakpoint @ADDR="; print_octal(address); cout << endl;
 	op_name = get_op_name();
-	cout <<"Operation: \'" << op_name << "\', raw op-code value :" << octal_to_string(instruction_code) << endl;
-	cout <<"Operation: :" << op_formatted(current_instruction) << endl;
+	cout <<"Operation Name: \'" << op_name << "\', raw op-code value :" << octal_to_string(instruction_code) << endl;
+	cout <<"Parsed Operation with Operands :" << op_formatted(current_instruction) << endl;
+	cout <<"Processor Status Word :" << endl;
+	print_psw(PSW) ;
 	cout << "-------------------------------------------------------------------------\n\n" <<endl;
-	cout << "Print Memory Contents" << endl;
-	print_all_memory();
-	cout << "End of Valid Memory" << endl;
-	cout << "Print Register Contents" << endl;
-	print_all_registers();
-	cout << "End of Registers" << endl;
+	if(bp_print_mem) {
+		cout << "Print Memory Contents" << endl;
+		print_all_memory();
+		cout << "End of Valid Memory" << endl;
+	}
+	if(bp_print_regs) {
+		cout << "Print Register Contents" << endl;
+		print_all_registers();
+		cout << "End of Registers" << endl;
+	}
 	cout << "-------------------------------------------------------------------------" <<endl;
 	if(old_program_step_mode)
 		cout << "\n\n\t\tPress C(c) to continue  normal execution, or S(s) to advance one more step" << endl;
@@ -64,12 +70,26 @@ bool handle_breakpoint(uint16_t address, uint16_t instruction_code, bool old_pro
 		cout << "\n\n\t\tPress C(c) to continue  normal execution, or S(s) to enter \"Single Instruction Stepping\" mode" << endl;
 	cin >> mode;
 	cin.get();
-	if(tolower(mode.front()) == 's')
+	if(tolower(mode.front()) == 's') {
+		cout << "Stepping mode" <<endl;
 		return true;
+	}
 	return false;
+	cout << "No stepping mode" <<endl;
 }
 
-void print_all_breakpoints(void){
+void print_bp_config(bool & bp_print_mem, bool & bp_print_regs){
+	if(bp_print_mem)
+		cout << "Breakpoints will print all valid memory contents" << endl;
+	else
+		cout << "Breakpoints will NOT print all valid memory contents" << endl;
+	if(bp_print_regs)
+		cout << "Breakpoints will print register contents" << endl;
+	else
+		cout << "Breakpoints will NOT print regiser contents" << endl;
+}
+
+void print_all_breakpoints(bool & bp_print_mem, bool & bp_print_regs){
 for(int i = 0; i < (MEMORY_SPACE/2); i+=1)
 	if(BREAK_POINT[i]) {
 		cout <<"Breakpoint @ADDR="; print_octal(i*2);
@@ -77,6 +97,7 @@ for(int i = 0; i < (MEMORY_SPACE/2); i+=1)
 		print_octal(read_word(1, i*2, false, false));
 		cout << endl;
 	}
+	print_bp_config(bp_print_mem, bp_print_regs);
 }
 
 string get_op_name(void) {
@@ -406,7 +427,7 @@ string op_formatted(instruction * op) {
 		case m_ASHC  :
 		case m_MUL   :
 		case m_DIV   : temp << " Rn"; break; // Cheating here, we didn't implement this, so I use dummy value for the FP op R values
-		default      : temp << "?????";   break;
+		default      : if(verbosity_level > HIGH_VERBOSITY) cerr << "Debug operation failed, unknown masked opCode "<< opCode << endl; temp << "?????";   break;
 	}
 	return temp.str();
 }

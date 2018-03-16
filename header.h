@@ -86,7 +86,7 @@ extern PSW_t PSW;
 
 
 // MAIN functions - main.cpp
-int menu_function(void);
+int menu_function(bool & bp_print_mem, bool & bp_print_regs);
 void get_user_octal(string prompt, string error_text, uint16_t &word);
 int instruction_fetch(bool & at_breakpoint, uint16_t & instruction_code,  uint16_t & breakpoint_pc, uint16_t & PC);
 int write_back(PSW_t & PSW, instruction * inst);
@@ -110,8 +110,9 @@ int set_breakpoint(uint16_t address);
 int clear_all_breakpoints(void);
 int clear_breakpoint(uint16_t address);
 bool check_breakpoint(uint16_t address);
-bool handle_breakpoint(uint16_t address, uint16_t instruction_code, bool old_program_step_mode);
-void print_all_breakpoints(void);
+bool handle_breakpoint(uint16_t address, uint16_t instruction_code, bool old_program_step_mode, bool & bp_print_mem, bool & bp_print_regs);
+void print_bp_config(bool & bp_print_mem, bool & bp_print_regs);
+void print_all_breakpoints(bool & bp_print_mem, bool & bp_print_regs);
 string get_op_name(void);
 string format_arg(uint8_t reg, uint8_t mode, uint16_t immediate);
 string op_formatted(instruction * op);
