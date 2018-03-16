@@ -6,6 +6,8 @@
 int JMP(instruction *inst)
 {
   inst->op_text = "JMP";
+  inst->is_branch = true;
+  inst->branch_taken = true;
   uint16_t destination;
 
   // If dest addressing mode = 0, "illegal instruction"
@@ -25,6 +27,7 @@ int JMP(instruction *inst)
   }
 
   PC = destination;
+  inst->branch_target = PC;
 
   return 0;
 }
@@ -33,6 +36,8 @@ int JMP(instruction *inst)
 int JSR(instruction *inst)
 {
   inst->op_text = "JSR";
+  inst->is_branch = true;
+  inst->branch_taken = true;
   // (tmp) <- (dest) (dest might be SP, get this value before pushing reg)
   // -(SP) <- reg
   // reg <- PC
@@ -59,6 +64,7 @@ int JSR(instruction *inst)
   // PC <- tmp
   write_word(REGISTER_MODE, PC_REG_INDEX, dst_tmp, false);
 
+  inst->branch_target = PC;
   return 0;
 }
 
@@ -66,6 +72,8 @@ int JSR(instruction *inst)
 int RTS(instruction *inst)
 {
   inst->op_text = "RTS";
+  inst->is_branch = true;
+  inst->branch_taken = true;
   uint16_t tmp;
 
   // PC <- reg
@@ -83,6 +91,7 @@ int RTS(instruction *inst)
   tmp = get_value(REGISTER_DEFR_MODE, SP_REG_INDEX);
   write_word(REGISTER_MODE, inst->rtsReg, tmp, false);
   SP += 2;
+  inst->branch_target = PC;
 
   return 0;
 }

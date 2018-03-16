@@ -37,14 +37,19 @@
 #define INDEX_DEFR_MODE       7
 
 
-// For use in reading from file
+// For use in reading/writing from file
 #define FILE_READ             8
+#define FILE_WRITE            8
 // Read function parameters
 #define MEMORY_READ           1
 #define READ_TRACE            1
 #define READ_NO_TRACE         0
 #define READ_INSTR_FETCH      1
 #define READ_NOT_INSTR_FETCH  0
+
+#define MANUAL_MEMORY_READ    8
+#define MANUAL_MEMORY_WRITE   8
+#define NO_TRACE              0
 
 // PC Only Modes
 #define PC_IMMEDIATE_MODE     2

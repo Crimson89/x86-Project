@@ -20,6 +20,8 @@ instruction * current_instruction;	// decoded instruction information
 int verbosity_level = 0;            // Level of verbosity in print statements
 string trace_file;
 string data_file;
+string branch_trace_file;
+PSW_t PSW;
 
 void get_user_octal(string prompt, string error_text, uint16_t &word)
 {
@@ -326,8 +328,8 @@ int main()
 	PSW_t PSW;
 	trace_file = "test_trace.txt";
 	data_file = "FALSE";
-	SP = 0xFFFF; // Assign at start to invalid value, detection of unassigned SP
-	PC = 0xFFFF; // Assign at start to invalid value, detection of unassigned PC
+	SP = 0xFFFE; // Assign at start to invalid value, detection of unassigned SP
+	PC = 0xFFFE; // Assign at start to invalid value, detection of unassigned PC
 	starting_pc = PC;
 	initializeMemory();
 	clear_psw(PSW);

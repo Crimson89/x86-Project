@@ -33,6 +33,9 @@ int clearInstruction(instruction* newInstruction)
   newInstruction->PSW = 0;
   newInstruction->rtsReg = 0;
   newInstruction->op_text = "";
+  newInstruction->is_branch = false;    
+  newInstruction->branch_taken = false; 
+  newInstruction->branch_target = 0;
 
   return 0;
 }

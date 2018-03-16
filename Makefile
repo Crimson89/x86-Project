@@ -33,7 +33,7 @@ main: main.o
 main.o: main.cpp
 	g++ -g -std=c++11 -c main.cpp parse.cpp trace.cpp memory.cpp debug.cpp dispatch.cpp single_op.cpp double_op.cpp branch.cpp jump_sub.cpp misc_ops.cpp condition.cpp
 
-filenames := main.o parse.o memory.o trace.o branch.o unitTest.o debug.o dispatch.o single_op.o double_op.o branch.o jump_sub.o trap_int.o condition.o \
+filenames := main.o parse.o memory.o trace.o branch.o unitTest.o debug.o dispatch.o single_op.o double_op.o branch.o jump_sub.o trap_int.o condition.o misc_ops.o dispatchTest.o\
 unitTestDebug.o RunMe.exe dTest.exe RunUnitTest.exe RunUnitTestDebug.exe opTest.o RunOpTest.exe
 
 files := $(strip $(foreach f,$(filenames),$(wildcard $(f))))
