@@ -6,7 +6,7 @@ int CLR(instruction *inst) // Clear (B)
   uint16_t destAddress = get_address(inst->addressingModeReg, inst->regBase);
   uint16_t dest = 0;
   uint16_t dummyValue = get_value(inst->addressingModeReg, inst->regBase, false);
-  cout << "DESTADDR: " << destAddress << "\n";
+  if(verbosity_level > HIGH_VERBOSITY)  cout << "DESTADDR: " << destAddress << "\n";
   if(inst->byteMode)
   {
     inst->op_text = "CLRB";
@@ -159,18 +159,17 @@ int TST(instruction *inst) // Test (B)
 // Shift & Rotate
 int ASR(instruction *inst) // Arithmetic shift right (B)
 {
-
-
-  cout << "In ASR, about to fetch ops.  PC = " << PC << "\n";
   uint16_t destAddress = get_address(inst->addressingModeReg, inst->regBase, false);
-  cout << "In ASR, called get_address on reg. PC = " << PC << ", destAddress = " << destAddress << "\n";
   uint16_t dest = get_value(inst->addressingModeReg, inst->regBase);
-  cout << "In ASR, called get_value on reg.  PC = " << PC << ", reg value = " << dest << "\n";
   uint16_t msb;
-  cout << "destAddress " << oct << destAddress << "\n";
-  cout << "dest " << oct << destAddress << "\n";
-  cout << "PC " << oct << PC << "\n";
-
+  
+  if(verbosity_level > HIGH_VERBOSITY) cout << "In ASR, about to fetch ops.  PC = " << PC << "\n";
+  if(verbosity_level > HIGH_VERBOSITY) cout << "In ASR, called get_address on reg. PC = " << PC << ", destAddress = " << destAddress << "\n";
+  if(verbosity_level > HIGH_VERBOSITY) cout << "In ASR, called get_value on reg.  PC = " << PC << ", reg value = " << dest << "\n";
+  if(verbosity_level > HIGH_VERBOSITY) cout << "destAddress " << oct << destAddress << "\n";
+  if(verbosity_level > HIGH_VERBOSITY) cout << "dest " << oct << destAddress << "\n";
+  if(verbosity_level > HIGH_VERBOSITY) cout << "PC " << oct << PC << "\n";
+  
    if(inst->byteMode)
   { 
     msb = dest & 0x0080;
@@ -194,7 +193,7 @@ int ASR(instruction *inst) // Arithmetic shift right (B)
     inst->Z = IS_ZERO_WORD(dest)? 1:0;
   }
 
-  cout << "PC " << oct << PC << "\n";
+  if(verbosity_level > HIGH_VERBOSITY)  cout << "PC " << oct << PC << "\n";
   //inst->Z = IS_ZERO(dest)? 1:0;
   inst->V = inst->N ^ inst->C;
   return 0;
@@ -217,8 +216,8 @@ int ASL(instruction *inst) // Arithmetic shift left (B)
   else
   {
     inst->C = ((dest & 0x8000) >> 15); // C = old MSB
-    //cout << "dest!!!!" << oct << dest << "\n";
-    //cout << ((dest & 0100000) >> 15) << "\n";
+    //if(verbosity_level > HIGH_VERBOSITY) cout << "dest!!!!" << oct << dest << "\n";
+    //if(verbosity_level > HIGH_VERBOSITY) cout << ((dest & 0100000) >> 15) << "\n";
     dest <<= 1;
     inst->op_text = "ASL";
     write_word(inst->addressingModeReg, destAddress, dest);
@@ -276,7 +275,7 @@ int ROL(instruction *inst) // Rotate left (B)
   uint16_t temp;
   uint16_t prevC = inst->C;
 
-  cout  << "VAL: "<< dest << "\n";
+  if(verbosity_level > HIGH_VERBOSITY) cout  << "VAL: "<< dest << "\n";
   if(inst->byteMode)
   { 
     inst->C = (dest & 0x0080)? 1:0;
@@ -323,7 +322,7 @@ int SWAB(instruction *inst) // Swap bytes
   //inst->Z = IS_ZERO(dest)? 1:0;
   inst->N = (dest & 0x0080)? 1:0;
   inst->Z = IS_ZERO_BYTE(dest)? 1:0;
-  cout << "DEST" << (0x00FF & dest) << "\n";
+  if(verbosity_level > HIGH_VERBOSITY)  cout << "DEST" << (0x00FF & dest) << "\n";
   inst->C = 0;
   inst->V = 0;
   return 0;
@@ -376,7 +375,7 @@ int SBC(instruction *inst) // Subtract carry (B)
     inst->N = IS_NEGATIVE_BYTE(dest) ? 1:0;
     inst->Z = IS_ZERO_BYTE(dest)? 1:0;
     inst->V = ((temp == 0x0080))? 1:0;
-    cout << "temp: " << hex << temp << "\n";
+    if(verbosity_level > HIGH_VERBOSITY)  cout << "temp: " << hex << temp << "\n";
     inst->C = ((temp == 0x0000) && (prevC == 0x0001))? 1:0;
   }
   else

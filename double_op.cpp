@@ -70,9 +70,9 @@ int ADD(instruction *inst) // Add source to destination
   bool msb_src = EXTRACT_BIT(src,WORD_MSB_INDEX);
   uint32_t temp = dest + src;
 
-  cout << "ADDRESS : " << oct << destAddress << "\n";
-  cout << "DESTVAL : " << oct << src << "\n";
-  cout << "SRCEVAL : " << oct << dest << "\n";
+  if(verbosity_level > HIGH_VERBOSITY) cout << "ADDRESS : " << oct << destAddress << "\n";
+  if(verbosity_level > HIGH_VERBOSITY) cout << "DESTVAL : " << oct << src << "\n";
+  if(verbosity_level > HIGH_VERBOSITY) cout << "SRCEVAL : " << oct << dest << "\n";
   // Do the add and store
   dest += src;
   bool msb_result = EXTRACT_BIT(dest,WORD_MSB_INDEX);
@@ -92,16 +92,16 @@ int ADD(instruction *inst) // Add source to destination
 
 int SUB(instruction *inst) // Subtract source from destination
 {
-  cout << "SUB" << "\n";
+  if(verbosity_level > HIGH_VERBOSITY) cout << "SUB" << "\n";
   inst->byteMode = 0;
   inst->op_text = "SUB";
   
   uint16_t src = get_value(inst->addressingModeSrc, inst->srcBase);
   uint16_t destAddress = get_address(inst->addressingModeDest, inst->destBase, false);
-  cout << "destAddress" << oct << destAddress << "\n";
-  cout << "src" << oct << src << "\n";
+  if(verbosity_level > HIGH_VERBOSITY) cout << "destAddress" << oct << destAddress << "\n";
+  if(verbosity_level > HIGH_VERBOSITY) cout << "src" << oct << src << "\n";
   uint16_t dest = get_value(inst->addressingModeDest, inst->destBase);
-  cout << "dest" << oct << dest << "\n";
+  if(verbosity_level > HIGH_VERBOSITY) cout << "dest" << oct << dest << "\n";
   bool msb_dest = EXTRACT_BIT(dest,WORD_MSB_INDEX);
   bool msb_src = EXTRACT_BIT(src,WORD_MSB_INDEX);
   uint32_t temp = dest - src;

@@ -212,7 +212,9 @@ int get_cmd_options(int argc, char ** argv, string & branch_trace_file, string &
 	}
 	cout << "Data File " << data_file << endl;
 	cout << "Trace File " << trace_file << endl;
-	cout << "Branch Trace File " << branch_trace_file << endl;
+	if(branch_trace_file != "FALSE")
+		cout << "Branch Trace File " << branch_trace_file << endl;
+	cout << "Verbosity set to " << verbosity_level << endl;
 	return 0;
 }
 

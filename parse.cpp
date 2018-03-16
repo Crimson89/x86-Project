@@ -55,7 +55,7 @@ int parseInstruction(uint16_t instructionCode, instruction* newInstruction)
    */
   
   bool special = false;
-  if(verbosity_level > HIGH_VERBOSITY) cout << "In parser, found " << "\n";
+  if(verbosity_level > HIGH_VERBOSITY) cout << "In parser, found ";
   //TODO add masks to some of these (like EMT and TRAP) maybe pull out if needed
   //                                    IOT      BPT     HALT     WAIT      RTI    RESET      RTT
   uint16_t uniqueInstructions[7] = {0000004, 0000003, 0000000, 0000001, 0000002, 0000005, 0000006};
@@ -73,7 +73,6 @@ int parseInstruction(uint16_t instructionCode, instruction* newInstruction)
       
   }
 
-  verbosity_level = HIGH_VERBOSITY;
   // TODO fill these out
   // EMT
   if (!special& ( (instructionCode & 0177400) == 0104000))

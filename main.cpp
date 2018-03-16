@@ -37,8 +37,8 @@ int main(int argc, char ** argv)
 	trace_file = "test_trace.txt";
 	data_file = "FALSE";
 	branch_trace_file = "FALSE";
-	SP = 0xFFFF; // Assign at start to invalid value, detection of unassigned SP
-	PC = 0xFFFF; // Assign at start to invalid value, detection of unassigned PC
+	SP = 0xFFFE; // Assign at start to invalid value, detection of unassigned SP
+	PC = 0xFFFE; // Assign at start to invalid value, detection of unassigned PC
 	starting_pc = PC;
 	initializeMemory();
 	get_cmd_options(argc, argv, branch_trace_file, data_file, trace_file); // Read command line options
@@ -148,7 +148,7 @@ int main(int argc, char ** argv)
 			}
 			cout << "-------------------------------------------------------------------------" <<endl;
 			cout << "                            Program Completed!" <<endl;
-			cout << "                          Executed " << num_instructions_executed << " instructions." <<endl;
+			cout << "                          Executed " << dec << num_instructions_executed << " instructions." <<endl;
 			cout << "                     Press ENTER to return to menu" << endl;
 			cout << "-------------------------------------------------------------------------" <<endl;
 			cin.get();
