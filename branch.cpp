@@ -4,7 +4,8 @@
 int BR(instruction *inst) // Branch unconditional
 {
   inst->op_text = "BR";
-  // PC = PC + (2 x offset)
+  inst->is_branch = true;
+  inst->branch_taken = true;
 
   uint16_t branchOffset;
   if ((inst->offset & 0x80) == 0)
@@ -15,7 +16,9 @@ int BR(instruction *inst) // Branch unconditional
   {
     branchOffset = inst->offset | 0xFF00;
   }
-  PC += (branchOffset << 1); 
+  
+  PC += (branchOffset << 1);
+  inst->branch_target = PC;
 
   return 0;
 }
@@ -23,18 +26,20 @@ int BR(instruction *inst) // Branch unconditional
 int BNE(instruction *inst) // Branch if not equal (to zero)
 {
   inst->op_text = "BNE";
+  inst->is_branch = true;
+  uint16_t branchOffset;
+
+  if ((inst->offset & 0x80) == 0)
+  {
+    branchOffset = inst->offset;
+  }
+  else
+  {
+    branchOffset = inst->offset | 0xFF00;
+  }
+  inst->branch_target = PC + (branchOffset << 1);
   if(!(inst->Z)) {
-    uint16_t branchOffset;
-    if ((inst->offset & 0x80) == 0)
-    {
-      branchOffset = inst->offset;
-    }
-    else
-    {
-      branchOffset = inst->offset | 0xFF00;
-    }
-    //int16_t signed_offset;
-    //memcpy(&signed_offset, &(inst->offset), 2);
+    inst->branch_taken = true;
     PC += (branchOffset << 1); 
   }
 
@@ -44,18 +49,20 @@ int BNE(instruction *inst) // Branch if not equal (to zero)
 int BEQ(instruction *inst) // Branch if equal (to zero)
 {
   inst->op_text = "BEQ";
+  inst->is_branch = true;
+  uint16_t branchOffset;
+
+  if ((inst->offset & 0x80) == 0)
+  {
+    branchOffset = inst->offset;
+  }
+  else
+  {
+    branchOffset = inst->offset | 0xFF00;
+  }
+  inst->branch_target = PC + (branchOffset << 1);
   if(inst->Z) {
-    uint16_t branchOffset;
-    if ((inst->offset & 0x80) == 0)
-    {
-      branchOffset = inst->offset;
-    }
-    else
-    {
-      branchOffset = inst->offset | 0xFF00;
-    }
-    //int16_t signed_offset;
-    //memcpy(&signed_offset, &(inst->offset), 2);
+    inst->branch_taken = true;
     PC += (branchOffset << 1);  
   }
 
@@ -65,18 +72,20 @@ int BEQ(instruction *inst) // Branch if equal (to zero)
 int BPL(instruction *inst) // Branch if plus
 {
   inst->op_text = "BPL";
+  inst->is_branch = true;
+  uint16_t branchOffset;
+
+  if ((inst->offset & 0x80) == 0)
+  {
+    branchOffset = inst->offset;
+  }
+  else
+  {
+    branchOffset = inst->offset | 0xFF00;
+  }
+  inst->branch_target = PC + (branchOffset << 1);
   if(!(inst->N)) {
-    uint16_t branchOffset;
-    if ((inst->offset & 0x80) == 0)
-    {
-      branchOffset = inst->offset;
-    }
-    else
-    {
-      branchOffset = inst->offset | 0xFF00;
-    }
-    //int16_t signed_offset;
-    //memcpy(&signed_offset, &(inst->offset), 2);
+    inst->branch_taken = true;
     PC += (branchOffset << 1); 
   }
 
@@ -86,18 +95,20 @@ int BPL(instruction *inst) // Branch if plus
 int BMI(instruction *inst) // Branch if minus
 {
   inst->op_text = "BMI";
+  inst->is_branch = true;
+  uint16_t branchOffset;
+
+  if ((inst->offset & 0x80) == 0)
+  {
+    branchOffset = inst->offset;
+  }
+  else
+  {
+    branchOffset = inst->offset | 0xFF00;
+  }
+  inst->branch_target = PC + (branchOffset << 1);
   if(inst->N) {
-    uint16_t branchOffset;
-    if ((inst->offset & 0x80) == 0)
-    {
-      branchOffset = inst->offset;
-    }
-    else
-    {
-      branchOffset = inst->offset | 0xFF00;
-    }
-    //int16_t signed_offset;
-    //memcpy(&signed_offset, &(inst->offset), 2);
+    inst->branch_taken = true;
     PC += (branchOffset << 1);  
   }
 
@@ -107,18 +118,20 @@ int BMI(instruction *inst) // Branch if minus
 int BVC(instruction *inst) // Branch if overflow is clear
 {
   inst->op_text = "BVC";
+  inst->is_branch = true;
+  uint16_t branchOffset;
+
+  if ((inst->offset & 0x80) == 0)
+  {
+    branchOffset = inst->offset;
+  }
+  else
+  {
+    branchOffset = inst->offset | 0xFF00;
+  }
+  inst->branch_target = PC + (branchOffset << 1);
   if(!(inst->V)) {
-    uint16_t branchOffset;
-    if ((inst->offset & 0x80) == 0)
-    {
-      branchOffset = inst->offset;
-    }
-    else
-    {
-      branchOffset = inst->offset | 0xFF00;
-    }
-    //int16_t signed_offset;
-    //memcpy(&signed_offset, &(inst->offset), 2);
+    inst->branch_taken = true;
     PC += (branchOffset << 1); 
   }
 
@@ -128,18 +141,20 @@ int BVC(instruction *inst) // Branch if overflow is clear
 int BVS(instruction *inst) // Branch if overflow is set
 {
   inst->op_text = "BVS";
+  inst->is_branch = true;
+  uint16_t branchOffset;
+
+  if ((inst->offset & 0x80) == 0)
+  {
+    branchOffset = inst->offset;
+  }
+  else
+  {
+    branchOffset = inst->offset | 0xFF00;
+  }
+  inst->branch_target = PC + (branchOffset << 1);
   if(inst->V) {
-    uint16_t branchOffset;
-    if ((inst->offset & 0x80) == 0)
-    {
-      branchOffset = inst->offset;
-    }
-    else
-    {
-      branchOffset = inst->offset | 0xFF00;
-    }
-    //int16_t signed_offset;
-    //memcpy(&signed_offset, &(inst->offset), 2);
+    inst->branch_taken = true;
     PC += (branchOffset << 1);  
   }
 
@@ -149,18 +164,20 @@ int BVS(instruction *inst) // Branch if overflow is set
 int BCC(instruction *inst) // Branch if carry is clear
 {
   inst->op_text = "BCC";
+  inst->is_branch = true;
+  uint16_t branchOffset;
+
+  if ((inst->offset & 0x80) == 0)
+  {
+    branchOffset = inst->offset;
+  }
+  else
+  {
+    branchOffset = inst->offset | 0xFF00;
+  }
+  inst->branch_target = PC + (branchOffset << 1);
   if(!inst->C) {
-    uint16_t branchOffset;
-    if ((inst->offset & 0x80) == 0)
-    {
-      branchOffset = inst->offset;
-    }
-    else
-    {
-      branchOffset = inst->offset | 0xFF00;
-    }
-    //int16_t signed_offset;
-    //memcpy(&signed_offset, &(inst->offset), 2);
+    inst->branch_taken = true;
     PC += (branchOffset << 1);  
   }
 
@@ -170,18 +187,20 @@ int BCC(instruction *inst) // Branch if carry is clear
 int BCS(instruction *inst) // Branch if carry is set
 {
   inst->op_text = "BCS";
+  inst->is_branch = true;
+  uint16_t branchOffset;
+
+  if ((inst->offset & 0x80) == 0)
+  {
+    branchOffset = inst->offset;
+  }
+  else
+  {
+    branchOffset = inst->offset | 0xFF00;
+  }
+  inst->branch_target = PC + (branchOffset << 1);
   if(inst->C) {
-    uint16_t branchOffset;
-    if ((inst->offset & 0x80) == 0)
-    {
-      branchOffset = inst->offset;
-    }
-    else
-    {
-      branchOffset = inst->offset | 0xFF00;
-    }
-    //int16_t signed_offset;
-    //memcpy(&signed_offset, &(inst->offset), 2);
+    inst->branch_taken = true;
     PC += (branchOffset << 1); 
   }
 
@@ -192,19 +211,21 @@ int BCS(instruction *inst) // Branch if carry is set
 int BGE(instruction *inst) // Branch if greater than or equal (to zero)
 {
   inst->op_text = "BGE";
+  inst->is_branch = true;
+  uint16_t branchOffset;
   // Branch if N XNOR V 
+
+  if ((inst->offset & 0x80) == 0)
+  {
+    branchOffset = inst->offset;
+  }
+  else
+  {
+    branchOffset = inst->offset | 0xFF00;
+  }
+  inst->branch_target = PC + (branchOffset << 1);
   if(inst->N == inst->V) {
-    uint16_t branchOffset;
-    if ((inst->offset & 0x80) == 0)
-    {
-      branchOffset = inst->offset;
-    }
-    else
-    {
-      branchOffset = inst->offset | 0xFF00;
-    }
-    //int16_t signed_offset;
-    //memcpy(&signed_offset, &(inst->offset), 2);
+    inst->branch_taken = true;
     PC += (branchOffset << 1);  
   }
 
@@ -214,19 +235,21 @@ int BGE(instruction *inst) // Branch if greater than or equal (to zero)
 int BLT(instruction *inst) // Branch if less than (zero)
 {
   inst->op_text = "BLT";
+  inst->is_branch = true;
+  uint16_t branchOffset;
   // Branch if N XOR V
+
+  if ((inst->offset & 0x80) == 0)
+  {
+    branchOffset = inst->offset;
+  }
+  else
+  {
+    branchOffset = inst->offset | 0xFF00;
+  }
+  inst->branch_target = PC + (branchOffset << 1);
   if(inst->N != inst->V) {
-    uint16_t branchOffset;
-    if ((inst->offset & 0x80) == 0)
-    {
-      branchOffset = inst->offset;
-    }
-    else
-    {
-      branchOffset = inst->offset | 0xFF00;
-    }
-    //int16_t signed_offset;
-    //memcpy(&signed_offset, &(inst->offset), 2);
+    inst->branch_taken = true;
     PC += (branchOffset << 1);  
   }
 
@@ -236,19 +259,21 @@ int BLT(instruction *inst) // Branch if less than (zero)
 int BGT(instruction *inst) // Branch if greater than (zero)
 {
   inst->op_text = "BGT";
+  inst->is_branch = true;
+  uint16_t branchOffset;
   // Branch if (N XNOR V) && !Z
+
+  if ((inst->offset & 0x80) == 0)
+  {
+    branchOffset = inst->offset;
+  }
+  else
+  {
+    branchOffset = inst->offset | 0xFF00;
+  }
+  inst->branch_target = PC + (branchOffset << 1);
   if((inst->N == inst->V) && !(inst->Z)) {
-    uint16_t branchOffset;
-    if ((inst->offset & 0x80) == 0)
-    {
-      branchOffset = inst->offset;
-    }
-    else
-    {
-      branchOffset = inst->offset | 0xFF00;
-    }
-    //int16_t signed_offset;
-    //memcpy(&signed_offset, &(inst->offset), 2);
+    inst->branch_taken = true;
     PC += (branchOffset << 1); 
   }
 
@@ -258,19 +283,21 @@ int BGT(instruction *inst) // Branch if greater than (zero)
 int BLE(instruction *inst) // Branch if less than or equal (to zero)
 {
   inst->op_text = "BLE";
+  inst->is_branch = true;
+  uint16_t branchOffset;
   // Branch if (N XOR V) || Z
+
+  if ((inst->offset & 0x80) == 0)
+  {
+    branchOffset = inst->offset;
+  }
+  else
+  {
+    branchOffset = inst->offset | 0xFF00;
+  }
+  inst->branch_target = PC + (branchOffset << 1);
   if(inst->Z || (inst->N != inst->V)) {
-    uint16_t branchOffset;
-    if ((inst->offset & 0x80) == 0)
-    {
-      branchOffset = inst->offset;
-    }
-    else
-    {
-      branchOffset = inst->offset | 0xFF00;
-    }
-    //int16_t signed_offset;
-    //memcpy(&signed_offset, &(inst->offset), 2);
+    inst->branch_taken = true;
     PC += (branchOffset << 1);  
     if(verbosity_level > HIGH_VERBOSITY) cout << "In BLE: branch offset = " << branchOffset << "\n";
   }
@@ -282,18 +309,20 @@ int BLE(instruction *inst) // Branch if less than or equal (to zero)
 int BHI(instruction *inst) // Branch if higher
 {
   inst->op_text = "BHI";
+  inst->is_branch = true;
+  uint16_t branchOffset;
+
+  if ((inst->offset & 0x80) == 0)
+  {
+    branchOffset = inst->offset;
+  }
+  else
+  {
+    branchOffset = inst->offset | 0xFF00;
+  }
+  inst->branch_target = PC + (branchOffset << 1);
   if(!(inst->C) || !(inst->Z)) {
-    uint16_t branchOffset;
-    if ((inst->offset & 0x80) == 0)
-    {
-      branchOffset = inst->offset;
-    }
-    else
-    {
-      branchOffset = inst->offset | 0xFF00;
-    }
-    //int16_t signed_offset;
-    //memcpy(&signed_offset, &(inst->offset), 2);
+    inst->branch_taken = true;
     PC += (branchOffset << 1);  
   }
 
@@ -304,18 +333,19 @@ int BHI(instruction *inst) // Branch if higher
 int BLOS(instruction *inst) // Branch if lower or same
 {
   inst->op_text = "BLOS";
+  inst->is_branch = true;
+  uint16_t branchOffset;
+  if ((inst->offset & 0x80) == 0)
+  {
+    branchOffset = inst->offset;
+  }
+  else
+  {
+    branchOffset = inst->offset | 0xFF00;
+  }
+  inst->branch_target = PC + (branchOffset << 1);
   if(inst->C || inst->Z) {
-    uint16_t branchOffset;
-    if ((inst->offset & 0x80) == 0)
-    {
-      branchOffset = inst->offset;
-    }
-    else
-    {
-      branchOffset = inst->offset | 0xFF00;
-    }
-    //int16_t signed_offset;
-    //memcpy(&signed_offset, &(inst->offset), 2);
+    inst->branch_taken = true;
     PC += (branchOffset << 1); 
   }
 
@@ -326,18 +356,19 @@ int BLOS(instruction *inst) // Branch if lower or same
 int BHIS(instruction *inst) // Branch if higher or same
 {
   inst->op_text = "BHIS/BCC";
+  inst->is_branch = true;
+  uint16_t branchOffset;
+  if ((inst->offset & 0x80) == 0)
+  {
+    branchOffset = inst->offset;
+  }
+  else
+  {
+    branchOffset = inst->offset | 0xFF00;
+  }
+  inst->branch_target = PC + (branchOffset << 1);
   if(!(inst->C)) {
-    uint16_t branchOffset;
-    if ((inst->offset & 0x80) == 0)
-    {
-      branchOffset = inst->offset;
-    }
-    else
-    {
-      branchOffset = inst->offset | 0xFF00;
-    }
-    //int16_t signed_offset;
-    //memcpy(&signed_offset, &(inst->offset), 2);
+    inst->branch_taken = true;
     PC += (branchOffset << 1);  
   }
 
@@ -348,18 +379,19 @@ int BHIS(instruction *inst) // Branch if higher or same
 int BLO(instruction *inst) // Branch if lower
 {
   inst->op_text = "BLO/BCS";
+  inst->is_branch = true;
+  uint16_t branchOffset;
+  if ((inst->offset & 0x80) == 0)
+  {
+    branchOffset = inst->offset;
+  }
+  else
+  {
+    branchOffset = inst->offset | 0xFF00;
+  }
+  inst->branch_target = PC + (branchOffset << 1);
   if(inst->C) {
-    uint16_t branchOffset;
-    if ((inst->offset & 0x80) == 0)
-    {
-      branchOffset = inst->offset;
-    }
-    else
-    {
-      branchOffset = inst->offset | 0xFF00;
-    }
-    //int16_t signed_offset;
-    //memcpy(&signed_offset, &(inst->offset), 2);
+    inst->branch_taken = true;
     PC += (branchOffset << 1); 
   }
 

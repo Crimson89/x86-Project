@@ -56,8 +56,12 @@ typedef struct {
 			uint8_t T:1;
 			uint8_t SPL:3;
 		};
-		uint8_t PSW; // Processor Status Word
+		uint8_t PSW;            // Processor Status Word for this operation, written to global PSW at writeback
 	};
+
+	bool is_branch;         // This instruction is a branch
+	bool branch_taken;      // Was this branch taken or not
+	uint16_t branch_target; // Destination of branch
 	string op_text;
 }instruction;
 #pragma pack(pop)
@@ -78,17 +82,18 @@ extern uint16_t& R7;
 extern uint16_t& SP;
 extern uint16_t& PC;
 extern uint16_t starting_pc;
-extern instruction * current_instruction;	// decoded instruction information
-extern int verbosity_level;             // Level of verbosity in print statements
+extern instruction * current_instruction;	 // decoded instruction information
+extern int verbosity_level;                  // Level of verbosity in print statements, 1 prints little, 2 prints some debugs, 3 prints all debugs
 extern string trace_file;
 extern string data_file;
+extern string branch_trace_file;
 extern PSW_t PSW;
 
 
 // MAIN functions - main.cpp
 int menu_function(bool & bp_print_mem, bool & bp_print_regs, string & trace_file);
 void get_user_octal(string prompt, string error_text, uint16_t &word);
-int instruction_fetch(bool & at_breakpoint, uint16_t & instruction_code,  uint16_t & breakpoint_pc, uint16_t & PC);
+int instruction_fetch(bool & at_breakpoint, uint16_t & instruction_code,  uint16_t & breakpoint_pc, uint16_t & PC, uint16_t & if_pc_falue);
 int write_back(PSW_t & PSW, instruction * inst);
 void clear_psw(PSW_t & PSW);
 void print_psw(PSW_t & PSW);
@@ -117,11 +122,7 @@ string get_op_name(void);
 string format_arg(uint8_t reg, uint8_t mode, uint16_t immediate);
 string op_formatted(instruction * op);
 
-//Function dispatcher
-int dispatch(instruction * inst);
-
-
-// dispatch.cpp
+//Function dispatcher - dispatch.cpp
 int dispatch(instruction *inst);
 
 
@@ -130,6 +131,10 @@ int clear_trace(void);
 int print_trace(void);
 int read_trace(uint16_t address, uint16_t value, bool is_instruction = false);
 int write_trace(uint16_t address, uint16_t value);
+int write_line(string text, string filename);
+int clear_branch_trace();
+int print_branch_trace();
+int branch_trace(uint16_t PC, uint16_t target, string name, bool taken);
 
 
 // SINGLE OPERAND

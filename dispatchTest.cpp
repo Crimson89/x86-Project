@@ -19,11 +19,26 @@ instruction * current_instruction;	//decoded instruction information
 int verbosity_level = 0;            //Level of verbosity in print statements
 string trace_file = "trace.txt";
 string data_file = "addc.ascii";
+string branch_trace_file;
 PSW_t PSW;
 
 void get_user_octal(string prompt, string error_text, uint16_t &word)
 {
 //Only here to get rid of a compilation error.
+}
+
+void clear_psw(PSW_t & PSW) {
+	PSW.PSW_BYTE = 0;
+}
+
+void print_psw(PSW_t & PSW) {
+	cout << "Global PSW: " << setfill('0') << setw(3) << oct << uint16_t(PSW.PSW_BYTE) << endl;
+	cout << "Global PSW.SPL: " << setfill('0') << setw(1) << uint16_t(PSW.SPL) << endl;
+	cout << "Global PSW.T: " << setfill('0') << setw(1) << uint16_t(PSW.T) << endl;
+	cout << "Global PSW.N: " << setfill('0') << setw(1) << uint16_t(PSW.N) << endl;
+	cout << "Global PSW.Z: " << setfill('0') << setw(1) << uint16_t(PSW.Z) << endl;
+	cout << "Global PSW.V: " << setfill('0') << setw(1) << uint16_t(PSW.V) << endl;
+	cout << "Global PSW.C: " << setfill('0') << setw(1) << uint16_t(PSW.C) << endl;
 }
 
 static void printMemReg()

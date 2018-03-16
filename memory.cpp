@@ -87,7 +87,7 @@ void print_all_memory(void) {
 	uint16_t memory_word;
 	for(int i = 0; i < (MEMORY_SPACE); i+=2) { //by word, this is a word access
 		if(MEM_USED_FLAGS[i] == true) {
-			memory_word = read_word(1, i, false, false);
+			memory_word = read_word(MANUAL_MEMORY_READ, i, NO_TRACE, READ_NOT_INSTR_FETCH);
 			hasContent+=1;
 			cout <<"@ADDR="; print_octal(i); cout <<", Contents=" << octal_to_string(memory_word);
 			if( i == PC )
@@ -107,7 +107,7 @@ void print_all_memory(void) {
 
 void initializeMemory(){
 	for(int i = 0; i < (MEMORY_SPACE); i++) { //Initialize memory space, by byte, since this is a byte access
-		write_byte(1, i,0x00, false);
+		write_byte(MANUAL_MEMORY_WRITE, i,0x00, NO_TRACE);
 		MEM_USED_FLAGS[i] = false;
 	}
 }
@@ -254,8 +254,8 @@ int readData(string & data_file){
 				if(verbosity_level >= DEBUG_VERBOSITY) cout << "Memory load"<<endl;
 				if(verbosity_level >= DEBUG_VERBOSITY) cout << "Loading:  " << input_word<<endl;
 				if(verbosity_level >= DEBUG_VERBOSITY) cout << "@address: " << octal_to_string(address)<<endl;
-				write_word(1, address,string_to_octal(input_word), false); //Read string, convert uint16, and write to memory
-				if(verbosity_level >= DEBUG_VERBOSITY) cout << "Loaded to memory, Read Back: " << octal_to_string(read_word(FILE_READ, address))<<endl;
+				write_word(FILE_WRITE, address,string_to_octal(input_word), NO_TRACE); //Read string, convert uint16, and write to memory
+				if(verbosity_level >= DEBUG_VERBOSITY) cout << "Loaded to memory, Read Back: " << octal_to_string(read_word(FILE_READ, address, NO_TRACE, READ_NOT_INSTR_FETCH))<<endl;
 				address+=2;
 			}
 			else {
@@ -287,7 +287,7 @@ int readData(string & data_file){
 	cout << "Done reading file";
 	if(verbosity_level == HIGH_VERBOSITY) { cout << ", printing valid memory contents: " << endl; print_all_memory();}
 	cout <<endl;
-	if (PC == 0xFFFF) {
+	if (PC == 0xFFFE) { //See if PC was set, this is an invalid PC, can never be an odd number.
 		cerr << "\n\n-------------------------------------------------------------------------" <<endl;
 		cerr << "Error: PC not set"<< endl;
 		get_user_octal("Enter octal starting PC value: ", "ERROR: Enter only 6 octal digits: ", PC);
