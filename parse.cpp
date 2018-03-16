@@ -345,11 +345,11 @@ uint16_t get_address(uint16_t mode, uint16_t baseAddress, bool trace)
                   // READ TRACE
                   if (byte)
                   {
-                    resultAddress = read_byte(REGISTER_MODE, workingAddress, trace);
+                    resultAddress = read_byte(mode, workingAddress, trace);
                   }
                   else
                   {
-                    resultAddress = read_word(REGISTER_MODE, workingAddress, trace);
+                    resultAddress = read_word(mode, workingAddress, trace);
                   }
                   //PC += 2; TODO i think this is unneeded.
                   break;
