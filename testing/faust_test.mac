@@ -1,0 +1,41 @@
+t Addressing Modes              *
+;    **************************************
+; 
+A:      .WORD     0              ; 0
+B:      .WORD     4              ; 2
+N:      .WORD     12             ; 4
+P:    .WORD     0        ; 6
+Q:    .WORD   0        ; 10
+R:    .WORD   7        ; 12
+S:    .WORD   0        ; 14
+
+START:                             ;program starts executing here
+          CLR   %0
+          INC   %0
+          MOV   %0, %1      ; register mode -- should have 1 in R1
+          MOV   #2, %0      ; now have pointer to B
+          MOV   (%0), %1    ; register deferred should have 2 in R1
+          MOV   (%0)+, %2   ; auto-increment.  R2 should be 2, R0 should be 4
+          MOV   #B, %0      ; put address of B (2) in R0
+          MOV   @(%0)+, %3    ; auto-increment deferred should put 12 in R3 and
+R0 should be 4
+          CLR   %0        ;
+          MOV   @4(%0),%1   ; index mode should put 7 in R1 
+                        ;
+          INC   %0        ; R0 now 1
+          MOV   #12, @#2    ; put pointer to (octal) location 12 in absolute
+location 2
+          MOV   #14, @#4    ; put pointer to (octal) location 14 in absolute
+location 4
+          MOV   #6, @#12    ; put octal 6 in absolute location 12
+          MOV   #7, @#14    ; put octal 7 in absolute location 14
+          MOV   #2, %1      ; make R1 point to location 2
+          ADD   %0, @(%1)+    ; ensure destination increment done only once
+                        ; should see octal 7 in location 12
+                        ; location 14 unchanged (7)
+                        ; locations 2, 4 unchanged (12, 14)
+                        ; R1 now 4
+;          MOV    @#1, %1     ; error -- odd address
+WEND:     HALT            ;
+          .END      START
+
