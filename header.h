@@ -86,7 +86,7 @@ extern PSW_t PSW;
 
 
 // MAIN functions - main.cpp
-int menu_function(bool & bp_print_mem, bool & bp_print_regs);
+int menu_function(bool & bp_print_mem, bool & bp_print_regs, string & trace_file);
 void get_user_octal(string prompt, string error_text, uint16_t &word);
 int instruction_fetch(bool & at_breakpoint, uint16_t & instruction_code,  uint16_t & breakpoint_pc, uint16_t & PC);
 int write_back(PSW_t & PSW, instruction * inst);
@@ -94,8 +94,8 @@ void clear_psw(PSW_t & PSW);
 void print_psw(PSW_t & PSW);
 
 // Memory functions - memory.cpp
-int get_cmd_options(int argc, char ** argv);
-int readData(void);
+int get_cmd_options(int argc, char ** argv, string & branch_trace_file, string & data_file, string & trace_file);
+int readData(string & data_file);
 uint16_t string_to_octal(string input_string);
 string octal_to_string(uint16_t value);
 uint16_t read_byte(uint16_t addressMode, uint16_t address, bool trace = true);                              //Read a byte and return it in the low 8 bits

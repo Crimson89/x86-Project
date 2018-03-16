@@ -19,6 +19,7 @@ instruction * current_instruction;	// decoded instruction information
 int verbosity_level;                // Level of verbosity in print statements
 string trace_file;
 string data_file;
+string branch_trace_file;
 PSW_t PSW;
 
 
@@ -35,11 +36,12 @@ int main(int argc, char ** argv)
 	
 	trace_file = "test_trace.txt";
 	data_file = "FALSE";
+	branch_trace_file = "FALSE";
 	SP = 0xFFFF; // Assign at start to invalid value, detection of unassigned SP
 	PC = 0xFFFF; // Assign at start to invalid value, detection of unassigned PC
 	starting_pc = PC;
 	initializeMemory();
-	get_cmd_options(argc, argv); // Read command line options
+	get_cmd_options(argc, argv, branch_trace_file, data_file, trace_file); // Read command line options
 	current_instruction = new instruction;
 	clearInstruction(current_instruction);
 	bool bp_print_mem = false;  // Hitting a breakpoint prints all valid memory contents
@@ -48,9 +50,10 @@ int main(int argc, char ** argv)
 	
 	
 	for(;;){
-		program_execution_control = menu_function(bp_print_mem, bp_print_regs);
+		program_execution_control = menu_function(bp_print_mem, bp_print_regs, trace_file);
 		if(program_execution_control == LOAD_DATA) {
-			if(readData()) {
+			cout << "Data File " << data_file << endl;
+			if(readData(data_file)) {
 				cerr << "failed to open file : " << data_file << endl;
 			}
 			program_execution_control = PRINT_MENU;
@@ -103,7 +106,7 @@ int main(int argc, char ** argv)
 				}
 				else if(verbosity_level >= HIGH_VERBOSITY) {
 					cout << "Instruction: " << op_formatted(current_instruction) << endl;
-					cout << "Current Operation PSW:" << oct << uint8_t(current_instruction->PSW) << endl;
+					cout << "Current Operation PSW:" << oct << uint16_t(current_instruction->PSW) << endl;
 					cout << "Print Register Contents" << endl;
 					print_all_registers();
 					cout << "End of Registers" << endl;
@@ -190,7 +193,7 @@ void get_user_octal(string prompt, string error_text, uint16_t &word){
 }
 
 
-int menu_function(bool & bp_print_mem, bool & bp_print_regs) {
+int menu_function(bool & bp_print_mem, bool & bp_print_regs, string & trace_file) {
 	string input;
 	char input_char;
 	int menu_continue = 1;

@@ -128,20 +128,23 @@ void print_all_registers(void) {
 	cout<< endl;
 }
 
-int get_cmd_options(int argc, char ** argv){
+int get_cmd_options(int argc, char ** argv, string & branch_trace_file, string & data_file, string & trace_file){
 	int return_val = 1;
 	int opt;
 	optind = 0;			//force getOpt to restart for repeated loading from file
 	verbosity_level = -1;
 	trace_file = "FALSE";
 	data_file = "FALSE";
-	while ((opt = getopt(argc, argv, "f:m:t:")) != -1) {
+	while ((opt = getopt(argc, argv, "f:m:t:b:")) != -1) {
 		switch (opt) {
 		case 'f':
 			data_file = string(optarg);
 			break;
 		case 't':
 			trace_file = string(optarg);
+			break;
+		case 'b':
+			branch_trace_file = string(optarg);
 			break;
 		case 'm':
 			if (string(optarg) == "simple")
@@ -156,7 +159,7 @@ int get_cmd_options(int argc, char ** argv){
 		case 'h':
 			cout << "-------------------------------------------------------------------------" <<endl;
 			cout << "-------------------------------------------------------------------------" <<endl;
-			cout << "Usage: " << argv[0] << " [-f dataFileName] [-m simple|verbose] [-t traceFileName]" << endl;
+			cout << "Usage: " << argv[0] << " [-f dataFileName] [-m simple|verbose] [-t traceFileName] optional: ([-b branchTraceFile])" << endl;
 			cout << "                All three arguments are mandatory" << endl;
 			cout << "-------------------------------------------------------------------------" <<endl;
 			cout << "-------------------------------------------------------------------------" <<endl;
@@ -166,7 +169,7 @@ int get_cmd_options(int argc, char ** argv){
 			cerr << "-------------------------------------------------------------------------" <<endl;
 			cerr << "-------------------------------------------------------------------------" <<endl;
 			cerr << "Error, invalid option" << endl;
-			cerr << "Usage: " << argv[0] << " [-f dataFileName] [-m simple|verbose] [-t traceFileName]" << endl;
+			cout << "Usage: " << argv[0] << " [-f dataFileName] [-m simple|verbose] [-t traceFileName] optional: ([-b branchTraceFile])" << endl;
 			cerr << "           Press ENTER to exit and close application" << endl;
 			cerr << "-------------------------------------------------------------------------" <<endl;
 			cerr << "-------------------------------------------------------------------------" <<endl;
@@ -178,7 +181,7 @@ int get_cmd_options(int argc, char ** argv){
 		cerr << "-------------------------------------------------------------------------" <<endl;
 		cerr << "-------------------------------------------------------------------------" <<endl;
 		cerr << "ERROR: Invalid mode:" << endl;
-		cerr << "Usage: " << argv[0] << " [-f dataFileName] [-m simple|verbose] [-t traceFileName]" << endl;
+		cout << "Usage: " << argv[0] << " [-f dataFileName] [-m simple|verbose] [-t traceFileName] optional: ([-b branchTraceFile])" << endl;
 		cerr << "             Press ENTER to exit and close application" << endl;
 		cerr << "-------------------------------------------------------------------------" <<endl;
 		cerr << "-------------------------------------------------------------------------" <<endl;
@@ -189,7 +192,7 @@ int get_cmd_options(int argc, char ** argv){
 		cerr << "-------------------------------------------------------------------------" <<endl;
 		cerr << "-------------------------------------------------------------------------" <<endl;
 		cerr << "ERROR: Did not specify trace file:" << endl;
-		cerr << "Usage: " << argv[0] << " [-f dataFileName] [-m simple|verbose] [-t traceFileName]" << endl;
+		cout << "Usage: " << argv[0] << " [-f dataFileName] [-m simple|verbose] [-t traceFileName] optional: ([-b branchTraceFile])" << endl;
 		cerr << "             Press ENTER to exit and close application" << endl;
 		cerr << "-------------------------------------------------------------------------" <<endl;
 		cerr << "-------------------------------------------------------------------------" <<endl;
@@ -200,18 +203,21 @@ int get_cmd_options(int argc, char ** argv){
 		cerr << "-------------------------------------------------------------------------" <<endl;
 		cerr << "-------------------------------------------------------------------------" <<endl;
 		cerr << "ERROR: Did not specify data input file name:" << endl;
-		cerr << "Usage: " << argv[0] << " [-f dataFileName] [-m simple|verbose] [-t traceFileName]" << endl;
+		cout << "Usage: " << argv[0] << " [-f dataFileName] [-m simple|verbose] [-t traceFileName] optional: ([-b branchTraceFile])" << endl;
 		cerr << "             Press ENTER to exit and close application" << endl;
 		cerr << "-------------------------------------------------------------------------" <<endl;
 		cerr << "-------------------------------------------------------------------------" <<endl;
 		cin.get();	//Wait for ENTER key press
 		exit(EXIT_FAILURE);
 	}
+	cout << "Data File " << data_file << endl;
+	cout << "Trace File " << trace_file << endl;
+	cout << "Branch Trace File " << branch_trace_file << endl;
 	return 0;
 }
 
 
-int readData(){
+int readData(string & data_file){
 	string temp;							//File read temp string
 	string input_word;						//Store input_word octal characters
 	int stringLength = 0;					//Length of temp string
@@ -277,7 +283,7 @@ int readData(){
 	}
 	fileInput.close(); //done reading, close the file
 	cout << "Done reading file";
-	if(verbosity_level == HIGH_VERBOSITY) { cout << ", printing valid memory contents: "; print_all_memory();}
+	if(verbosity_level == HIGH_VERBOSITY) { cout << ", printing valid memory contents: " << endl; print_all_memory();}
 	cout <<endl;
 	if (PC == 0xFFFF) {
 		cerr << "\n\n-------------------------------------------------------------------------" <<endl;
