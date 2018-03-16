@@ -91,7 +91,7 @@ extern PSW_t PSW;
 
 
 // MAIN functions - main.cpp
-int menu_function(bool & bp_print_mem, bool & bp_print_regs, string & trace_file);
+int menu_function(bool & bp_print_mem, bool & bp_print_regs, string & trace_file, bool branch_trace_en);
 void get_user_octal(string prompt, string error_text, uint16_t &word);
 int instruction_fetch(bool & at_breakpoint, uint16_t & instruction_code,  uint16_t & breakpoint_pc, uint16_t & PC, uint16_t & if_pc_falue);
 int write_back(PSW_t & PSW, instruction * inst);

@@ -54,7 +54,7 @@ int main(int argc, char ** argv)
 		branch_trace_en = true;
 	
 	for(;;){
-		program_execution_control = menu_function(bp_print_mem, bp_print_regs, trace_file);
+		program_execution_control = menu_function(bp_print_mem, bp_print_regs, trace_file, branch_trace_en);
 		if(program_execution_control == LOAD_DATA) {
 			cout << "Data File " << data_file << endl;
 			if(readData(data_file)) {
@@ -75,6 +75,7 @@ int main(int argc, char ** argv)
 			// Main program loop
 			while(program_execution_control == RUN_PROGRAM) {
 
+				if(verbosity_level >= HIGH_VERBOSITY) cout << "-------------------------------------------------------------------------" <<endl;
 				// IF and evaluate current PC for matching breakpoint, then increment PC
 				if(instruction_fetch(at_breakpoint, instruction_code, breakpoint_pc, PC, if_pc_value)) {
 					cerr << "\n\n-------------------------------------------------------------------------" <<endl;
@@ -145,10 +146,10 @@ int main(int argc, char ** argv)
 				
 				//Branch trace, if enabled
 				if(current_instruction->is_branch && branch_trace_en){
-					if(verbosity_level >= HIGH_VERBOSITY) cout << "Tracing branch" << endl;
+					if(verbosity_level > HIGH_VERBOSITY) cout << "Tracing branch" << endl;
 					branch_trace(if_pc_value, current_instruction->branch_target, op_formatted(current_instruction) , current_instruction->branch_taken);
 				}
-				
+				if(verbosity_level >= HIGH_VERBOSITY) cout << "-------------------------------------------------------------------------" <<endl;
 				
 				if(current_instruction->opcode == m_HALT) {
 					program_step_mode = false;
@@ -205,7 +206,7 @@ void get_user_octal(string prompt, string error_text, uint16_t &word){
 }
 
 
-int menu_function(bool & bp_print_mem, bool & bp_print_regs, string & trace_file) {
+int menu_function(bool & bp_print_mem, bool & bp_print_regs, string & trace_file, bool branch_trace_en) {
 	string input;
 	char input_char;
 	int menu_continue = 1;
@@ -221,14 +222,18 @@ int menu_function(bool & bp_print_mem, bool & bp_print_regs, string & trace_file
 		cout << "P(p) to print all register contents" << endl;
 		cout << "M(m) to print all valid memory contents" << endl;
 		cout << "L(l) to load new application" << endl;
-		cout << "T(t) to print current trace file" << endl;
-		cout << "Y(y) to clear old trace file" << endl;
+		cout << "T(t) to print current memory access trace file" << endl;
+		cout << "Y(y) to clear old memory access trace file" << endl;
 		cout << "B(b) to set break point" << endl;
 		cout << "C(c) to clear breakpoint" << endl;
 		cout << "V(v) to clear all breakpoints" << endl;
 		cout << "N(n) to print all breakpoints" << endl;
 		cout << "Z(z) to toggle \"breakpoints print register contents\" option" << endl;
 		cout << "X(x) to toggle \"breakpoints print all memory contents\" option" << endl;
+		if(branch_trace_en) {
+			cout << "F(f) to print branch trace file" << endl;
+			cout << "D(d) to clear old branch trace file" << endl;
+		}
 		cout << "-------------------------------------------------------------------------" <<endl;
 		cout << "-------------------------------------------------------------------------" <<endl;
 		cout << "\n\nSelection: ";
@@ -290,7 +295,7 @@ int menu_function(bool & bp_print_mem, bool & bp_print_regs, string & trace_file
 					break;
 				case 't':
 					cout << "\n\n-------------------------------------------------------------------------" <<endl;
-					cout << "                     Print trace file, " << trace_file << endl;
+					cout << "                     Printing trace file, " << trace_file << endl;
 					cout << "-------------------------------------------------------------------------" <<endl;
 					print_trace();
 					cout << "                          Press ENTER to continue" << endl;
@@ -300,7 +305,7 @@ int menu_function(bool & bp_print_mem, bool & bp_print_regs, string & trace_file
 					break;
 				case 'y':
 					cout << "\n\n-------------------------------------------------------------------------" <<endl;
-					cout << "                     Delete old trace file, " << trace_file << endl;
+					cout << "                     Deleting old trace file, " << trace_file << endl;
 					cout << "-------------------------------------------------------------------------" <<endl;
 					clear_trace();
 					cout << "                          Press ENTER to continue" << endl;
@@ -397,6 +402,26 @@ int menu_function(bool & bp_print_mem, bool & bp_print_regs, string & trace_file
 					cout << "-------------------------------------------------------------------------" <<endl;
 					cin.get();
 					return LOAD_DATA;
+					break;
+				case 'f':
+					cout << "\n\n-------------------------------------------------------------------------" <<endl;
+					cout << "                     Printing branch trace file, " << trace_file << endl;
+					cout << "-------------------------------------------------------------------------" <<endl;
+					print_branch_trace();
+					cout << "                          Press ENTER to continue" << endl;
+					cout << "-------------------------------------------------------------------------" <<endl;
+					cin.ignore(numeric_limits<streamsize>::max(), '\n');
+					cin.get();
+					break;
+				case 'd':
+					cout << "\n\n-------------------------------------------------------------------------" <<endl;
+					cout << "                     Deleting old branch trace file, " << trace_file << endl;
+					cout << "-------------------------------------------------------------------------" <<endl;
+					clear_branch_trace();
+					cout << "                          Press ENTER to continue" << endl;
+					cout << "-------------------------------------------------------------------------" <<endl;
+					cin.ignore(numeric_limits<streamsize>::max(), '\n');
+					cin.get();
 					break;
 				default:
 					cout << "                     ERROR: Invalid input\n\n" << endl;
