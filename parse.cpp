@@ -95,7 +95,7 @@ int parseInstruction(uint16_t instructionCode, instruction* newInstruction)
 
 
   // Check MARK
-  if (!special& ((instructionCode & 0176400) == 0006400))
+  if (!special& ((instructionCode & 0177700) == 0006400))
   {
 	current_instruction->opcode = (instructionCode & 0006400);
 	current_instruction->offset = (instructionCode & 0000077);
@@ -115,7 +115,7 @@ int parseInstruction(uint16_t instructionCode, instruction* newInstruction)
   {
     current_instruction->opcode = (instructionCode & 0177000);
     current_instruction->regBase = (instructionCode & 0000700) >> 6;
-    current_instruction->addressingModeReg = (instructionCode & 0007000) >> 9;
+    current_instruction->addressingModeReg = 2; // Shouldn't matter. //(instructionCode & 0007000) >> 9;
     current_instruction->addressingModeDest = (instructionCode & 000070) >> 3;
     current_instruction->destBase = (instructionCode & 0000007);
     if(verbosity_level > HIGH_VERBOSITY) cout << "JSR" << "\n";
@@ -295,7 +295,7 @@ int parseInstruction(uint16_t instructionCode, instruction* newInstruction)
   }
   
   if(verbosity_level > HIGH_VERBOSITY) cout << "In parse, opCode=" << oct << current_instruction->opcode << endl;
-  if((current_instruction->opcode == m_JSR) && (current_instruction->addressingModeDest)) {
+  if((current_instruction->opcode == m_JSR) && (!(current_instruction->addressingModeDest))) {
 	  cerr << "TRAP!, to Vector Address 4, Invalid JSR addressing mode: " << current_instruction->addressingModeDest << ", not currently implemented" <<endl;
 	  return 2;
   }
