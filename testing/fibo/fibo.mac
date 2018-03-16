@@ -1,7 +1,7 @@
 OLD:  .WORD 0
 NEW:  .WORD 0
 FIBO: .WORD 0
-N:    .WORD 0
+N:    .WORD 6
 
 START:
   MOV #1, OLD

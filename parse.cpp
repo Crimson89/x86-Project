@@ -623,7 +623,7 @@ uint16_t get_value(uint16_t mode, uint16_t baseAddress, bool trace)
                     break;
       // Index
       case 0000006: // READ TRACE
-                    X = read_word(mode, PC, true);
+                    X = read_word(mode, PC, trace);
 					current_instruction->immediate = X;
                     PC += 2;
                     if (byte)
