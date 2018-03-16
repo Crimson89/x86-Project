@@ -1,0 +1,11 @@
+A: .WORD 5250
+
+START:
+  MOV #200, R1
+  MOV A, (R1)
+  MOVB (R1), R2
+  BGT STOP
+  CMPB R1, R2
+  BEQ START
+STOP:
+  HALT
