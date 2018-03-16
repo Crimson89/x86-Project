@@ -1,0 +1,13 @@
+START:  MOV #10, R0;
+        JSR PC, DEST1;
+        MOV #11, R1;
+        MOV #01, R3;
+        JSR R3, DEST2;
+        MOV #14, R5;
+        JMP END;
+DEST1:  MOV #12, R2;
+        RTS PC;
+DEST2:  MOV #13, R4;
+        RTS R3;
+END:    HALT;
+        

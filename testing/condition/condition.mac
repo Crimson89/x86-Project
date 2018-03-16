@@ -1,0 +1,11 @@
+START:  SCC
+        CCC
+        SEC
+        CLC
+        SEV
+        CLV
+        SEZ
+        CLZ
+        SEN
+        CLN
+        HALT

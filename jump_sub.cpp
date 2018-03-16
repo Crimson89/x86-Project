@@ -15,7 +15,7 @@ int JMP(instruction *inst)
     return -1;
   }
 
-  destination = get_value(inst->addressingModeReg, inst->regBase);
+  destination = get_address(inst->addressingModeReg, inst->regBase);
    
   // If value is an odd address, "boundary error trap condition"
   if(destination & 0x0001) {
@@ -39,11 +39,17 @@ int JSR(instruction *inst)
   // PC <- (tmp)
   
   uint16_t dst_tmp, reg_tmp;
-  
   // tmp <- dest
-  dst_tmp = get_value(inst->addressingModeDest, inst->destBase);
+  dst_tmp = get_address(inst->addressingModeDest, inst->destBase);
   // -(SP) <- reg
-  reg_tmp = get_value(00, inst->regBase);
+  if (inst->regBase == PC_REG_INDEX)
+  {
+    reg_tmp = PC + 2;
+  }
+  else
+  {
+    reg_tmp = get_value(REGISTER_MODE, inst->regBase);
+  }
   SP -= 2;
   write_word(REGISTER_DEFR_MODE, SP, reg_tmp, true);
 
@@ -63,7 +69,14 @@ int RTS(instruction *inst)
   uint16_t tmp;
 
   // PC <- reg
-  tmp = get_value(REGISTER_MODE, inst->rtsReg);
+  if (inst->rtsReg == PC_REG_INDEX)
+  {
+    tmp = PC;
+  }
+  else
+  {
+    tmp = get_value(REGISTER_MODE, inst->rtsReg) + 2;
+  }
   write_word(REGISTER_MODE, PC_REG_INDEX, tmp, false);
 
   // reg <- (SP)+
