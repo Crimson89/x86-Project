@@ -241,7 +241,7 @@ int menu_function(bool & bp_print_mem, bool & bp_print_regs) {
 					break;
 				case 'z':
 					cout << "\n\n-------------------------------------------------------------------------" <<endl;
-					cout << "                     Toggle breakpoint register print" << endl;
+					cout << "                     Toggle breakpoint register print";
 					if(bp_print_regs)
 						bp_print_regs = false;
 					else
@@ -258,7 +258,7 @@ int menu_function(bool & bp_print_mem, bool & bp_print_regs) {
 					break;
 				case 'x':
 					cout << "\n\n-------------------------------------------------------------------------" <<endl;
-					cout << "                     Toggle breakpoint memory print" << endl;
+					cout << "                     Toggle breakpoint memory print";
 					if(bp_print_mem)
 						bp_print_mem = false;
 					else
