@@ -394,7 +394,7 @@ uint16_t get_address(uint16_t mode, uint16_t baseAddress, bool trace)
     switch (mode)
     {
     // Register
-    case 0000000: //resultAddress = baseAddress;
+    case 0000000: resultAddress = SP_REG_INDEX;
                   break;
     // Register deferred
     case 0000001: resultAddress = SP;
@@ -421,9 +421,8 @@ uint16_t get_address(uint16_t mode, uint16_t baseAddress, bool trace)
                   resultAddress = SP - 2;
                   break;
     // Autodecrement deferred
-    case 0000005: cout << "INVALID MODE autodecrement deferred for SP" << "\n";
-                  /*REGS[baseAddress] -= 2;
-                  workingAddress = REGS[baseAddress];
+    case 0000005: //cout << "INVALID MODE autodecrement deferred for SP" << "\n";
+                  workingAddress = SP - 2;
                   // READ TRACE
                   if (byte)
                   {
@@ -432,7 +431,7 @@ uint16_t get_address(uint16_t mode, uint16_t baseAddress, bool trace)
                   else
                   {
                     resultAddress = read_word(mode, workingAddress, true);
-                  }*/
+                  }
                   break;
     // Index
     case 0000006: // READ TRACE 
@@ -671,7 +670,7 @@ uint16_t get_value(uint16_t mode, uint16_t baseAddress, bool trace)
       // SP ADDRESSING
       // Register
       case 0000000: // TODO how to gracefully handle these?
-                    //resultValue = REGS[baseAddress];
+                    resultValue = SP;
                     break;
       // Register deferred
       case 0000001: workingAddress = SP;
@@ -732,8 +731,8 @@ uint16_t get_value(uint16_t mode, uint16_t baseAddress, bool trace)
                     }
                     break;
       // Autodecrement deferred
-      case 0000005: /*baseAddress -= 2;
-                    workingAddress = REGS[baseAddress];
+      case 0000005: SP -= 2;
+                    workingAddress = SP;
                     if (byte)
                     {
                       // READ TRACE
@@ -747,7 +746,7 @@ uint16_t get_value(uint16_t mode, uint16_t baseAddress, bool trace)
                       workingAddress = read_word(mode, workingAddress, true);
                       // READ TRACE
                       resultValue = read_word(mode, workingAddress, true);
-                    }*/
+                    }
                     break;
       // Index
       case 0000006: // READ TRACE
