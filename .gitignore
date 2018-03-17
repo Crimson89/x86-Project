@@ -3,3 +3,9 @@
 *\.swp
 *\.o
 *\.trace
+
+branch\.txt
+
+memory_trace\.txt
+
+trace_branch\.txt

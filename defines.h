@@ -5,7 +5,7 @@
 
 
 //Handle bad instructions
-#define BAD_INST_ABORT 1 // Set this to 0 to continue execution with bad/unimplemeted instructions, just print a message. Setting to 1 causes program execution to halt
+#define BAD_INST_ABORT 0 // Set this to 0 to continue execution with bad/unimplemeted instructions, just print a message. Setting to 1 causes program execution to halt
 
 //Size of memory space
 #define MEMORY_SPACE (1<<16)
@@ -229,7 +229,7 @@
 #define IS_NEGATIVE_BYTE(value) IS_NEGATIVE(value, BYTE_MSB_MASK, SHIFT_BYTE_MSB_TO_LSB)
 #define IS_ZERO(value) (value==0)
 #define IS_ZERO_WORD(value) (value==0)
-#define IS_ZERO_BYTE(value) ((value & 0x00FF)==0) //TODO does this work?
+#define IS_ZERO_BYTE(value) ((value & 0x00FF)==0)
 #define IS_NOT_ZERO(value) (value!=0)
 #define CARRY_MSB_WORD(value) (value>WORD_MAX)
 #define CARRY_MSB_BYTE(value) (value>BYTE_MAX)
