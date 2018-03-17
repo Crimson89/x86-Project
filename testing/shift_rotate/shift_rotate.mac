@@ -12,7 +12,4 @@ LOOP2: ADD B,A;
        ADD #1, R1;
        CMP #4, R1;
        BNE LOOP2;
-LOOP3: ROR C;
-       CMP C,D;
-       BNE LOOP3;
        HALT;

@@ -1,0 +1,11 @@
+Branch Trace: BLE 000017 from PC 000032 to 000072, branch NOT taken.
+Branch Trace: BR 000355 from PC 000070 to 000024, branch taken.
+Branch Trace: BLE 000017 from PC 000032 to 000072, branch NOT taken.
+Branch Trace: BR 000355 from PC 000070 to 000024, branch taken.
+Branch Trace: BLE 000017 from PC 000032 to 000072, branch NOT taken.
+Branch Trace: BR 000355 from PC 000070 to 000024, branch taken.
+Branch Trace: BLE 000017 from PC 000032 to 000072, branch NOT taken.
+Branch Trace: BR 000355 from PC 000070 to 000024, branch taken.
+Branch Trace: BLE 000017 from PC 000032 to 000072, branch NOT taken.
+Branch Trace: BR 000355 from PC 000070 to 000024, branch taken.
+Branch Trace: BLE 000017 from PC 000032 to 000072, branch taken.

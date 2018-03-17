@@ -159,6 +159,8 @@ int CMP(instruction *inst) // Compare source to destination (B)
     // Overflow, i.e. pos - neg = neg or neg - pos = pos
     inst->V =IS_OVERFLOW(src,dest,temp)? 1:0;
 
+    cout << "In CMP: inst->Z = " << int(inst->Z) << "\n";
+    cout << "src: " << src << " dest: " << dest << "\n";
  }
   return 0;
 }

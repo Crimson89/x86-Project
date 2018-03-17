@@ -1,0 +1,2 @@
+Branch Trace: BGT 000002 from PC 000014 to 000022, branch NOT taken.
+Branch Trace: BEQ 000370 from PC 000020 to 000002, branch NOT taken.
