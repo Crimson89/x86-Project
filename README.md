@@ -85,7 +85,8 @@ How to run the simulator:
 	L - Load an application into the simulator from the ascii file provided from the command line.
 	T - Print the current memory reference trace file. The file name is supplied at the command line.
 	Y - Yank the contents of the memory reference trace file, clear the file contents. Cannot be undone.
-	B - Allows the user to enter an octal address to set a breakpoint at. When the program reaches this breakpoint execution will be suspended and debug information is printed.
+	B - Allows the user to enter an octal address to set a breakpoint at. See the descriptions of Z and X to change breakpoint behavior
+    When the program reaches this breakpoint execution will be suspended and debug information is printed.
 		Breakpoints will not be triggered for data memory addresses, only instruction fetch triggers breakpoints. Breakpoints for data addresses are ignored. An example breakpoint
 		is provided below:
 		
