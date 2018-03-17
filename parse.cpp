@@ -1,12 +1,18 @@
 #include "header.h"
 
 
-// Convenience function for printing relevant info in an instruction structure.
+ 
+/*
+
+Convenience function for printing relevant info in an instruction structure.
+Arguments:
+  newInstruction - A pointer to the instruction structure you want to modify.
+
+*/
 int printInstruction(instruction* newInstruction)
 {
   cout << "Operation Name:" << newInstruction->op_text << endl;
   cout << "0pcode :" << setfill('0') << setw(7) << oct << newInstruction->opcode << endl;
-  //printf("\nopcode %u\n", newInstruction->opcode);
   printf("byteMode %u\n", newInstruction->byteMode);
   printf("addressingModeSrc %u\n", newInstruction->addressingModeSrc);
   printf("addressingModeDest %u\n", newInstruction->addressingModeDest);
@@ -20,8 +26,13 @@ int printInstruction(instruction* newInstruction)
   return 0;
 }
 
+/*
 
-// Convenience function for overwriting any leftover data after an isntruction is called.
+Convenience function for clearing out an instruction structure..
+Arguments:
+  newInstruction - A pointer to the instruction structure you want to modify.
+
+*/
 int clearInstruction(instruction* newInstruction)
 {
   newInstruction->opcode = 0;
@@ -44,9 +55,20 @@ int clearInstruction(instruction* newInstruction)
   return 0;
 }
 
+/*
+
+The main work horse of the instruction decode sequence. This function takes in a 16 bit instrucion code
+  and determines what "family" it belongs to. Instructions were sorted into families based on common functionality
+  and common data locations within the instruction code (like addressing modes and registers).
+Arguments:
+  newInstruction - A pointer to the instruction structure you want to modify.
+  instructionCode - the 16 bit instruction code that was just fetched form memory
+Returns
+  An error code through an int for any invalid modes.
+
+*/
 int parseInstruction(uint16_t instructionCode, instruction* newInstruction)
 {
-    //instruction newInstruction;
     int err = 0; // will be error code. 0 = no error, non-zero = error
 
   // First thing is first, check against instructions with entirely unique opcodes.
@@ -319,8 +341,20 @@ pc_error:
 }
 
 
-// This returns the address, doing N-1 trace statements
-// It is used to get a destination for an instruction to write to.
+/*
+
+This function does the instruction decoding for addressing modes. It takes the addressing mode
+  applied to a speicifc register, and returns the address of the value that is at the end of the
+  decoding. It is used get an address for an item you wish to modify. This function does NOT
+  increment any registers in increment or decrement modes.
+  Please see the function comment for get_value for a further explanation of required use.
+Arguments:
+  mode - The mode applied to the register (baseAddress)
+  baseAddress - The register index, representing what register the mode is to be applied to
+  trace -  A boolean to turn off and on writing to the trace file for instruction, data, and memory
+    reads and writes.
+
+*/
 uint16_t get_address(uint16_t mode, uint16_t baseAddress, bool trace)
 {
   uint16_t X = 0;
@@ -540,15 +574,25 @@ uint16_t get_address(uint16_t mode, uint16_t baseAddress, bool trace)
   return resultAddress;
 }
 
-// This function actually returns the value at the end of the addressing mode decoding.
-// To be used whena  value from source, reg, or destination in an instruction is needed.
-// NOTE: this function will increment values and decrement values in the modes that are relevatn,
-// whereas get_address will not by design.
-// This requires a certain order of calls to be made in the instructions themselves, as follows:
-// 1. Call get_value on source (if a value is needed from source, and in a double op)
-// 2. Call get_address on destination
-// 3. Call get_value on destination (a dummy call is needed to facilitate incrementing and decrementing
-//    even if not using the value).
+
+/*
+
+
+  This function actually returns the value at the end of the addressing mode decoding.
+  To be used when a value from source, reg, or destination in an instruction is needed.
+  NOTE: this function will increment values and decrement values in the modes that are relevatn,
+  whereas get_address will not by design.
+  This requires a certain order of calls to be made in the instructions themselves, as follows:
+  1. Call get_value on source (if a value is needed from source, and in a double op)
+  2. Call get_address on destination
+  3. Call get_value on destination (a dummy call is needed to facilitate incrementing and decrementing
+     even if not using the value).Arguments:
+  mode - The mode applied to the register (baseAddress)
+  baseAddress - The register index, representing what register the mode is to be applied to
+  trace -  A boolean to turn off and on writing to the trace file for instruction, data, and memory
+    reads and writes.
+
+*/
 uint16_t get_value(uint16_t mode, uint16_t baseAddress, bool trace)
 {
   uint16_t X = 0;
