@@ -1,5 +1,15 @@
 #include "header.h"
 
+/*
+
+Sets a breakpoint at a provided address
+
+Arguments:
+	address: uint16_t octal memory address
+	
+Return: 0 if breakpoint set, 1 if breakpoint already at this location
+
+*/
 int set_breakpoint(uint16_t address){
 	if(BREAK_POINT[(address/2)]) {
 		cout <<"Breakpoint already set @ADDR="; print_octal(address); cout << endl;
@@ -10,6 +20,15 @@ int set_breakpoint(uint16_t address){
 	return 1;
 }
 
+/*
+
+Clears all breakpoints
+
+Arguments: None
+	
+Return: 0 if breakpoint was set and has been cleared, 1 if no breakpoints at this location
+
+*/
 int clear_all_breakpoints(void) {
 	bool breakpoints = false;
 	for(int i = 0; i < (MEMORY_SPACE/2); i+=1) {
@@ -19,22 +38,38 @@ int clear_all_breakpoints(void) {
 	}
 	if(breakpoints) {
 		cout <<"Cleared all breakpoints" << endl;
-		return 1;
+		return 0;
 	}
 	cout <<"No breakpoints to clear" << endl;
-	return 0;	
+	return 1;	
 }
 
+/*
+
+Clears a particular breakpoint
+
+Arguments: address - uint16_t address to set a breakpoint at
+	
+Return: 0 if breakpoint was set at this location and has been cleared, 1 if no breakpoints at this location
+
+*/
 int clear_breakpoint(uint16_t address) {
 	if(BREAK_POINT[(address/2)]) {
 		BREAK_POINT[(address/2)] = false;
 		cout <<"Clear breakpoint @ADDR="; print_octal(address); cout << endl;
-		return 1;
+		return 0;
 	}
 	cout <<"No breakpoint @ADDR="; print_octal(address); cout << endl;
-	return 0;
+	return 1;
 }
 
+/*
+Determine if there is a breakpoint at this address
+
+Argument:	address - uint16_t address to inspect breakpoint array for
+
+Return: bool value indicating if breakpoint found, true indicates breakpoint, false indicates no breakpoint
+*/
 bool check_breakpoint(uint16_t address){
 	if(BREAK_POINT[(address/2)]) {
 		return true;
@@ -42,6 +77,24 @@ bool check_breakpoint(uint16_t address){
 	return false;
 }
 
+/*
+
+The location that an instruction was fetched at was determined to be a breakpoint
+Print breakpoint details
+May include register print and valid memory print, always includes operation details and global PSW
+
+Arguments:
+	address - location in memory that this breakpoint is for
+	instruction_code - raw 16-bit instruction value, prior to parsing and stripping arguments
+	old_program_step_mode - bool indicating if the previous invication was in program step mode. Allows alterations of displayed text
+	bp_print_mem  - bool indicating that the breakpoint should print memory contents if set true, if false no memory print is included
+	bp_print_regs - bool indicating that the breakpoint should print register contents if set true, if false no register print is included
+	
+Return:
+	true  - if user seleted step mode, this is used later as the new value of "old_program_step_mode" and forces a breakpoint after the next IF/decode completes
+	false - Stepping mode disabled, continue normal execution
+
+*/
 bool handle_breakpoint(uint16_t address, uint16_t instruction_code, bool old_program_step_mode, bool & bp_print_mem, bool & bp_print_regs){
 	string op_name;
 	string mode;
@@ -78,6 +131,17 @@ bool handle_breakpoint(uint16_t address, uint16_t instruction_code, bool old_pro
 	cout << "No stepping mode" <<endl;
 }
 
+/*
+
+Print breakpoint config. Prints whether or not breakpoints will trigger a print of system memory or a print of CPU registers
+
+Arguments:
+	bp_print_mem  - bool indicating that the breakpoint should print memory contents if set true, if false no memory print is included
+	bp_print_regs - bool indicating that the breakpoint should print register contents if set true, if false no register print is included
+	
+Return: None
+
+*/
 void print_bp_config(bool & bp_print_mem, bool & bp_print_regs){
 	if(bp_print_mem)
 		cout << "Breakpoints will print all valid memory contents" << endl;
@@ -89,6 +153,17 @@ void print_bp_config(bool & bp_print_mem, bool & bp_print_regs){
 		cout << "Breakpoints will NOT print regiser contents" << endl;
 }
 
+/*
+
+Print all breakpoint addresses and calls print_bp_config
+
+Arguments:
+	bp_print_mem  - bool indicating that the breakpoint should print memory contents if set true, if false no memory print is included
+	bp_print_regs - bool indicating that the breakpoint should print register contents if set true, if false no register print is included
+	
+Return: None
+
+*/
 void print_all_breakpoints(bool & bp_print_mem, bool & bp_print_regs){
 for(int i = 0; i < (MEMORY_SPACE/2); i+=1)
 	if(BREAK_POINT[i]) {
@@ -100,6 +175,15 @@ for(int i = 0; i < (MEMORY_SPACE/2); i+=1)
 	print_bp_config(bp_print_mem, bp_print_regs);
 }
 
+/*
+
+Takes current_instruction struct opCode value and returns a string indicating the instruction mnemonic
+
+Arguments: None - current_instruction struct is a global value
+	
+Return: String with operation name, or "UNKNOWN" if no match found
+
+*/
 string get_op_name(void) {
 	string op_name;
 	uint16_t opCode = current_instruction->opcode;
@@ -227,7 +311,18 @@ string get_op_name(void) {
 	return op_name;
 }
 
+/*
 
+Parses current_instruction struct values and regenerates a single instruction argument with mode syntax
+
+Arguments:
+	reg - the register number for this argument
+	mode - the addressing mode, 0 - 7
+	immediate - the immediate value of this instruction, if there is one. 0 if there isn't.
+	
+Return: Single argument string with mode syntax
+
+*/
 string format_arg(uint8_t reg, uint8_t mode, uint16_t immediate) {
 	stringstream temp;
 	stringstream temp_reg;
@@ -273,6 +368,16 @@ string format_arg(uint8_t reg, uint8_t mode, uint16_t immediate) {
 	return temp.str();
 }
 
+/*
+
+Parses current_instruction struct values and regenerates a single instruction mnemonic with arguments with mode syntax
+
+Arguments:
+	op - pointer to the instruction struct containing the information for this particular operation
+
+Return: String with operation mnumonic and argument strings with mode syntax, "??????" if no instruction matched
+
+*/
 string op_formatted(instruction * op) {
 	stringstream temp;
 	string byteMode = " ";

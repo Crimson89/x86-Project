@@ -1,5 +1,11 @@
 #include "header.h"
 
+/*
+
+Takes a strng octal argument and converts ut to an unsigned long long integer
+Returns the integer value
+
+*/
 uint16_t string_to_octal(string this_string){
 	return stoul(this_string, NULL, 8);
 }
@@ -10,66 +16,114 @@ string octal_to_string(uint16_t value) {
 	return temp.str();
 }
 
+/*
 
+Reads a single byte from the memory array
+Arguments:
+addressMode - 	0 is a register read, data is read from the register with the index provided as the address.
+				Otherwise this is a memory read that is read from the memory array at the supplied address
+address			Any uint16 address is allowed, determines location to read from
+trace			Should this read be included in the trace file? True traces the read, false prevents tracing
+
+Returns the data byte read from memory
+*/
 uint16_t read_byte(uint16_t addressMode, uint16_t address, bool trace) {
 	uint16_t data;
-  if (addressMode == 0)
+  if (addressMode == 0) //Register mode
   {
-	data = REGS[address] & 0x00FF;
+	data = REGS[address] & 0x00FF; // Just reade the low register byte
   }
-  else
+  else   				//Memory mode
   {
     data = 0x00FF&MEM[address];
-	if(trace)
+	if(trace)					//If trace is enabled
 		read_trace(address, data);
   }
 	return (data);
 }
 
+/*
+
+Reads a 16 bit word from the memory array
+Arguments:
+addressMode - 	0 is a register read, data is read from the register with the index provided as the address.
+				Otherwise this is a memory read that is read from the memory array at the supplied address
+address			Any uint16 address is allowed, determines location to read from
+trace			Should this read be included in the trace file? True traces the read, false prevents tracing
+is_instruction	Enabling this changes the trace mode from data trace to instruction trace. Setting to false treats this as a data read.
+
+Returns the data word read from memory
+
+*/
 uint16_t read_word(uint16_t addressMode, uint16_t address, bool trace, bool is_instruction) {
 	uint16_t data;
   
-  // TODO constant
-  if (addressMode == 0)
+  if (addressMode == 0) //Register mode
   {
 	data = REGS[address];
   }
-  else
+  else   				//Memory mode
   {
     data = ((MEM[address+1]<<8) | (MEM[address]));
-	if(trace)
+	if(trace)					//If trace is enabled
 		read_trace(address, data, is_instruction);
   }
 	return (data);
 }
 
+/*
+
+Writes a single byte to the memory array
+Arguments:
+addressMode - 	0 is a register write, data is written to the register with the index provided as the address.
+				Otherwise this is a memory write that is written to the memory array at the supplied address
+address			Any uint16 address is allowed, determines location to write to
+trace			Should this write be included in the trace file? True traces the write, false prevents tracing
+
+Return: None
+
+*/
 void write_byte(uint16_t addressMode, uint16_t address, uint16_t byte, bool trace) {
 	uint16_t tempValue = 0;
 
-  if (addressMode == 0)
+  if (addressMode == 0) //Register mode
   {
     tempValue = 0xFF00 & REGS[address];
     tempValue = tempValue | (byte & 0x00FF);
     REGS[address] = tempValue;
   }
-  else
+  else   				//Memory mode
   {
-    if(trace)
+    if(trace)					//If trace is enabled
 		write_trace(address, byte);
 	  MEM[address] = 0x00FF&byte;
 	  MEM_USED_FLAGS[address] = true;
   }
 }
 
+/*
+
+Writes a 16 bit word from the memory array
+
+Arguments:
+addressMode - 	0 is a register write, data is written to the register with the index provided as the address.
+				Otherwise this is a memory write that is written to the memory array at the supplied address
+address			Any uint16 address is allowed, determines location to write to
+trace			Should this write be included in the trace file? True traces the write, false prevents tracing
+
+Return: None
+
+
+*/
 void write_word(uint16_t addressMode, uint16_t address, uint16_t word, bool trace) {
 	
-  if (addressMode == 0)
+  if (addressMode == 0) //Register mode
   {
     REGS[address] = word;
   }
-  else
+  else   				//Memory mode
   {
-    if(trace)
+    if(trace)					//If trace is enabled
 		write_trace(address, word);
 	MEM[address]   = (0x00FF&word);
 	MEM_USED_FLAGS[address] = true;
@@ -78,33 +132,57 @@ void write_word(uint16_t addressMode, uint16_t address, uint16_t word, bool trac
   }
 }
 
+/*
+
+Prints the uint16_t supplied as an argument in octal to stdout
+
+Arguments: None
+Return: None
+
+
+*/
 void print_octal(uint16_t value){
 	cout <<setfill('0')<<setw(6)<<oct<<value;
 }
 
+/*
+
+Prints all valid memory locations to stdout. Memory is printed in words. Both address and data are given in octal
+
+Arguments: None
+Return: None
+
+*/
 void print_all_memory(void) {
 	uint16_t hasContent = 0;
 	uint16_t memory_word;
-	for(int i = 0; i < (MEMORY_SPACE); i+=2) { //by word, this is a word access
-		if(MEM_USED_FLAGS[i] == true) {
+	for(int i = 0; i < (MEMORY_SPACE); i+=2) { // Increment by word, this is a word access
+		if(MEM_USED_FLAGS[i] == true) {        // If this memory location is valid
 			memory_word = read_word(MANUAL_MEMORY_READ, i, NO_TRACE, READ_NOT_INSTR_FETCH);
-			hasContent+=1;
+			hasContent+=1;                     // Increment word counter
 			cout <<"@ADDR="; print_octal(i); cout <<", Contents=" << octal_to_string(memory_word);
-			if( i == PC )
+			if( i == PC )                      // If this memory location is the address pointed to by the PC
 				cout << " <-- PC";
-			if( i == SP )
+			if( i == SP )                      // If this memory location is the address pointed to by the SP
 				cout << " <-- SP";
 			cout<< endl;
 		}
 	}
-	if(hasContent) {
+	if(hasContent) {  							//Print the number of words read
 		cout << "Memory contains " <<dec<<hasContent*2 << " bytes of information" << endl;
 	}
 	else
 		cout << "Memory is empty" << endl;
 }
 
+/*
 
+Sets all memory locations to 0 and clears memory used/valid flags
+
+Arguments: None
+Return: None
+
+*/
 void initializeMemory(){
 	for(int i = 0; i < (MEMORY_SPACE); i++) { //Initialize memory space, by byte, since this is a byte access
 		write_byte(MANUAL_MEMORY_WRITE, i,0x00, NO_TRACE);
@@ -112,30 +190,51 @@ void initializeMemory(){
 	}
 }
 
+/*
+
+Prints all register content to stdout. Register data is given in octal
+
+Arguments: None
+Return: None
+
+*/
 void print_all_registers(void) {
-	for(int i = 0; i < 6; i++) {
+	for(int i = 0; i < 6; i++) { // Print registers 0 - 5
 		cout <<"R"<<i<<":";
 		print_octal(REGS[i]);
 		cout<< endl;
 	}
-	cout <<"SP"<<":";
+	cout <<"SP"<<":";           // Print SP contents
 	print_octal(SP);
 	cout<< endl;
-	cout <<"PC"<<":";
+	cout <<"PC"<<":";          // Print PC contents
 	print_octal(PC);
-	if(PC == 0xFFFE)
+	if(PC == 0xFFFE)           // PC is not permitted to be an odd address, so it is initialized to an odd address to indicate that it has not been setup
 		cout<< "  <-- This is an invalid PC, 0xFFFE";
 	cout<< endl;
 }
 
+/*
+
+Parses the command line arguments and sets the data file, trace file, and optional branch trace file names.
+Also sets the verbosity level
+
+Arguments: 
+			argc - integer number of supplied command line arguments
+			argv - char * array of command line argument strings
+			branch_trace_file - Passed by reference string used to provide the optional branch trace file name	
+			data_file         - Passed by reference string used to provide the program ascii file name	
+			trace_file        - Passed by reference string used to provide the memory trace file name
+Return: Integer status code, 0 indicates no issue. If an problem is encountered this function does not return dirctly, instead exit() is called
+
+*/
 int get_cmd_options(int argc, char ** argv, string & branch_trace_file, string & data_file, string & trace_file){
-	int return_val = 1;
 	int opt;
 	optind = 0;			//force getOpt to restart for repeated loading from file
 	verbosity_level = -1;
 	trace_file = "FALSE";
 	data_file = "FALSE";
-	while ((opt = getopt(argc, argv, "f:m:t:b:")) != -1) {
+	while ((opt = getopt(argc, argv, "f:m:t:b:")) != -1) {  // Parse the command line options
 		switch (opt) {
 		case 'f':
 			data_file = string(optarg);
@@ -156,7 +255,7 @@ int get_cmd_options(int argc, char ** argv, string & branch_trace_file, string &
 			else	 //Default to invalid mode
 				verbosity_level = -1;
 			break;
-		case 'h':
+		case 'h':   //-h prints help menu and exits success
 			cout << "-------------------------------------------------------------------------" <<endl;
 			cout << "-------------------------------------------------------------------------" <<endl;
 			cout << "Usage: " << argv[0] << " [-f dataFileName] [-m simple|verbose] [-t traceFileName] optional: ([-b branchTraceFile])" << endl;
@@ -165,7 +264,7 @@ int get_cmd_options(int argc, char ** argv, string & branch_trace_file, string &
 			cout << "-------------------------------------------------------------------------" <<endl;
 			exit(EXIT_SUCCESS);
 			break;
-		default:
+		default:   // Not all required options are provided
 			cerr << "-------------------------------------------------------------------------" <<endl;
 			cerr << "-------------------------------------------------------------------------" <<endl;
 			cerr << "Error, invalid option" << endl;
@@ -188,7 +287,7 @@ int get_cmd_options(int argc, char ** argv, string & branch_trace_file, string &
 		cin.get();	//Wait for ENTER key press
 		exit(EXIT_FAILURE);
 	}
-	if(trace_file == "FALSE") {
+	if(trace_file == "FALSE") { // No trace file name supplied
 		cerr << "-------------------------------------------------------------------------" <<endl;
 		cerr << "-------------------------------------------------------------------------" <<endl;
 		cerr << "ERROR: Did not specify trace file:" << endl;
@@ -199,7 +298,7 @@ int get_cmd_options(int argc, char ** argv, string & branch_trace_file, string &
 		cin.get();	//Wait for ENTER key press
 		exit(EXIT_FAILURE);
 	}
-	if(data_file == "FALSE") {
+	if(data_file == "FALSE") {  //  No data file name supplied
 		cerr << "-------------------------------------------------------------------------" <<endl;
 		cerr << "-------------------------------------------------------------------------" <<endl;
 		cerr << "ERROR: Did not specify data input file name:" << endl;
@@ -212,13 +311,21 @@ int get_cmd_options(int argc, char ** argv, string & branch_trace_file, string &
 	}
 	cout << "Data File " << data_file << endl;
 	cout << "Trace File " << trace_file << endl;
-	if(branch_trace_file != "FALSE")
+	if(branch_trace_file != "FALSE") // If branch tracing is enabled
 		cout << "Branch Trace File " << branch_trace_file << endl;
 	cout << "Verbosity set to " << verbosity_level << endl;
 	return 0;
 }
 
+/*
 
+Reads the program data ascii file and loads it into memory
+
+Arguments: 
+			data_file         - Passed by reference string used to provide the program ascii file name	
+Return: Integer status code, 0 indicates no issue. Non-zero return indicates reading failed
+
+*/
 int readData(string & data_file){
 	string temp;							//File read temp string
 	string input_word;						//Store input_word octal characters
@@ -232,7 +339,7 @@ int readData(string & data_file){
 	ifstream fileInput(data_file);			//File ifstream handle, and open file
 
 	initializeMemory();
-	if(!fileInput.is_open()) {
+	if(!fileInput.is_open()) {              // Return error if file could not be opened
 		return 1;
 	}
 	cout << "Reading from:" << data_file << "\n";
@@ -250,7 +357,7 @@ int readData(string & data_file){
 					break;
 			}
 			if(verbosity_level >= DEBUG_VERBOSITY) cout << "input_word is "<<input_word<<endl;
-			if(input_word.length() == 6 && line_type == '-') {
+			if(input_word.length() == 6 && line_type == '-') {    //If this line started with character '-' and the length beyond that character is 6 characters
 				if(verbosity_level >= DEBUG_VERBOSITY) cout << "Memory load"<<endl;
 				if(verbosity_level >= DEBUG_VERBOSITY) cout << "Loading:  " << input_word<<endl;
 				if(verbosity_level >= DEBUG_VERBOSITY) cout << "@address: " << octal_to_string(address)<<endl;
@@ -258,18 +365,18 @@ int readData(string & data_file){
 				if(verbosity_level >= DEBUG_VERBOSITY) cout << "Loaded to memory, Read Back: " << octal_to_string(read_word(FILE_READ, address, NO_TRACE, READ_NOT_INSTR_FETCH))<<endl;
 				address+=2;
 			}
-			else {
+			else { //Otherwise, is this a memory index, or is it a PC value?
 				temporary_addr = string_to_octal(input_word);
-				if (line_type == '*') {
+				if (line_type == '*') {  // PC value
 					starting_pc = temporary_addr;
 					PC = starting_pc;
 					if(verbosity_level >= DEBUG_VERBOSITY) cout << "Set PC to start @ address: " << octal_to_string(PC) <<endl;
 				}
-				else if (line_type == '@') {
+				else if (line_type == '@') { // Memory location, adjust memory index
 					address = temporary_addr;
 				if(verbosity_level == DEBUG_VERBOSITY) cout << "Set current memory location to address: " << octal_to_string(address) << endl;
 				}
-				else
+				else				// Skip invalid lines
 					cerr << "Skipping invalid input in file: " << input_word << " at line#" <<dec<< file_line_num << endl;
 			}
 		}
@@ -287,7 +394,7 @@ int readData(string & data_file){
 	cout << "Done reading file";
 	if(verbosity_level == HIGH_VERBOSITY) { cout << ", printing valid memory contents: " << endl; print_all_memory();}
 	cout <<endl;
-	if (PC == 0xFFFE) { //See if PC was set, this is an invalid PC, can never be an odd number.
+	if (PC == 0xFFFE) { //See if PC was set, this is an invalid PC, can never be an odd number. Prompt for new PC value
 		cerr << "\n\n-------------------------------------------------------------------------" <<endl;
 		cerr << "Error: PC not set"<< endl;
 		get_user_octal("Enter octal starting PC value: ", "ERROR: Enter only 6 octal digits: ", PC);
