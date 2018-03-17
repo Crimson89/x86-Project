@@ -3,15 +3,20 @@
 // General
 int CLR(instruction *inst) // Clear (B)
 {
+  // get source, destination address
   uint16_t destAddress = get_address(inst->addressingModeReg, inst->regBase);
   uint16_t dest = 0;
+  // call get_value to trigger incrementing in some addressing modes
   uint16_t dummyValue = get_value(inst->addressingModeReg, inst->regBase, false);
   if(verbosity_level > HIGH_VERBOSITY)  cout << "DESTADDR: " << destAddress << "\n";
+
+  // byte mode
   if(inst->byteMode)
   {
     inst->op_text = "CLRB";
     write_byte(inst->addressingModeReg, destAddress, dest);
   }
+  // word mode
   else
   {
     inst->op_text = "CLR";
@@ -26,8 +31,11 @@ int CLR(instruction *inst) // Clear (B)
 
 int COM(instruction *inst) // 1's Compliment (B)
 {
+  // get source, destination
   uint16_t destAddress = get_address(inst->addressingModeReg, inst->regBase, false);
   uint16_t dest = get_value(inst->addressingModeReg, inst->regBase);
+
+  // Get 1's compliment of dest
   dest = ~dest;
 
   if(inst->byteMode)
@@ -101,7 +109,6 @@ int DEC(instruction *inst) // Decrement (B)
     inst->Z = IS_ZERO_WORD(dest)? 1:0;
    }
 
-  //inst->Z = IS_ZERO(dest)? 1:0;
   inst->C = 0;
   return 0;
 }

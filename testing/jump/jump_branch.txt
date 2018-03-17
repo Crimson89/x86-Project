@@ -1,0 +1,5 @@
+Branch Trace: JSR (PC)+, 24(PC) from PC 000004 to 000034, branch taken.
+Branch Trace: RTS PC from PC 000040 to 000010, branch taken.
+Branch Trace: JSR (R3)+, 16(PC) from PC 000020 to 000042, branch taken.
+Branch Trace: RTS R3 from PC 000046 to 000024, branch taken.
+Branch Trace: JMP 14(PC) from PC 000030 to 000050, branch taken.

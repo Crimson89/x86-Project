@@ -1,5 +1,7 @@
 #include "header.h"
 
+
+// Convenience function for printing relevant info in an instruction structure.
 int printInstruction(instruction* newInstruction)
 {
   cout << "Operation Name:" << newInstruction->op_text << endl;
@@ -18,6 +20,8 @@ int printInstruction(instruction* newInstruction)
   return 0;
 }
 
+
+// Convenience function for overwriting any leftover data after an isntruction is called.
 int clearInstruction(instruction* newInstruction)
 {
   newInstruction->opcode = 0;
@@ -45,21 +49,10 @@ int parseInstruction(uint16_t instructionCode, instruction* newInstruction)
     //instruction newInstruction;
     int err = 0; // will be error code. 0 = no error, non-zero = error
 
-  /* First thing is first, check against instructions with entirely unique opcodes.
-   * Operate Group
-   *   HALT, WAIT, RTI, RESET, RTT, NOP
-     Program Control Group
-       JMP, JSR, RTS, IOT, EMT, TRAP, BPT, MARK, SOB
-     That's a lot :(
-     Full OPCODE
-       IOT, EMT, TRAP, BPT, HALT, WAIT, RTI, RESET, RTT, NOP
-     Other
-       MARK, SOB, RTS, JSR, JMP
-   */
-  
+  // First thing is first, check against instructions with entirely unique opcodes.
+
   bool special = false;
   if(verbosity_level > HIGH_VERBOSITY) cout << "In parser, found ";
-  //TODO add masks to some of these (like EMT and TRAP) maybe pull out if needed
   //                                    IOT      BPT     HALT     WAIT      RTI    RESET      RTT
   uint16_t uniqueInstructions[7] = {0000004, 0000003, 0000000, 0000001, 0000002, 0000005, 0000006};
 
@@ -76,7 +69,9 @@ int parseInstruction(uint16_t instructionCode, instruction* newInstruction)
       
   }
 
-  // TODO fill these out
+  // In the list of Ifs below, only JSR, RTS, and JMP are actually implemented.
+  // Other instructions are caught for consistencies sake, but this is by no means an exhaustive list.
+
   // EMT
   if (!special& ( (instructionCode & 0177400) == 0104000))
   {
@@ -117,7 +112,7 @@ int parseInstruction(uint16_t instructionCode, instruction* newInstruction)
   {
     current_instruction->opcode = (instructionCode & 0177000);
     current_instruction->regBase = (instructionCode & 0000700) >> 6;
-    current_instruction->addressingModeReg = 2; // Shouldn't matter. //(instructionCode & 0007000) >> 9;
+    current_instruction->addressingModeReg = 2; // Shouldn't matter, so just hard code something non harmful. 
     current_instruction->addressingModeDest = (instructionCode & 000070) >> 3;
     current_instruction->destBase = (instructionCode & 0000007);
     if(verbosity_level > HIGH_VERBOSITY) cout << "JSR" << "\n";
@@ -143,11 +138,21 @@ int parseInstruction(uint16_t instructionCode, instruction* newInstruction)
   }
   if (!special) 
   {
+    // If a special instruction above hasn't been caught, we have a general case.
+    // This chain of conditionals narrows down the "family" of the isntruction, based off of unique fields where they exist
+    /* All mask definitions are in header.h, under --PARSE-- header.
+      General steps as follows.
+      1. Check if the instruction is a single op, conditional branch or conditional check
+        1.a If not check if it is a double op, or a double op register source (none of these are actually implemented)
+      2. Check if it is a conditional (either branch or condition code)
+        2.a If If not, it is a single op
+      3. If we reached here, it's either a conditional branch or condition code operation
+    */
     uint16_t relevantBits = instructionCode & maskRelevantBits;
     uint16_t bitPattern = relevantBits & maskSingleCondBranchCondCheck;
     uint16_t tempLocation;
 
-    if (bitPattern == 0000000) // Define constans for these maybe.
+    if (bitPattern == 0000000)
     {
       bitPattern = relevantBits & maskSingle;
       if (bitPattern == 0004000)
@@ -182,7 +187,6 @@ int parseInstruction(uint16_t instructionCode, instruction* newInstruction)
     }
     else
     {
-      // TODO don't actually need this, I don't think we handle any "double reg" instructions.
       bitPattern = relevantBits & maskRegSource;
       if (bitPattern == 0070000)
       {
@@ -211,9 +215,11 @@ int parseInstruction(uint16_t instructionCode, instruction* newInstruction)
     }
   }
  
-  //TODO right place to put this?
+  // Save the current processor status word so that instructions have the ability to grab it and modify it.
+  // Will be written back after instruction execution to update.
   current_instruction->PSW = PSW.PSW_BYTE;
   
+  // Check for any invalid addressing modes for either SP or PC (some are technically allowed on SP, but should be heavily avoided)
   uint16_t bad_mode = 0; 
   if ((current_instruction->regBase == 7) || (current_instruction->regBase == 6)) {
 	if(current_instruction->regBase == 7) { // PC Register Modes
@@ -313,9 +319,8 @@ pc_error:
 }
 
 
-// TODO, test PC and SP?
-// This returns the address, doing N-1 trace statements. We could probably have the trace statements in
-// the read_byte and read_word functions honestly.
+// This returns the address, doing N-1 trace statements
+// It is used to get a destination for an instruction to write to.
 uint16_t get_address(uint16_t mode, uint16_t baseAddress, bool trace)
 {
   uint16_t X = 0;
@@ -323,14 +328,16 @@ uint16_t get_address(uint16_t mode, uint16_t baseAddress, bool trace)
   bool byte = current_instruction->byteMode;
   uint16_t resultAddress = 0;
   uint16_t offset = 0;
-  
-  // TODO define constants for all the values used for logic in here.
-  if (baseAddress == 7)
+ 
+  // Decodes the addressing mode, and retrieves the proper address needed.
+  // Has different operation for unique PC and SP addressing modes for clarity. 
+  if (baseAddress == PC_REG_INDEX)
   {
+    // An important note for PC addressing mdoes here, is that PC has already been icnremented form the previous instruction,
+    // since the incrementing is done right after we fetch the instruction from memory.
     switch (mode)
     {
     // Register
-    // TODO What to do here?
     case 0000000: //INVALID
                   break;
     // Register deferred
@@ -338,7 +345,6 @@ uint16_t get_address(uint16_t mode, uint16_t baseAddress, bool trace)
                   break;
     // Immediate
     case 0000002: resultAddress = PC;
-                  //PC += 2; TODO i think this is unneeded.
                   break;
     // Immediate  deferred
     case 0000003: workingAddress = PC; 
@@ -351,7 +357,6 @@ uint16_t get_address(uint16_t mode, uint16_t baseAddress, bool trace)
                   {
                     resultAddress = read_word(mode, workingAddress, trace);
                   }
-                  //PC += 2; TODO i think this is unneeded.
                   break;
     // Autodecrement
     case 0000004: // INVALID
@@ -365,19 +370,13 @@ uint16_t get_address(uint16_t mode, uint16_t baseAddress, bool trace)
                   if(verbosity_level > HIGH_VERBOSITY) cout << "g_a offset: " << offset << "\n";
                   X = read_word(mode, PC, trace);
 				          current_instruction->immediate = X;
-                  //PC += 2;
                   resultAddress = PC + offset + X;
                   if(verbosity_level > HIGH_VERBOSITY) cout << "get_a PC: " << oct << PC << "X: " << oct << X << "\n";
                   break;
     // Relative deferred
-    case 0000007: /*if ((modeTest == 6) || (modeTest == 7))
-                    offset = 2;
-                  else
-                    offset = 0;*/
-                  offset = 2;
+    case 0000007: offset = 2;
                   X = read_word(mode, PC, trace);
 				          current_instruction->immediate = X;
-                  //PC += 2;
                   workingAddress = PC + offset + X;
                   // READ TRACE
                   if (byte)
@@ -391,9 +390,11 @@ uint16_t get_address(uint16_t mode, uint16_t baseAddress, bool trace)
                   break;
     }
   }
-  else if (baseAddress == 6)
+  else if (baseAddress == SP_REG_INDEX)
   {
 
+    // Nothing is terribly special about these modes, this is just here for clarity
+    // and to facilitate checking of invalid modes not recommended for SP.
     switch (mode)
     {
     // Register
@@ -404,7 +405,6 @@ uint16_t get_address(uint16_t mode, uint16_t baseAddress, bool trace)
                   break;
     // Autoincrement
     case 0000002: resultAddress = SP;
-                  //SP += 2;
                   break;
     // Autoincrement deferred
     case 0000003: workingAddress = SP; 
@@ -417,47 +417,33 @@ uint16_t get_address(uint16_t mode, uint16_t baseAddress, bool trace)
                   {
                     resultAddress = read_word(mode, workingAddress, trace);
                   }
-                  //SP += 2;
                   break;
     // Autodecrement
-    case 0000004: //SP -= 2;
-                  resultAddress = SP - 2;
+    case 0000004: resultAddress = SP - 2;
                   break;
     // Autodecrement deferred
-    case 0000005: //cout << "INVALID MODE autodecrement deferred for SP" << "\n";
-                  workingAddress = SP - 2;
+    case 0000005: workingAddress = SP - 2;
                   // READ TRACE
                   if (byte)
                   {
-                    resultAddress = read_byte(mode, workingAddress, true);
+                    resultAddress = read_byte(mode, workingAddress, trace);
                   }
                   else
                   {
-                    resultAddress = read_word(mode, workingAddress, true);
+                    resultAddress = read_word(mode, workingAddress, trace);
                   }
                   break;
     // Index
-    case 0000006: // READ TRACE 
-                  /*if ((modeTest == 6) || (modeTest == 7))
-                    offset = 2;
-                  else
-                    offset = 0;*/
+    case 0000006: // READ TRACE
                   X = read_word(mode, PC, trace);
 				          current_instruction->immediate = X;
-                  //PC += 2;
                   resultAddress = SP + X;
                   break;
     // Index deferred
     case 0000007: workingAddress = SP; 
-                  /*if ((modeTest == 6) || (modeTest == 7))
-                    offset = 2;
-                  else
-                    offset = 0;*/
-                  //TODO only read word?
                   // READ TRACE
                   X = read_word(mode, PC, trace);
 				          current_instruction->immediate = X;
-                  //PC += 2;
                   // READ TRACE
                   if (byte)
                   {
@@ -484,11 +470,12 @@ uint16_t get_address(uint16_t mode, uint16_t baseAddress, bool trace)
     case 0000002: resultAddress = REGS[baseAddress];
                   if (byte == true)
                     {
-                      //REGS[baseAddress]++;
+                      // We don't want to actually change any values with get_address
+                      // since that would mess up calls to get_value within the same instruction
                     }
                   else
                     {
-                      //REGS[baseAddress] += 2;
+                      // For consistency and readability.
                     }
                   break;
     // Autoincrement deferred
@@ -502,7 +489,6 @@ uint16_t get_address(uint16_t mode, uint16_t baseAddress, bool trace)
                   {
                     resultAddress = read_word(mode, workingAddress, trace);
                   }
-                  //REGS[baseAddress] += 2;
                   break;
     // Autodecrement
     case 0000004: if (byte == true)
@@ -512,13 +498,10 @@ uint16_t get_address(uint16_t mode, uint16_t baseAddress, bool trace)
                   else
                   {
                     resultAddress = REGS[baseAddress] - 2;
-                    //REGS[baseAddress] -= 2;
                   }
-                  //resultAddress = REGS[baseAddress];
                   break;
     // Autodecrement deferred
-    case 0000005: //REGS[baseAddress] -= 2;
-                  workingAddress = REGS[baseAddress] - 2;
+    case 0000005: workingAddress = REGS[baseAddress] - 2;
                   // READ TRACE
                   if (byte)
                   {
@@ -531,28 +514,16 @@ uint16_t get_address(uint16_t mode, uint16_t baseAddress, bool trace)
                   break;
     // Index
     case 0000006: // READ TRACE
-                  /*cout << "modeTest \n" << modeTest << "\n";
-                  if ((modeTest == 6) || (modeTest == 7))
-                    offset = 2;
-                  else
-                    offset = 0;*/
                   X = read_word(mode, PC, trace);
                   if(verbosity_level > HIGH_VERBOSITY) cout << "offset \n" << X << "\n";
-				  current_instruction->immediate = X;
-                  //PC += 2;
+				          current_instruction->immediate = X;
                   resultAddress = REGS[baseAddress] + X;
                   break;
     // Index deferred
     case 0000007: workingAddress = REGS[baseAddress];
-                  //TODO only read word?
                   // READ TRACE
-                  /*if ((modeTest == 6) | (modeTest == 7))
-                    offset = 2;
-                  else
-                    offset = 0;*/
                   X = read_word(mode, PC, trace);
-				  current_instruction->immediate = X;
-                  //PC += 2;
+				          current_instruction->immediate = X;
                   // READ TRACE
                   if (byte)
                   {
@@ -569,6 +540,15 @@ uint16_t get_address(uint16_t mode, uint16_t baseAddress, bool trace)
   return resultAddress;
 }
 
+// This function actually returns the value at the end of the addressing mode decoding.
+// To be used whena  value from source, reg, or destination in an instruction is needed.
+// NOTE: this function will increment values and decrement values in the modes that are relevatn,
+// whereas get_address will not by design.
+// This requires a certain order of calls to be made in the instructions themselves, as follows:
+// 1. Call get_value on source (if a value is needed from source, and in a double op)
+// 2. Call get_address on destination
+// 3. Call get_value on destination (a dummy call is needed to facilitate incrementing and decrementing
+//    even if not using the value).
 uint16_t get_value(uint16_t mode, uint16_t baseAddress, bool trace)
 {
   uint16_t X = 0;
@@ -582,12 +562,10 @@ uint16_t get_value(uint16_t mode, uint16_t baseAddress, bool trace)
     switch (mode)
     {
       // Register
-      case 0000000: 
-                    cerr << "Invalid PC addressing mode: 0\n";
+      case 0000000: // INVALID 
                     break;
       // Register deferred
-      case 0000001: 
-                    cerr << "Invalid PC addressing mode: 1\n";
+      case 0000001: // INVALID
                     break;
       // Autoincrement
       case 0000002: workingAddress = PC;
@@ -631,7 +609,7 @@ uint16_t get_value(uint16_t mode, uint16_t baseAddress, bool trace)
       // Index
       case 0000006: // READ TRACE
                     X = read_word(mode, PC, trace);
-					current_instruction->immediate = X;
+					          current_instruction->immediate = X;
                     PC += 2;
                     if (byte)
                     {
@@ -647,7 +625,7 @@ uint16_t get_value(uint16_t mode, uint16_t baseAddress, bool trace)
       // Index deferred
       case 0000007: // READ TRACE
                     X = read_word(mode, PC, true);
-					current_instruction->immediate = X;
+					          current_instruction->immediate = X;
                     PC += 2;
                     if (byte)
                     {
@@ -672,8 +650,7 @@ uint16_t get_value(uint16_t mode, uint16_t baseAddress, bool trace)
     {
       // SP ADDRESSING
       // Register
-      case 0000000: // TODO how to gracefully handle these?
-                    resultValue = SP;
+      case 0000000: resultValue = SP;
                     break;
       // Register deferred
       case 0000001: workingAddress = SP;
@@ -755,7 +732,7 @@ uint16_t get_value(uint16_t mode, uint16_t baseAddress, bool trace)
       case 0000006: // READ TRACE
                     workingAddress = SP;
                     X = read_word(mode, PC, trace);
-					current_instruction->immediate = X;
+					          current_instruction->immediate = X;
                     PC += 2;
                     if (byte)
                     {
@@ -772,7 +749,7 @@ uint16_t get_value(uint16_t mode, uint16_t baseAddress, bool trace)
       case 0000007: // READ TRACE
                     workingAddress = SP;
                     X = read_word(mode, PC, trace);
-					current_instruction->immediate = X;
+					          current_instruction->immediate = X;
                     PC += 2;
                     if (byte)
                     {
@@ -892,7 +869,7 @@ uint16_t get_value(uint16_t mode, uint16_t baseAddress, bool trace)
       case 0000006: // READ TRACE
                     workingAddress = REGS[baseAddress];
                     X = read_word(mode, PC, trace);
-					current_instruction->immediate = X;
+					          current_instruction->immediate = X;
                     PC += 2;
                     if (byte)
                     {
@@ -909,7 +886,7 @@ uint16_t get_value(uint16_t mode, uint16_t baseAddress, bool trace)
       case 0000007: // READ TRACE
                     workingAddress = REGS[baseAddress];
                     X = read_word(mode, PC, trace);
-					current_instruction->immediate = X;
+					          current_instruction->immediate = X;
                     PC += 2;
                     if (byte)
                     {

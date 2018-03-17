@@ -33,19 +33,19 @@ typedef union {
 }PSW_t;
 
 typedef struct {
-	uint16_t opcode;  
-	uint16_t byteMode;  
-	uint16_t addressingModeSrc;  
-	uint16_t addressingModeDest;
-	uint16_t addressingModeReg;  
+	uint16_t opcode; // instruction opcode 
+	uint16_t byteMode;  // If it's a byte instruction
+	uint16_t addressingModeSrc; // Source addressing mode, for double ops.
+	uint16_t addressingModeDest; // Destination addressing mode, for double ops.
+	uint16_t addressingModeReg;  // Register addressing mode for single ops.
 	uint16_t srcBase;	// src register
 	uint16_t destBase;	// dest register
 	uint16_t regBase;	// reg register (lol)
 
 	int16_t offset;   // Signed offset
-	int16_t immediate; //Signed immediate value, used for debug pretty-print
-	uint16_t rtsReg;
-	uint8_t padding; //Make this struct an even multiple of 64 bits up to the end of this struct
+	int16_t immediate; // Signed immediate value, used for debug pretty-print
+	uint16_t rtsReg; // Specific register for RTS instruction
+	uint8_t padding; // Make this struct an even multiple of 64 bits up to the end of this struct
 	union {
 		struct {
 			// In reverse order so that the bits fall in the correct order for printing the word
@@ -62,7 +62,7 @@ typedef struct {
 	bool is_branch;         // This instruction is a branch
 	bool branch_taken;      // Was this branch taken or not
 	uint16_t branch_target; // Destination of branch
-	string op_text;
+	string op_text;         // instruction name used for pretty print
 }instruction;
 #pragma pack(pop)
 
@@ -135,6 +135,14 @@ int write_line(string text, string filename);
 int clear_branch_trace();
 int print_branch_trace();
 int branch_trace(uint16_t PC, uint16_t target, string name, bool taken);
+
+// Parse functions - parse.cpp
+int parseInstruction(uint16_t instructionCode, instruction* newInstruction);
+uint16_t get_address(uint16_t mode, uint16_t baseAddress, bool trace = true);
+uint16_t get_value(uint16_t mode, uint16_t baseAddress, bool trace = true);
+
+int printInstruction(instruction* newInstruction);
+int clearInstruction(instruction* newInstruction);
 
 
 // SINGLE OPERAND
@@ -244,54 +252,45 @@ int TSTSET(instruction *inst);
 int WRTLCK(instruction *inst);
 
 
-// Parsing functions
-
-const uint16_t maskByteMode = 0100000;//0x8000; 
+// --PARSE--
+// Masks used for parsing instructions and pulling out relevant data from them
+const uint16_t maskByteMode = 0100000; 
  
-// BETTER NAMES MAX TODO double check these masks to see if they're doing what I want them to do.  
-const uint16_t maskRelevantBits = 0177777;//0x78A0;  
-//const uint16_t maskRelevantBits2 = 0070000;
-const uint16_t maskSingleCondBranchCondCheck = 0070000;//0x7000; // (Maybe 0x7800)  
-const uint16_t maskSingle = 0074000;//0x0800; // (Maybe 0x7800) 
-const uint16_t maskCondCheck = 0077760;//0x00E0; // (Maybe 0xFF80) Else conditional branch  
-const uint16_t maskRegSource = 0070000;// 0x7000; // (Maybe 0x8000) Else double operand  
+const uint16_t maskRelevantBits = 0177777;  
+const uint16_t maskSingleCondBranchCondCheck = 0070000; // Else double or double reg
+const uint16_t maskSingle = 0074000; // Else conditional
+const uint16_t maskCondCheck = 0077760; // Else conditional branch  
+const uint16_t maskRegSource = 0070000; // Else double operand  
 
-// Assignment masks
+// Assignment masks, these facilitate the extraction of relevant data for instruction families.
 // Double-operand
-const uint16_t maskDoubleOpcode = 0070000;//0x7000;
-const uint16_t maskDoubleSourceMode = 0007000;//0x0E00;
-const uint16_t maskDoubleSource = 0000700;//0x01C0;
-const uint16_t maskDoubleDestMode = 0000070;//0x0038;
-const uint16_t maskDoubleDest = 0000007;//0x0007;
+const uint16_t maskDoubleOpcode = 0070000;
+const uint16_t maskDoubleSourceMode = 0007000;
+const uint16_t maskDoubleSource = 0000700;
+const uint16_t maskDoubleDestMode = 0000070;
+const uint16_t maskDoubleDest = 0000007;
 
 // Double-operand register
-const uint16_t maskDoubleRegisterOpcode = 0177000;// 0x0700;
-const uint16_t maskDoubleRegisterReg = 0000300;//0x00C0;
-const uint16_t maskDoubleRegisterSourceDestMode = 0000070;//0x0038;
-const uint16_t maskDoubleRegisterSourceDest = 0000007;//0x0007;
+const uint16_t maskDoubleRegisterOpcode = 0177000;
+const uint16_t maskDoubleRegisterReg = 0000300;
+const uint16_t maskDoubleRegisterSourceDestMode = 0000070;
+const uint16_t maskDoubleRegisterSourceDest = 0000007;
 
 // Single-operand
-const uint16_t maskSingleOpcode = 0077700;//0x0730;
-const uint16_t maskSingleMode = 0000070;//0x0038;
-const uint16_t maskSingleRegister = 0000007;//0x0007;
+const uint16_t maskSingleOpcode = 0077700;
+const uint16_t maskSingleMode = 0000070;
+const uint16_t maskSingleRegister = 0000007;
 
 // Conditional branch
-const uint16_t maskCondBranchOpcode = 0177400;//0x0700;
-const uint16_t maskCondBranchOffset = 0000377;//0x00FF;
+const uint16_t maskCondBranchOpcode = 0177400;
+const uint16_t maskCondBranchOffset = 0000377;
 
 // Conditional check
-const uint16_t maskCondCodeOpcode = 0177760;//0xFFE0;
-const uint16_t maskCondSC = 0000020;//0x0010;
-const uint16_t maskCondN = 0000010;//0x0008;
-const uint16_t maskCondZ = 0000004;//0x0004;
-const uint16_t maskCondV = 0000002;//0x0002;
-const uint16_t maskCondC = 0000001;//0x0001;
+const uint16_t maskCondCodeOpcode = 0177760;
+const uint16_t maskCondSC = 0000020;
+const uint16_t maskCondN = 0000010;
+const uint16_t maskCondZ = 0000004;
+const uint16_t maskCondV = 0000002;
+const uint16_t maskCondC = 0000001;
 
-int parseInstruction(uint16_t instructionCode, instruction* newInstruction);
-//int addressDecode(uint16_t mode, uint16_t baseAddress, uint16_t resultAddress);
-uint16_t get_address(uint16_t mode, uint16_t baseAddress, bool trace = true);
-uint16_t get_value(uint16_t mode, uint16_t baseAddress, bool trace = true);
-
-int printInstruction(instruction* newInstruction);
-int clearInstruction(instruction* newInstruction);
 #endif // HEADER_H

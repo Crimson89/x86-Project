@@ -1,0 +1,8 @@
+Branch Trace: BNE 000370 from PC 000032 to 000014, branch taken.
+Branch Trace: BNE 000370 from PC 000032 to 000014, branch taken.
+Branch Trace: BNE 000370 from PC 000032 to 000014, branch taken.
+Branch Trace: BNE 000370 from PC 000032 to 000014, branch NOT taken.
+Branch Trace: BNE 000366 from PC 000056 to 000034, branch taken.
+Branch Trace: BNE 000366 from PC 000056 to 000034, branch taken.
+Branch Trace: BNE 000366 from PC 000056 to 000034, branch taken.
+Branch Trace: BNE 000366 from PC 000056 to 000034, branch NOT taken.

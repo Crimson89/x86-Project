@@ -7,6 +7,7 @@ int BR(instruction *inst) // Branch unconditional
   inst->is_branch = true;
   inst->branch_taken = true;
 
+  // sign extend low byte of inst->offset
   uint16_t branchOffset;
   if ((inst->offset & 0x80) == 0)
   {
@@ -17,6 +18,7 @@ int BR(instruction *inst) // Branch unconditional
     branchOffset = inst->offset | 0xFF00;
   }
   
+  // branch offset is words to jump
   PC += (branchOffset << 1);
   inst->branch_target = PC;
 

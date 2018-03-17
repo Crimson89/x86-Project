@@ -1,0 +1,17 @@
+Branch Trace: BEQ 000003 from PC 000012 to 000022, branch taken.
+Branch Trace: BNE 000003 from PC 000026 to 000036, branch taken.
+Branch Trace: BMI 000003 from PC 000040 to 000050, branch taken.
+Branch Trace: BPL 000003 from PC 000052 to 000062, branch taken.
+Branch Trace: BCS 000003 from PC 000070 to 000100, branch taken.
+Branch Trace: BCC 000003 from PC 000102 to 000112, branch taken.
+Branch Trace: BVS 000003 from PC 000122 to 000132, branch taken.
+Branch Trace: BVC 000003 from PC 000134 to 000144, branch taken.
+Branch Trace: BLT 000003 from PC 000146 to 000156, branch taken.
+Branch Trace: BGE 000003 from PC 000166 to 000176, branch taken.
+Branch Trace: BLE 000003 from PC 000210 to 000220, branch taken.
+Branch Trace: BGT 000003 from PC 000226 to 000236, branch taken.
+Branch Trace: BHI 000003 from PC 000240 to 000250, branch taken.
+Branch Trace: BLOS 000003 from PC 000252 to 000262, branch taken.
+Branch Trace: BCS 000003 from PC 000264 to 000274, branch taken.
+Branch Trace: BCC 000003 from PC 000276 to 000306, branch taken.
+Branch Trace: BR 000003 from PC 000306 to 000316, branch taken.
